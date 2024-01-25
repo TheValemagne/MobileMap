@@ -17,17 +17,24 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.CopyrightOverlay;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.ItemizedOverlay;
+import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
+import org.osmdroid.views.overlay.compass.CompassOverlay;
+import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
+
+import com.example.mobilemap.database.DatabaseManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,8 +45,10 @@ public class MainActivity extends AppCompatActivity {
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
 
     private MapView mapView;
+    private DatabaseManager databaseManager;
 
 
+    @SuppressLint("Range")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
+        databaseManager = new DatabaseManager(this);
 
         mapView = findViewById(R.id.mapView);
         mapView.setTileSource(TileSourceFactory.MAPNIK);
@@ -64,6 +74,14 @@ public class MainActivity extends AppCompatActivity {
         ));
 
         GeoPoint startPoint = new GeoPoint(49.133333, 6.166667);
+        Marker startMarker = new Marker(mapView);
+        startMarker.setPosition(startPoint);
+        startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
+        startMarker.setTitle("Gare de Metz");
+        startMarker.showInfoWindow();
+        startMarker.closeInfoWindow();
+        mapView.getOverlays().add(startMarker);
+
         IMapController mapController = mapView.getController();
         mapController.setZoom(13.5);
         mapController.setCenter(startPoint);
@@ -78,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
         ItemizedOverlay<OverlayItem> overlayItemItemizedOverlay = new ItemizedIconOverlay<>(getApplicationContext(), overlayItems, new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
             @Override
             public boolean onItemSingleTapUp(int index, OverlayItem item) {
+                Log.d("MainActivity", item.getTitle());
                 return true;
             }
 
@@ -92,6 +111,10 @@ public class MainActivity extends AppCompatActivity {
         MyLocationNewOverlay myLocationNewOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(context), mapView);
         myLocationNewOverlay.enableMyLocation();
         mapView.getOverlays().add(myLocationNewOverlay);
+
+        CompassOverlay mCompassOverlay = new CompassOverlay(context, new InternalCompassOrientationProvider(context), mapView);
+        mCompassOverlay.enableCompass();
+        mapView.getOverlays().add(mCompassOverlay);
 
         CopyrightOverlay mCopyrightOverlay = new CopyrightOverlay(context);
         mapView.getOverlays().add(mCopyrightOverlay);
@@ -122,6 +145,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         mapView.onDetach();
+        databaseManager.close();
     }
 
     @Override
