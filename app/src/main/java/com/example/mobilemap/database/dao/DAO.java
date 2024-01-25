@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.Optional;
 
 public abstract class DAO<T extends DatabaseItem> {
-    protected DatabaseHelper databaseHelper;
-    protected final String tableName;
-    protected final String[] columns;
+    private final DatabaseHelper databaseHelper;
+    private final String tableName;
+    private final String[] columns;
     public DAO(DatabaseHelper databaseHelper, String tableName, String[] columns) {
         this.databaseHelper = databaseHelper;
         this.tableName = tableName;
@@ -21,15 +21,15 @@ public abstract class DAO<T extends DatabaseItem> {
 
     }
 
-    public abstract Optional<T> mapCursor(Cursor cursor);
-    public Optional<T> get(long id) {
+    protected abstract Optional<T> mapCursor(Cursor cursor);
+    public Optional<T> find(long id) {
         Cursor cursor = this.databaseHelper.getReadableDatabase().rawQuery("SELECT * FROM " + tableName + " WHERE _ID = " + id, null);
         cursor.moveToNext();
 
         return mapCursor(cursor);
     }
 
-    public List<T> getAll() {
+    public List<T> findAll() {
         Cursor cursor = getItems(columns);
         List<T> result = new ArrayList<>();
 
@@ -45,12 +45,12 @@ public abstract class DAO<T extends DatabaseItem> {
         return result;
     }
 
-    protected Cursor getItems(String[] columns) {
+    private Cursor getItems(String[] columns) {
         return databaseHelper.getReadableDatabase()
                 .query(tableName, columns, null, null, null, null, null);
     }
 
-    public abstract ContentValues mapItem(T item);
+    protected abstract ContentValues mapItem(T item);
 
     public void insert(T item) {
         long id = databaseHelper.getWritableDatabase()

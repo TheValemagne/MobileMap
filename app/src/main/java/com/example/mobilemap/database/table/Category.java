@@ -1,6 +1,10 @@
 package com.example.mobilemap.database.table;
 
+import android.content.ContentValues;
+
 import androidx.annotation.NonNull;
+
+import com.example.mobilemap.database.DatabaseContract;
 
 import java.text.MessageFormat;
 
@@ -22,6 +26,10 @@ public class Category extends DatabaseItem {
 
     public Category(String name) {
         this(-1, name);
+    }
+
+    public static Category fromContentValues(ContentValues contentValues) {
+        return new Category(contentValues.getAsString(DatabaseContract.Site.COLUMN_NAME));
     }
 
     @NonNull

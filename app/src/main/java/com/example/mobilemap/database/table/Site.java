@@ -1,6 +1,10 @@
 package com.example.mobilemap.database.table;
 
+import android.content.ContentValues;
+
 import androidx.annotation.NonNull;
+
+import com.example.mobilemap.database.DatabaseContract;
 
 import java.text.MessageFormat;
 
@@ -77,6 +81,15 @@ public class Site extends DatabaseItem {
 
     public Site(String name, double latitude, double longitude, String postalAddress, long categoryId, String resume) {
         this(-1, name, latitude, longitude, postalAddress, categoryId, resume);
+    }
+
+    public static Site fromContentValues(ContentValues contentValues) {
+        return new Site(contentValues.getAsString(DatabaseContract.Site.COLUMN_NAME),
+                contentValues.getAsDouble(DatabaseContract.Site.COLUMN_LATITUDE),
+                contentValues.getAsDouble(DatabaseContract.Site.COLUMN_LONGITUDE),
+                contentValues.getAsString(DatabaseContract.Site.COLUMN_POSTAL_ADDRESS),
+                contentValues.getAsLong(DatabaseContract.Site.COLUMN_CATEGORY_ID),
+                contentValues.getAsString(DatabaseContract.Site.COLUMN_RESUME));
     }
 
     @NonNull

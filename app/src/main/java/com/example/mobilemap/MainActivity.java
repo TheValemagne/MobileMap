@@ -34,7 +34,7 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
-import com.example.mobilemap.database.DatabaseManager;
+import com.example.mobilemap.database.DatabaseHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
 
     private MapView mapView;
-    private DatabaseManager databaseManager;
+    private DatabaseHelper databaseHelper;
 
 
     @SuppressLint("Range")
@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        databaseManager = new DatabaseManager(this);
+        databaseHelper = new DatabaseHelper(this);
 
         mapView = findViewById(R.id.mapView);
         mapView.setTileSource(TileSourceFactory.MAPNIK);
@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         mapView.onDetach();
-        databaseManager.close();
+        databaseHelper.close();
     }
 
     @Override
