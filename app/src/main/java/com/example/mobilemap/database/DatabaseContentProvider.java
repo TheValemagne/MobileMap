@@ -13,7 +13,6 @@ import androidx.annotation.Nullable;
 import java.util.Objects;
 
 public class DatabaseContentProvider extends ContentProvider {
-    private static final String TAG ="DB ContentProvider";
     private DatabaseHelper databaseHelper;
 
     private String getTable(Uri uri) {
@@ -37,6 +36,7 @@ public class DatabaseContentProvider extends ContentProvider {
     @Nullable
     @Override
     public String getType(@NonNull Uri uri) {
+        // vnd.android.cursor.dir/site
         return null;
     }
 

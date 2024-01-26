@@ -21,7 +21,7 @@ public final class DatabaseContract {
 
     public static class Site implements BaseColumns {
         private static final Uri.Builder builder;
-        public static final String TABLE_NAME = "Site";
+        public static final String TABLE_NAME = "site";
         static {
             builder = DatabaseContract.CONTENT_URI.buildUpon();
             builder.path(Site.TABLE_NAME);
@@ -46,7 +46,7 @@ public final class DatabaseContract {
 
     public static class Category implements BaseColumns {
         private static final Uri.Builder builder;
-        public static final String TABLE_NAME = "Category";
+        public static final String TABLE_NAME = "category";
         static {
             builder = DatabaseContract.CONTENT_URI.buildUpon();
             builder.path(Category.TABLE_NAME);

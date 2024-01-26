@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
                 Manifest.permission.ACCESS_FINE_LOCATION
         ));
 
-        GeoPoint startPoint = new GeoPoint(49.133333, 6.166667);
+        GeoPoint startPoint = new GeoPoint(49.109523, 6.1768191);
         Marker startMarker = new Marker(mapView);
         startMarker.setPosition(startPoint);
         startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
