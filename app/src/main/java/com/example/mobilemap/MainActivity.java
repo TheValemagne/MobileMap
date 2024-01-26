@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         mapView = findViewById(R.id.mapView);
         mapView.setTileSource(TileSourceFactory.MAPNIK);
         mapView.getZoomController()
-                .setVisibility(CustomZoomButtonsController.Visibility.SHOW_AND_FADEOUT);
+                .setVisibility(CustomZoomButtonsController.Visibility.NEVER);
         mapView.setMultiTouchControls(true);
 
         requestPermissionsIfNecessary(Collections.singletonList(
