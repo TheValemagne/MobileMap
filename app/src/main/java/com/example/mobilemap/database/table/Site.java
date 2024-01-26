@@ -1,12 +1,16 @@
 package com.example.mobilemap.database.table;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
+import android.database.Cursor;
 
 import androidx.annotation.NonNull;
 
 import com.example.mobilemap.database.DatabaseContract;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Site extends DatabaseItem {
     private String name;
@@ -83,13 +87,17 @@ public class Site extends DatabaseItem {
         this(-1, name, latitude, longitude, postalAddress, categoryId, resume);
     }
 
-    public static Site fromContentValues(ContentValues contentValues) {
-        return new Site(contentValues.getAsString(DatabaseContract.Site.COLUMN_NAME),
-                contentValues.getAsDouble(DatabaseContract.Site.COLUMN_LATITUDE),
-                contentValues.getAsDouble(DatabaseContract.Site.COLUMN_LONGITUDE),
-                contentValues.getAsString(DatabaseContract.Site.COLUMN_POSTAL_ADDRESS),
-                contentValues.getAsLong(DatabaseContract.Site.COLUMN_CATEGORY_ID),
-                contentValues.getAsString(DatabaseContract.Site.COLUMN_RESUME));
+    @SuppressLint("Range")
+    public static Site fromCursor(Cursor cursor) {
+        return new Site(
+                cursor.getLong(cursor.getColumnIndex(DatabaseContract.Site.ID)),
+                cursor.getString(cursor.getColumnIndex(DatabaseContract.Site.COLUMN_NAME)),
+                cursor.getDouble(cursor.getColumnIndex(DatabaseContract.Site.COLUMN_LATITUDE)),
+                cursor.getDouble(cursor.getColumnIndex(DatabaseContract.Site.COLUMN_LONGITUDE)),
+                cursor.getString(cursor.getColumnIndex(DatabaseContract.Site.COLUMN_POSTAL_ADDRESS)),
+                cursor.getLong(cursor.getColumnIndex(DatabaseContract.Site.COLUMN_CATEGORY_ID)),
+                cursor.getString(cursor.getColumnIndex(DatabaseContract.Site.COLUMN_RESUME))
+        );
     }
 
     @NonNull
@@ -97,5 +105,32 @@ public class Site extends DatabaseItem {
     public String toString() {
         return MessageFormat.format("Site(_id={0}, name={1}, latitude={2}, longitude={3}, postalAddress={4}, categoryId={5}, resume={6})",
                 id, name, latitude, longitude, postalAddress, categoryId, resume);
+    }
+
+    @Override
+    public ContentValues toContentValues() {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DatabaseContract.Site.COLUMN_NAME, getName());
+        contentValues.put(DatabaseContract.Site.COLUMN_LATITUDE, getLatitude());
+        contentValues.put(DatabaseContract.Site.COLUMN_LONGITUDE, getLongitude());
+        contentValues.put(DatabaseContract.Site.COLUMN_POSTAL_ADDRESS, getPostalAddress());
+        contentValues.put(DatabaseContract.Site.COLUMN_CATEGORY_ID, getCategoryId());
+        contentValues.put(DatabaseContract.Site.COLUMN_RESUME, getResume());
+
+        return contentValues;
+    }
+
+    public static List<Site> mapFromList(Cursor cursor) {
+        List<Site> result = new ArrayList<>();
+
+        if(!cursor.moveToFirst()) {
+            return result;
+        }
+
+        do{
+            result.add(Site.fromCursor(cursor));
+        } while(cursor.moveToNext());
+
+        return result;
     }
 }

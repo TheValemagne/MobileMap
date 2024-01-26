@@ -1,6 +1,5 @@
 package com.example.mobilemap.database.dao;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 
 import com.example.mobilemap.database.DatabaseHelper;
@@ -14,16 +13,17 @@ public abstract class DAO<T extends DatabaseItem> {
     private final DatabaseHelper databaseHelper;
     private final String tableName;
     private final String[] columns;
+
     public DAO(DatabaseHelper databaseHelper, String tableName, String[] columns) {
         this.databaseHelper = databaseHelper;
         this.tableName = tableName;
         this.columns = columns;
-
     }
 
     protected abstract Optional<T> mapCursor(Cursor cursor);
     public Optional<T> find(long id) {
-        Cursor cursor = this.databaseHelper.getReadableDatabase().rawQuery("SELECT * FROM " + tableName + " WHERE _ID = " + id, null);
+        Cursor cursor = this.databaseHelper.getReadableDatabase()
+                .query(tableName, columns, "_id = ?", new String[]{String.valueOf(id)}, null, null, null);
         cursor.moveToNext();
 
         return mapCursor(cursor);
@@ -50,17 +50,15 @@ public abstract class DAO<T extends DatabaseItem> {
                 .query(tableName, columns, null, null, null, null, null);
     }
 
-    protected abstract ContentValues mapItem(T item);
-
     public void insert(T item) {
         long id = databaseHelper.getWritableDatabase()
-                .insert(tableName, null, mapItem(item));
+                .insert(tableName, null, item.toContentValues());
         item.setId(id);
     }
 
     public int update(T item){
         return databaseHelper.getWritableDatabase()
-                .update(tableName, mapItem(item), " _id = " + item.getId(), null);
+                .update(tableName, item.toContentValues(), " _id = " + item.getId(), null);
     }
 
     public void delete(long id) {

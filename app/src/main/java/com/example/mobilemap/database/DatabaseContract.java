@@ -7,6 +7,7 @@ import android.provider.BaseColumns;
 public final class DatabaseContract {
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "metzMap";
+
     private DatabaseContract() {}
     public static final String AUTHORITY = "metzMap.provider";
     private static final Uri.Builder builder;

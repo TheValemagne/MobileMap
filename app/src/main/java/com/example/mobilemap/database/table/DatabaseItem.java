@@ -1,5 +1,7 @@
 package com.example.mobilemap.database.table;
 
+import android.content.ContentValues;
+
 public abstract class DatabaseItem {
     public long getId() {
         return id;
@@ -14,4 +16,6 @@ public abstract class DatabaseItem {
     public DatabaseItem(long _ID) {
         this.id = _ID;
     }
+
+    public abstract ContentValues toContentValues();
 }
