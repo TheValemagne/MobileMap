@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MobileMap</string>
+    <string name="app_name">Sortir à Metz</string>
     <string name="latitudeLabel">"Latitude: "</string>
     <string name="longitudeLabel">Longitude:</string>
     <string name="itemNameLabel">Name:</string>

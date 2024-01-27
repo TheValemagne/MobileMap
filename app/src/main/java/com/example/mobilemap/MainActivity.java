@@ -2,8 +2,10 @@ package com.example.mobilemap;
 
 import android.Manifest;
 
+import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
@@ -20,8 +22,6 @@ import org.osmdroid.views.overlay.ItemizedOverlay;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
-import org.osmdroid.views.overlay.compass.CompassOverlay;
-import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
@@ -58,8 +58,13 @@ public class MainActivity extends AppCompatActivity {
 
         Configuration.getInstance().load(context,
                 PreferenceManager.getDefaultSharedPreferences(context));
+        EdgeToEdge.enable(this);
 
         setContentView(R.layout.activity_main);
+
+        Toolbar myToolbar = findViewById(R.id.myToolbar);
+        setSupportActionBar(myToolbar);
+
 
         databaseHelper = new DatabaseHelper(this);
 
@@ -111,10 +116,6 @@ public class MainActivity extends AppCompatActivity {
         MyLocationNewOverlay myLocationNewOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(context), mapView);
         myLocationNewOverlay.enableMyLocation();
         mapView.getOverlays().add(myLocationNewOverlay);
-
-        CompassOverlay mCompassOverlay = new CompassOverlay(context, new InternalCompassOrientationProvider(context), mapView);
-        mCompassOverlay.enableCompass();
-        mapView.getOverlays().add(mCompassOverlay);
 
         CopyrightOverlay mCopyrightOverlay = new CopyrightOverlay(context);
         mapView.getOverlays().add(mCopyrightOverlay);
