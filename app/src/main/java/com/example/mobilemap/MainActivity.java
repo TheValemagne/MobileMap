@@ -6,8 +6,12 @@ import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.preference.PreferenceManager;
 
 import org.osmdroid.api.IMapController;
@@ -58,9 +62,17 @@ public class MainActivity extends AppCompatActivity {
 
         Configuration.getInstance().load(context,
                 PreferenceManager.getDefaultSharedPreferences(context));
-        EdgeToEdge.enable(this);
+        EdgeToEdge.enable(this); // permet d'étendre l'affichage de l'application à tout l'écran
 
         setContentView(R.layout.activity_main);
+
+        ConstraintLayout view = findViewById(R.id.root);
+        // ajustement de la bar de navigation pour éviter tout dépassement ou superposition avec la bar aec les 3 boutons
+        ViewCompat.setOnApplyWindowInsetsListener(view, (v, windowInsets) -> {
+            Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemGestures());
+            view.setPadding(0, 0, 0, insets.bottom);
+            return WindowInsetsCompat.CONSUMED;
+        });
 
         Toolbar myToolbar = findViewById(R.id.myToolbar);
         setSupportActionBar(myToolbar);
