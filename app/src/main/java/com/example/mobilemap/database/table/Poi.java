@@ -12,7 +12,10 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Site extends DatabaseItem {
+/**
+ * Classe conteneur représentant la table SQL Point of Interest (POI) ou point d'intérêt sur la carte
+ */
+public class Poi extends DatabaseItem {
     private String name;
 
     public String getName() {
@@ -73,7 +76,7 @@ public class Site extends DatabaseItem {
         this.resume = resume;
     }
 
-    public Site(long id, String name, double latitude, double longitude, String postalAddress, long categoryId, String resume) {
+    public Poi(long id, String name, double latitude, double longitude, String postalAddress, long categoryId, String resume) {
         super(id);
         this.name = name;
         this.latitude = latitude;
@@ -83,13 +86,13 @@ public class Site extends DatabaseItem {
         this.resume = resume;
     }
 
-    public Site(String name, double latitude, double longitude, String postalAddress, long categoryId, String resume) {
+    public Poi(String name, double latitude, double longitude, String postalAddress, long categoryId, String resume) {
         this(-1, name, latitude, longitude, postalAddress, categoryId, resume);
     }
 
     @SuppressLint("Range")
-    public static Site fromCursor(Cursor cursor) {
-        return new Site(
+    public static Poi fromCursor(Cursor cursor) {
+        return new Poi(
                 cursor.getLong(cursor.getColumnIndex(DatabaseContract.Site.ID)),
                 cursor.getString(cursor.getColumnIndex(DatabaseContract.Site.COLUMN_NAME)),
                 cursor.getDouble(cursor.getColumnIndex(DatabaseContract.Site.COLUMN_LATITUDE)),
@@ -120,15 +123,15 @@ public class Site extends DatabaseItem {
         return contentValues;
     }
 
-    public static List<Site> mapFromList(Cursor cursor) {
-        List<Site> result = new ArrayList<>();
+    public static List<Poi> mapFromList(Cursor cursor) {
+        List<Poi> result = new ArrayList<>();
 
         if(!cursor.moveToFirst()) {
             return result;
         }
 
         do{
-            result.add(Site.fromCursor(cursor));
+            result.add(Poi.fromCursor(cursor));
         } while(cursor.moveToNext());
 
         return result;

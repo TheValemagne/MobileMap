@@ -21,7 +21,7 @@ public final class DatabaseContract {
 
     public static class Site implements BaseColumns {
         private static final Uri.Builder builder;
-        public static final String TABLE_NAME = "site";
+        public static final String TABLE_NAME = "poi";
         static {
             builder = DatabaseContract.CONTENT_URI.buildUpon();
             builder.path(Site.TABLE_NAME);

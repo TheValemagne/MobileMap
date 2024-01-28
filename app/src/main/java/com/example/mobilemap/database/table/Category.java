@@ -12,6 +12,9 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe conteneur représentant la table SQL category
+ */
 public class Category extends DatabaseItem {
     private String name;
 

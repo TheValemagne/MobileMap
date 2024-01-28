@@ -9,22 +9,22 @@ import android.database.sqlite.SQLiteOpenHelper;
 import androidx.annotation.Nullable;
 
 import com.example.mobilemap.database.dao.CategoryDAO;
-import com.example.mobilemap.database.dao.SiteDAO;
+import com.example.mobilemap.database.dao.PoiDAO;
 import com.example.mobilemap.database.table.Category;
-import com.example.mobilemap.database.table.Site;
+import com.example.mobilemap.database.table.Poi;
 
 import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private final CategoryDAO categoryDAO;
-    private final SiteDAO siteDAO;
+    private final PoiDAO siteDAO;
 
     public DatabaseHelper(@Nullable Context context) {
         super(context, DatabaseContract.DATABASE_NAME, null, DatabaseContract.DATABASE_VERSION);
 
         this.categoryDAO = new CategoryDAO(this);
-        this.siteDAO = new SiteDAO(this);
+        this.siteDAO = new PoiDAO(this);
     }
 
     @Override
@@ -62,15 +62,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
-    public void insertSite(Site site) {
-        siteDAO.insert(site);
+    public void insertPoi(Poi poi) {
+        siteDAO.insert(poi);
     }
 
     public void insertCategory(Category category) {
         categoryDAO.insert(category);
     }
 
-    public int updateSite(Site site) {
+    public int updatePoi(Poi site) {
         return siteDAO.update(site);
     }
 
@@ -78,7 +78,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return categoryDAO.update(category);
     }
 
-    public void deleteSite(long id) {
+    public void deletePoi(long id) {
         siteDAO.delete(id);
     }
 
@@ -86,7 +86,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         categoryDAO.delete(id);
     }
 
-    public List<Site> getSites() {
+    public List<Poi> getPois() {
         return siteDAO.findAll();
     }
 
@@ -94,7 +94,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return categoryDAO.findAll();
     }
 
-    public Cursor getSitesDetails() {
+    public Cursor getPoiDetails() {
         String request = "SELECT A.name, P.name, year " +
                 "FROM " + DatabaseContract.Site.TABLE_NAME + " AS A " +
                 "JOIN " + DatabaseContract.Category.TABLE_NAME + " AS P " +
