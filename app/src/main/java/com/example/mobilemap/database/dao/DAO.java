@@ -1,6 +1,7 @@
 package com.example.mobilemap.database.dao;
 
 import android.database.Cursor;
+import android.provider.BaseColumns;
 
 import com.example.mobilemap.database.DatabaseHelper;
 import com.example.mobilemap.database.table.DatabaseItem;
@@ -23,7 +24,7 @@ public abstract class DAO<T extends DatabaseItem> {
     protected abstract Optional<T> mapCursor(Cursor cursor);
     public Optional<T> find(long id) {
         Cursor cursor = this.databaseHelper.getReadableDatabase()
-                .query(tableName, columns, "_id = ?", new String[]{String.valueOf(id)}, null, null, null);
+                .query(tableName, columns, BaseColumns._ID + " = ?", new String[]{String.valueOf(id)}, null, null, null);
         cursor.moveToNext();
 
         return mapCursor(cursor);
@@ -58,11 +59,11 @@ public abstract class DAO<T extends DatabaseItem> {
 
     public int update(T item){
         return databaseHelper.getWritableDatabase()
-                .update(tableName, item.toContentValues(), " _id = " + item.getId(), null);
+                .update(tableName, item.toContentValues(), BaseColumns._ID + " =" + item.getId(), null);
     }
 
     public void delete(long id) {
         databaseHelper.getWritableDatabase()
-                .delete(tableName,  "_id =" + id, null);
+                .delete(tableName, BaseColumns._ID + " =" + id, null);
     }
 }

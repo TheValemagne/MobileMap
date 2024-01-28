@@ -38,7 +38,7 @@ public class Category extends DatabaseItem {
     @SuppressLint("Range")
     public static Category fromCursor(Cursor cursor) {
         return new Category(
-                cursor.getLong(cursor.getColumnIndex(DatabaseContract.Site.ID)),
+                cursor.getLong(cursor.getColumnIndex(DatabaseContract.Site._ID)),
                 cursor.getString(cursor.getColumnIndex(DatabaseContract.Site.COLUMN_NAME))
         );
     }

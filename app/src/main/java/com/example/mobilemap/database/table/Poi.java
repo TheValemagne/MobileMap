@@ -93,7 +93,7 @@ public class Poi extends DatabaseItem {
     @SuppressLint("Range")
     public static Poi fromCursor(Cursor cursor) {
         return new Poi(
-                cursor.getLong(cursor.getColumnIndex(DatabaseContract.Site.ID)),
+                cursor.getLong(cursor.getColumnIndex(DatabaseContract.Site._ID)),
                 cursor.getString(cursor.getColumnIndex(DatabaseContract.Site.COLUMN_NAME)),
                 cursor.getDouble(cursor.getColumnIndex(DatabaseContract.Site.COLUMN_LATITUDE)),
                 cursor.getDouble(cursor.getColumnIndex(DatabaseContract.Site.COLUMN_LONGITUDE)),

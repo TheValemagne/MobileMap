@@ -13,7 +13,7 @@ import com.example.mobilemap.adapter.CategoryListRecyclerViewAdapter;
 import com.example.mobilemap.database.DatabaseContract;
 import com.example.mobilemap.database.table.Category;
 import com.example.mobilemap.databinding.ActivityCategoriesBinding;
-import com.example.mobilemap.listener.NavigationBarListener;
+import com.example.mobilemap.listener.NavigationBarItemSelectedListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.List;
@@ -30,7 +30,7 @@ public class CategoriesActivity extends AppCompatActivity {
 
         BottomNavigationView bottomNavigationMenuView = binding.categoriesNavigationBar;
         bottomNavigationMenuView.setSelectedItemId(R.id.navigation_categories);
-        bottomNavigationMenuView.setOnItemSelectedListener(new NavigationBarListener(this, R.id.navigation_categories));
+        bottomNavigationMenuView.setOnItemSelectedListener(new NavigationBarItemSelectedListener(this, R.id.navigation_categories));
 
         List<Category> categories = getCategories();
 
@@ -51,10 +51,10 @@ public class CategoriesActivity extends AppCompatActivity {
 
     @NonNull
     private List<Category> getCategories() {
-        Cursor cursor = getContentResolver().query(DatabaseContract.Category.CONTENT_URI, DatabaseContract.Category.COLUMNS, null, null, DatabaseContract.Category.COLUMN_NAME);
+        Cursor cursor = getContentResolver()
+                .query(DatabaseContract.Category.CONTENT_URI, DatabaseContract.Category.COLUMNS, null, null, DatabaseContract.Category.COLUMN_NAME);
         assert cursor != null;
-        List<Category> categories = Category.mapFromList(cursor);
-        cursor.close();
-        return categories;
+
+        return Category.mapFromList(cursor);
     }
 }

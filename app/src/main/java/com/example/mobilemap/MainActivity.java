@@ -39,7 +39,7 @@ import android.util.Log;
 
 import com.example.mobilemap.database.DatabaseHelper;
 import com.example.mobilemap.databinding.ActivityMainBinding;
-import com.example.mobilemap.listener.NavigationBarListener;
+import com.example.mobilemap.listener.NavigationBarItemSelectedListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(binding.getRoot());
 
-        ConstraintLayout view = binding.root;
+        ConstraintLayout view = binding.getRoot();
         // ajustement de la bar de navigation pour éviter tout dépassement ou superposition avec la bar aec les 3 boutons
         ViewCompat.setOnApplyWindowInsetsListener(view, (v, windowInsets) -> {
             Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemGestures());
@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
         BottomNavigationView bottomNavigationMenuView = binding.mainNavigationBar;
         bottomNavigationMenuView.setSelectedItemId(R.id.navigation_map);
-        bottomNavigationMenuView.setOnItemSelectedListener(new NavigationBarListener(this, R.id.navigation_map));
+        bottomNavigationMenuView.setOnItemSelectedListener(new NavigationBarItemSelectedListener(this, R.id.navigation_map));
 
         databaseHelper = new DatabaseHelper(this);
 

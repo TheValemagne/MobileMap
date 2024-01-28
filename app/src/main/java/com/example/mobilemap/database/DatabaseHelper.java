@@ -30,7 +30,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL("CREATE TABLE " + DatabaseContract.Site.TABLE_NAME + " (" +
-                DatabaseContract.Site.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                DatabaseContract.Site._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 DatabaseContract.Site.COLUMN_NAME + " text NOT NULL," +
                 DatabaseContract.Site.COLUMN_LATITUDE + " REAL NOT NULL," +
                 DatabaseContract.Site.COLUMN_LONGITUDE + " REAL NOT NULL," +
@@ -38,10 +38,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 DatabaseContract.Site.COLUMN_CATEGORY_ID + " INTEGER NOT NULL," +
                 DatabaseContract.Site.COLUMN_RESUME + " text NOT NULL," +
                 "FOREIGN KEY(" + DatabaseContract.Site.COLUMN_CATEGORY_ID + ") REFERENCES "
-                + DatabaseContract.Category.TABLE_NAME + "(" + DatabaseContract.Category.ID + ") ON DELETE CASCADE);");
+                + DatabaseContract.Category.TABLE_NAME + "(" + DatabaseContract.Category._ID + ") ON DELETE CASCADE);");
 
         sqLiteDatabase.execSQL("CREATE TABLE " + DatabaseContract.Category.TABLE_NAME + " (" +
-                DatabaseContract.Category.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                DatabaseContract.Category._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 DatabaseContract.Category.COLUMN_NAME + " text NOT NULL UNIQUE);");
     }
 
@@ -98,7 +98,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String request = "SELECT A.name, P.name, year " +
                 "FROM " + DatabaseContract.Site.TABLE_NAME + " AS A " +
                 "JOIN " + DatabaseContract.Category.TABLE_NAME + " AS P " +
-                "ON A." + DatabaseContract.Site.COLUMN_CATEGORY_ID + " = P." + DatabaseContract.Category.ID  +
+                "ON A." + DatabaseContract.Site.COLUMN_CATEGORY_ID + " = P." + DatabaseContract.Category._ID  +
                 ";";
 
         return getReadableDatabase().rawQuery(request, null);

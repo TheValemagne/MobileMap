@@ -11,11 +11,11 @@ import com.example.mobilemap.MainActivity;
 import com.example.mobilemap.R;
 import com.google.android.material.navigation.NavigationBarView;
 
-public class NavigationBarListener implements NavigationBarView.OnItemSelectedListener {
+public class NavigationBarItemSelectedListener implements NavigationBarView.OnItemSelectedListener {
     private final Activity activity;
     private final int currentActivityId;
 
-    public NavigationBarListener(Activity activity, int currentActivityId) {
+    public NavigationBarItemSelectedListener(Activity activity, int currentActivityId) {
         this.activity = activity;
         this.currentActivityId = currentActivityId;
     }
