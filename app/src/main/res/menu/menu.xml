@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <!-- "Mark Favorite", must appear as action button if possible. -->
+    <item
+        android:id="@+id/navigation_map"
+        android:icon="@android:drawable/ic_dialog_map"
+        android:title="Carte"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/navigation_categories"
+        android:icon="@android:drawable/ic_dialog_map"
+        android:title="Categories"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/navigation_pois"
+        android:icon="@android:drawable/ic_dialog_map"
+        android:title="Sites"
+        app:showAsAction="ifRoom" />
+</menu>

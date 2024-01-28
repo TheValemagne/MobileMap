@@ -24,6 +24,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MobileMap">
         <activity
+            android:name=".CategoriesActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
@@ -34,10 +37,10 @@
         </activity>
 
         <provider
+            android:name=".database.DatabaseContentProvider"
             android:authorities="metzMap.provider"
             android:enabled="true"
-            android:exported="false"
-            android:name="com.example.mobilemap.database.DatabaseContentProvider" />
+            android:exported="false" />
     </application>
 
 </manifest>

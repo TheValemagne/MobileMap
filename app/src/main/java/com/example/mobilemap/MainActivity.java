@@ -5,7 +5,6 @@ import android.Manifest;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -39,6 +38,9 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 
 import com.example.mobilemap.database.DatabaseHelper;
+import com.example.mobilemap.databinding.ActivityMainBinding;
+import com.example.mobilemap.listener.NavigationBarListener;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -64,9 +66,11 @@ public class MainActivity extends AppCompatActivity {
                 PreferenceManager.getDefaultSharedPreferences(context));
         EdgeToEdge.enable(this); // permet d'étendre l'affichage de l'application à tout l'écran
 
-        setContentView(R.layout.activity_main);
+        ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
 
-        ConstraintLayout view = findViewById(R.id.root);
+        setContentView(binding.getRoot());
+
+        ConstraintLayout view = binding.root;
         // ajustement de la bar de navigation pour éviter tout dépassement ou superposition avec la bar aec les 3 boutons
         ViewCompat.setOnApplyWindowInsetsListener(view, (v, windowInsets) -> {
             Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemGestures());
@@ -74,13 +78,13 @@ public class MainActivity extends AppCompatActivity {
             return WindowInsetsCompat.CONSUMED;
         });
 
-        Toolbar myToolbar = findViewById(R.id.myToolbar);
-        setSupportActionBar(myToolbar);
-
+        BottomNavigationView bottomNavigationMenuView = binding.mainNavigationBar;
+        bottomNavigationMenuView.setSelectedItemId(R.id.navigation_map);
+        bottomNavigationMenuView.setOnItemSelectedListener(new NavigationBarListener(this, R.id.navigation_map));
 
         databaseHelper = new DatabaseHelper(this);
 
-        mapView = findViewById(R.id.mapView);
+        mapView = binding.mapView;
         mapView.setTileSource(TileSourceFactory.MAPNIK);
         mapView.getZoomController()
                 .setVisibility(CustomZoomButtonsController.Visibility.NEVER);
@@ -142,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
         mapView.getOverlays().add(mRotationGestureOverlay);
     }
 
-    @Override
+        @Override
     protected void onPause() {
         super.onPause();
         mapView.onPause();
