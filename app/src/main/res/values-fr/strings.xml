@@ -4,4 +4,11 @@
     <string name="latitudeLabel">"Latitude : "</string>
     <string name="longitudeLabel">"Longitude : "</string>
     <string name="itemNameLabel">"Nom : "</string>
+    <string name="CategoryName">Nom</string>
+    <string name="EmptyList">Liste vide</string>
+    <string name="CategoryList">Liste de catégories</string>
+    <string name="save">Enregistrer</string>
+    <string name="cancel">Annuler</string>
+    <string name="edit">Modifier</string>
+    <string name="delete">Supprimer</string>
 </resources>

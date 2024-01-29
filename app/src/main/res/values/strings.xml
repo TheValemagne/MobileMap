@@ -3,4 +3,13 @@
     <string name="latitudeLabel">"Latitude: "</string>
     <string name="longitudeLabel">Longitude:</string>
     <string name="itemNameLabel">Name:</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
+    <string name="CategoryName">Name</string>
+    <string name="EmptyList">Empty list</string>
+    <string name="CategoryList">List of categories</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
 </resources>

@@ -12,49 +12,11 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/categoriesTitle"
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/categoriesFragmentContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TextView" />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
-
-            <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/categoriesList"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginEnd="15dp" />
-            </ScrollView>
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/addCategoryButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentBottom="true"
-                android:layout_marginEnd="15dp"
-                android:layout_marginBottom="15dp"
-                android:clickable="true"
-                android:src="@android:drawable/ic_input_add" />
-
-            <TextView
-                android:id="@+id/emptyLabel"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="Liste vide"
-                android:textSize="34sp" />
-
-        </RelativeLayout>
+            android:layout_weight="1" />
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/categoriesNavigationBar"
