@@ -24,6 +24,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MobileMap">
         <activity
+            android:name=".PoisActivity"
+            android:exported="false" />
+        <activity
             android:name=".CategoriesActivity"
             android:exported="false" />
         <activity
