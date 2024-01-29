@@ -10,13 +10,13 @@
 
     <item
         android:id="@+id/navigation_categories"
-        android:icon="@android:drawable/ic_dialog_map"
+        android:icon="@android:drawable/ic_menu_myplaces"
         android:title="Categories"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/navigation_pois"
-        android:icon="@android:drawable/ic_dialog_map"
+        android:icon="@drawable/marker_default"
         android:title="Sites"
         app:showAsAction="ifRoom" />
 </menu>

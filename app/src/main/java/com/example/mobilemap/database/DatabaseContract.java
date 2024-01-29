@@ -33,11 +33,11 @@ public final class DatabaseContract {
          */
         public static final String COLUMN_NAME = "name";
         /**
-         * column latitude : real
+         * column latitude : real (double)
          */
         public static final String COLUMN_LATITUDE = "latitude";
         /**
-         * column longitude : real
+         * column longitude : real (double)
          */
         public static final String COLUMN_LONGITUDE = "longitude";
         /**
@@ -45,7 +45,7 @@ public final class DatabaseContract {
          */
         public static final String COLUMN_POSTAL_ADDRESS = "postalAddress";
         /**
-         * column categoryId : integer
+         * column categoryId : integer (long)
          */
         public static final String COLUMN_CATEGORY_ID = "categoryId";
         /**

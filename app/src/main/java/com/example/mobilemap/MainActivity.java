@@ -15,27 +15,15 @@ import androidx.preference.PreferenceManager;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.CopyrightOverlay;
-import org.osmdroid.views.overlay.ItemizedIconOverlay;
-import org.osmdroid.views.overlay.ItemizedOverlay;
 import org.osmdroid.views.overlay.Marker;
-import org.osmdroid.views.overlay.OverlayItem;
-import org.osmdroid.views.overlay.ScaleBarOverlay;
-import org.osmdroid.views.overlay.gestures.RotationGestureOverlay;
-import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
-import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 
 import com.example.mobilemap.database.DatabaseHelper;
 import com.example.mobilemap.databinding.ActivityMainBinding;
@@ -52,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
     private MapView mapView;
     private DatabaseHelper databaseHelper;
+    private MapManager mapManager;
 
 
     @SuppressLint("Range")
@@ -85,14 +74,13 @@ public class MainActivity extends AppCompatActivity {
         databaseHelper = new DatabaseHelper(this);
 
         mapView = binding.mapView;
-        mapView.setTileSource(TileSourceFactory.MAPNIK);
-        mapView.getZoomController()
-                .setVisibility(CustomZoomButtonsController.Visibility.NEVER);
-        mapView.setMultiTouchControls(true);
 
         requestPermissionsIfNecessary(Collections.singletonList(
                 Manifest.permission.ACCESS_FINE_LOCATION
         ));
+
+        mapManager = new MapManager(mapView, context);
+        mapManager.initMap();
 
         GeoPoint startPoint = new GeoPoint(49.109523, 6.1768191);
         Marker startMarker = new Marker(mapView);
@@ -106,44 +94,6 @@ public class MainActivity extends AppCompatActivity {
         IMapController mapController = mapView.getController();
         mapController.setZoom(13.5);
         mapController.setCenter(startPoint);
-
-        List<OverlayItem> overlayItems = new ArrayList<>(Arrays.asList(
-                new OverlayItem("ISFATES Metz", "ISFATES", new GeoPoint(49.094168, 6.230186)),
-                new OverlayItem("UFR MIM Metz", "MIM", new GeoPoint(49.0946557, 6.2297174))
-        ));
-
-        Drawable drawable = overlayItems.get(0).getMarker(0);
-
-        ItemizedOverlay<OverlayItem> overlayItemItemizedOverlay = new ItemizedIconOverlay<>(getApplicationContext(), overlayItems, new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
-            @Override
-            public boolean onItemSingleTapUp(int index, OverlayItem item) {
-                Log.d("MainActivity", item.getTitle());
-                return true;
-            }
-
-            @Override
-            public boolean onItemLongPress(int index, OverlayItem item) {
-                return false;
-            }
-        });
-
-        mapView.getOverlays().add(overlayItemItemizedOverlay);
-
-        MyLocationNewOverlay myLocationNewOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(context), mapView);
-        myLocationNewOverlay.enableMyLocation();
-        mapView.getOverlays().add(myLocationNewOverlay);
-
-        CopyrightOverlay mCopyrightOverlay = new CopyrightOverlay(context);
-        mapView.getOverlays().add(mCopyrightOverlay);
-
-        ScaleBarOverlay mScaleBarOverlay = new ScaleBarOverlay(mapView);
-        mScaleBarOverlay.setCentred(true);
-        mScaleBarOverlay.setScaleBarOffset(dm.widthPixels / 2, 10);
-        mapView.getOverlays().add(mScaleBarOverlay);
-
-        RotationGestureOverlay mRotationGestureOverlay = new RotationGestureOverlay(mapView);
-        mRotationGestureOverlay.setEnabled(true);
-        mapView.getOverlays().add(mRotationGestureOverlay);
     }
 
         @Override
