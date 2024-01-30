@@ -1,6 +1,5 @@
 package com.example.mobilemap.fragment;
 
-import android.database.Cursor;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,10 +11,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.mobilemap.CategoriesActivity;
 import com.example.mobilemap.adapter.CategoryListRecyclerViewAdapter;
-import com.example.mobilemap.database.DatabaseContract;
 import com.example.mobilemap.database.table.Category;
 import com.example.mobilemap.databinding.FragmentCategoriesListBinding;
+import com.example.mobilemap.listener.AddCategoryListener;
 
 import java.util.List;
 
@@ -23,7 +23,6 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
  */
 public class CategoriesListFragment extends Fragment {
-    private CategoryListRecyclerViewAdapter adapter;
 
     public CategoriesListFragment() {
         // Required empty public constructor
@@ -37,33 +36,26 @@ public class CategoriesListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         FragmentCategoriesListBinding binding = FragmentCategoriesListBinding.inflate(inflater, container, false);
 
-        List<Category> categories = getCategories();
+        CategoriesActivity activity = (CategoriesActivity) requireActivity();
+        binding.addCategoryButton.setOnClickListener(new AddCategoryListener(activity));
+
+        initRecyclerView(binding, activity);
+
+        return binding.getRoot();
+    }
+
+    private void initRecyclerView(FragmentCategoriesListBinding binding, CategoriesActivity activity) {
+        List<Category> categories = activity.getCategories();
 
         if (!categories.isEmpty()) {
             binding.emptyLabel.setVisibility(View.INVISIBLE);
         }
 
         RecyclerView recyclerView = binding.categoriesList;
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireActivity()));
-        adapter = new CategoryListRecyclerViewAdapter(categories, requireActivity().getContentResolver());
+        recyclerView.setLayoutManager(new LinearLayoutManager(activity));
+        CategoryListRecyclerViewAdapter adapter = new CategoryListRecyclerViewAdapter(categories, activity.getContentResolver(), activity);
         recyclerView.setAdapter(adapter);
-
-        return binding.getRoot();
-    }
-
-    private void updateList() {
-        adapter.updateList(getCategories());
-    }
-
-    @NonNull
-    private List<Category> getCategories() {
-        Cursor cursor = requireActivity().getContentResolver()
-                .query(DatabaseContract.Category.CONTENT_URI, DatabaseContract.Category.COLUMNS, null, null, DatabaseContract.Category.COLUMN_NAME);
-        assert cursor != null;
-
-        return Category.mapFromList(cursor);
     }
 }

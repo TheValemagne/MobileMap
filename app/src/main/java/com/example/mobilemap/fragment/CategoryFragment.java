@@ -1,14 +1,26 @@
 package com.example.mobilemap.fragment;
 
+import android.database.Cursor;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
-import com.example.mobilemap.R;
+import com.example.mobilemap.CategoriesActivity;
+import com.example.mobilemap.database.DatabaseContract;
+import com.example.mobilemap.database.table.Category;
+import com.example.mobilemap.databinding.FragmentCategoryBinding;
+import com.example.mobilemap.listener.DeleteCategoryListener;
+import com.example.mobilemap.listener.SaveCategoryListener;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -16,15 +28,11 @@ import com.example.mobilemap.R;
  * create an instance of this fragment.
  */
 public class CategoryFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private static final String ARG_ITEM_ID = "itemId";
+    private long itemId = -1;
+    private Category category = null;
+    private TextView categoryName;
+    private List<String> categoryNames;
 
     public CategoryFragment() {
         // Required empty public constructor
@@ -34,16 +42,13 @@ public class CategoryFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param itemId Parameter 1.
      * @return A new instance of fragment CategoryFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static CategoryFragment newInstance(String param1, String param2) {
+    public static CategoryFragment newInstance(long itemId) {
         CategoryFragment fragment = new CategoryFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putLong(ARG_ITEM_ID, itemId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -52,15 +57,59 @@ public class CategoryFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            itemId = getArguments().getLong(ARG_ITEM_ID);
         }
+
+        CategoriesActivity activity = (CategoriesActivity) requireActivity();
+        categoryNames = activity.getCategories().stream()
+                .map(Category::getName).collect(Collectors.toList());
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_category, container, false);
+        FragmentCategoryBinding binding = FragmentCategoryBinding.inflate(inflater, container, false);
+
+        categoryName = binding.categoryName;
+
+        binding.categorySaveBtn.setOnClickListener(new SaveCategoryListener((AppCompatActivity) requireActivity(), this, requireActivity().getContentResolver()));
+        binding.categoryCancelBtn.setOnClickListener(v -> requireActivity().getSupportFragmentManager().popBackStackImmediate());
+        if (itemId == -1) {
+            binding.categoryDeleteBtn.setVisibility(View.GONE);
+            binding.deleteBtnSpace.setVisibility(View.GONE);
+        } else {
+            category = findCategory(itemId);
+            categoryName.setText(category.getName());
+            binding.categoryDeleteBtn.setOnClickListener(new DeleteCategoryListener(category.getId(), requireActivity().getContentResolver()));
+        }
+
+        return binding.getRoot();
+    }
+
+    private Category findCategory(long id) {
+        Cursor cursor = requireActivity().getContentResolver()
+                .query(DatabaseContract.Category.CONTENT_URI, DatabaseContract.Category.COLUMNS, DatabaseContract.Category._ID + " = " + id,
+                        null, DatabaseContract.Category.COLUMN_NAME);
+        assert cursor != null;
+        cursor.moveToFirst();
+
+        return Category.fromCursor(cursor);
+    }
+
+    public boolean check() {
+        String name = categoryName.getText().toString().trim();
+
+        return name.length() != 0 && !categoryNames.contains(name);
+    }
+
+    public Category getValues() {
+        String name = categoryName.getText().toString();
+
+        if (category == null) {
+            return new Category(name);
+        }
+
+        category.setName(name);
+        return category;
     }
 }

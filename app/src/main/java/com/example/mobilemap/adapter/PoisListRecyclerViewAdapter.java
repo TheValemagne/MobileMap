@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mobilemap.database.table.Poi;
@@ -15,8 +16,8 @@ import com.example.mobilemap.databinding.PoiListItemBinding;
 import java.util.List;
 
 public class PoisListRecyclerViewAdapter extends BaseAdapter<PoisListRecyclerViewAdapter.ViewHolder, Poi>{
-    public PoisListRecyclerViewAdapter(List<Poi> values, ContentResolver contentResolver) {
-        super(values, contentResolver);
+    public PoisListRecyclerViewAdapter(List<Poi> values, ContentResolver contentResolver, AppCompatActivity activity) {
+        super(values, contentResolver, activity);
     }
 
     @NonNull

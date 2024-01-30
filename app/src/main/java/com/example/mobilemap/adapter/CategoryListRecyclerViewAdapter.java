@@ -7,18 +7,20 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mobilemap.database.table.Category;
 import com.example.mobilemap.databinding.CategoryListItemBinding;
-import com.example.mobilemap.listener.CategoryDeleteListener;
+import com.example.mobilemap.listener.DeleteCateoryListListener;
+import com.example.mobilemap.listener.EditCategoryListener;
 
 import java.util.List;
 
 public class CategoryListRecyclerViewAdapter extends BaseAdapter<CategoryListRecyclerViewAdapter.ViewHolder, Category> {
 
-    public CategoryListRecyclerViewAdapter(List<Category> values, ContentResolver contentResolver) {
-        super(values, contentResolver);
+    public CategoryListRecyclerViewAdapter(List<Category> values, ContentResolver contentResolver, AppCompatActivity activity) {
+        super(values, contentResolver, activity);
     }
 
     @NonNull
@@ -32,7 +34,8 @@ public class CategoryListRecyclerViewAdapter extends BaseAdapter<CategoryListRec
         Category category = values.get(position);
 
         holder.contentView.setText(category.getName());
-        holder.deleteBtn.setOnClickListener(new CategoryDeleteListener(category.getId(), position, contentResolver, this));
+        holder.editBtn.setOnClickListener(new EditCategoryListener(category.getId(), activity));
+        holder.deleteBtn.setOnClickListener(new DeleteCateoryListListener(category.getId(), contentResolver, position, this));
     }
 
     @Override
