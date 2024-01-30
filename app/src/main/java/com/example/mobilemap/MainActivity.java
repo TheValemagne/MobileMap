@@ -25,7 +25,6 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 
-import com.example.mobilemap.database.DatabaseHelper;
 import com.example.mobilemap.databinding.ActivityMainBinding;
 import com.example.mobilemap.listener.NavigationBarItemSelectedListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -39,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
 
     private MapView mapView;
-    private DatabaseHelper databaseHelper;
     private MapManager mapManager;
 
 
@@ -70,8 +68,6 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView bottomNavigationMenuView = binding.mainNavigationBar;
         bottomNavigationMenuView.setSelectedItemId(R.id.navigation_map);
         bottomNavigationMenuView.setOnItemSelectedListener(new NavigationBarItemSelectedListener(this, R.id.navigation_map));
-
-        databaseHelper = new DatabaseHelper(this);
 
         mapView = binding.mapView;
 
@@ -112,7 +108,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         mapView.onDetach();
-        databaseHelper.close();
     }
 
     @Override

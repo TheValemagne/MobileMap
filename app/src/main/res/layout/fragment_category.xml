@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -18,7 +19,8 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
             android:orientation="horizontal">
 
             <TextView
@@ -32,7 +34,7 @@
                 android:id="@+id/editTextText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:ems="10"
                 android:inputType="text"
                 android:text="@string/CategoryName" />
@@ -41,22 +43,41 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="bottom|center"
             android:orientation="horizontal">
 
             <Button
                 android:id="@+id/categoryCancelBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/cancel" />
+                android:backgroundTint="#676666"
+                android:text="@string/cancel"
+                app:icon="@android:drawable/ic_menu_close_clear_cancel" />
+
+            <Space
+                android:layout_width="15dp"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#F44336"
+                android:text="@string/delete"
+                app:icon="@android:drawable/ic_menu_delete" />
+
+            <Space
+                android:layout_width="15dp"
+                android:layout_height="wrap_content" />
 
             <Button
                 android:id="@+id/categorySaveBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/save" />
+                android:backgroundTint="#4CAF50"
+                android:text="@string/save"
+                app:icon="@android:drawable/ic_menu_save" />
         </LinearLayout>
     </LinearLayout>
 
