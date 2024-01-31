@@ -15,22 +15,17 @@ import com.example.mobilemap.CategoriesActivity;
 import com.example.mobilemap.adapter.CategoryListRecyclerViewAdapter;
 import com.example.mobilemap.database.table.Category;
 import com.example.mobilemap.databinding.FragmentCategoriesListBinding;
-import com.example.mobilemap.listener.AddCategoryListener;
+import com.example.mobilemap.listener.ShowCategoryDetailListener;
 
 import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CategoriesListFragment extends Fragment {
+public class CategoryListFragment extends Fragment {
 
-    public CategoriesListFragment() {
+    public CategoryListFragment() {
         // Required empty public constructor
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -39,7 +34,7 @@ public class CategoriesListFragment extends Fragment {
         FragmentCategoriesListBinding binding = FragmentCategoriesListBinding.inflate(inflater, container, false);
 
         CategoriesActivity activity = (CategoriesActivity) requireActivity();
-        binding.addCategoryButton.setOnClickListener(new AddCategoryListener(activity));
+        binding.addCategoryButton.setOnClickListener(new ShowCategoryDetailListener(activity));
 
         initRecyclerView(binding, activity);
 
@@ -53,7 +48,7 @@ public class CategoriesListFragment extends Fragment {
             binding.emptyLabel.setVisibility(View.INVISIBLE);
         }
 
-        RecyclerView recyclerView = binding.categoriesList;
+        RecyclerView recyclerView = binding.categoryList;
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
         CategoryListRecyclerViewAdapter adapter = new CategoryListRecyclerViewAdapter(categories, activity.getContentResolver(), activity);
         recyclerView.setAdapter(adapter);

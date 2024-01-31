@@ -10,13 +10,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.mobilemap.database.table.Poi;
+import com.example.mobilemap.PoisActivity;
+import com.example.mobilemap.database.PoiDetail;
 import com.example.mobilemap.databinding.PoiListItemBinding;
+import com.example.mobilemap.listener.DeleteDatabaseListListener;
 
 import java.util.List;
 
-public class PoisListRecyclerViewAdapter extends BaseAdapter<PoisListRecyclerViewAdapter.ViewHolder, Poi>{
-    public PoisListRecyclerViewAdapter(List<Poi> values, ContentResolver contentResolver, AppCompatActivity activity) {
+public class PoisListRecyclerViewAdapter extends BaseAdapter<PoisListRecyclerViewAdapter.ViewHolder, PoiDetail>{
+    public PoisListRecyclerViewAdapter(List<PoiDetail> values, ContentResolver contentResolver, AppCompatActivity activity) {
         super(values, contentResolver, activity);
     }
 
@@ -28,9 +30,12 @@ public class PoisListRecyclerViewAdapter extends BaseAdapter<PoisListRecyclerVie
 
     @Override
     public void onBindViewHolder(@NonNull PoisListRecyclerViewAdapter.ViewHolder holder, int position) {
-        Poi poi = values.get(position);
+        PoiDetail poiDetail = values.get(position);
 
-        holder.contentView.setText(poi.getName());
+        holder.contentView.setText(poiDetail.getName());
+        holder.categoryName.setText(poiDetail.getCategoryName());
+        holder.deleteBtn.setOnClickListener(new DeleteDatabaseListListener<>(poiDetail.getId(), activity,
+                ((PoisActivity) activity).getDeleteContext(), position, this));
     }
 
     @Override

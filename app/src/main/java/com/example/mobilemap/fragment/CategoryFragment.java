@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -18,7 +17,7 @@ import com.example.mobilemap.R;
 import com.example.mobilemap.database.DatabaseContract;
 import com.example.mobilemap.database.table.Category;
 import com.example.mobilemap.databinding.FragmentCategoryBinding;
-import com.example.mobilemap.listener.DeleteCategoryListener;
+import com.example.mobilemap.listener.DeleteDatabaseItemListener;
 import com.example.mobilemap.listener.SaveCategoryListener;
 
 import java.util.List;
@@ -35,6 +34,8 @@ public class CategoryFragment extends Fragment {
     private Category category = null;
     private TextView categoryName;
     private List<String> categoryNames;
+
+    private CategoriesActivity activity;
 
     public CategoryFragment() {
         // Required empty public constructor
@@ -62,7 +63,7 @@ public class CategoryFragment extends Fragment {
             itemId = getArguments().getLong(ARG_ITEM_ID);
         }
 
-        CategoriesActivity activity = (CategoriesActivity) requireActivity();
+        activity = (CategoriesActivity) requireActivity();
         categoryNames = activity.getCategories().stream()
                 .map(Category::getName).collect(Collectors.toList());
     }
@@ -74,15 +75,17 @@ public class CategoryFragment extends Fragment {
 
         categoryName = binding.categoryName;
 
-        binding.categorySaveBtn.setOnClickListener(new SaveCategoryListener((AppCompatActivity) requireActivity(), this, requireActivity().getContentResolver()));
+        binding.categorySaveBtn.setOnClickListener(new SaveCategoryListener(activity, this));
         binding.categoryCancelBtn.setOnClickListener(v -> requireActivity().getSupportFragmentManager().popBackStackImmediate());
+
         if (itemId == -1) {
             binding.categoryDeleteBtn.setVisibility(View.GONE);
             binding.deleteBtnSpace.setVisibility(View.GONE);
         } else {
             category = findCategory(itemId);
             categoryName.setText(category.getName());
-            binding.categoryDeleteBtn.setOnClickListener(new DeleteCategoryListener(category.getId(), (CategoriesActivity) requireActivity()));
+
+            binding.categoryDeleteBtn.setOnClickListener(new DeleteDatabaseItemListener(category.getId(), activity, activity.getDeleteContext()));
         }
 
         return binding.getRoot();

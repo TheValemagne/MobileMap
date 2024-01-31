@@ -71,4 +71,21 @@ public final class DatabaseContract {
         public static final String COLUMN_NAME = "name";
         public static final String[] COLUMNS = new String[] {_ID, COLUMN_NAME};
     }
+
+    public static class PoiDetail implements BaseColumns {
+        private static final Uri.Builder builder;
+        public static final String TABLE_NAME = "poi_detail";
+        static {
+            builder = DatabaseContract.CONTENT_URI.buildUpon();
+            builder.path(PoiDetail.TABLE_NAME);
+        }
+
+        public static final Uri CONTENT_URI = builder.build();
+        /**
+         * column name : text
+         */
+        public static final String COLUMN_SITE_NAME = "site_name";
+        public static final String COLUMN_CATEGORY_NAME = "category_name";
+        public static final String[] COLUMNS = new String[] {_ID, COLUMN_SITE_NAME, COLUMN_CATEGORY_NAME};
+    }
 }

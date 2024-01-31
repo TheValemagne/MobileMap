@@ -10,10 +10,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.mobilemap.CategoriesActivity;
 import com.example.mobilemap.database.table.Category;
 import com.example.mobilemap.databinding.CategoryListItemBinding;
-import com.example.mobilemap.listener.DeleteCategoryListListener;
-import com.example.mobilemap.listener.EditCategoryListener;
+import com.example.mobilemap.listener.DeleteDatabaseListListener;
+import com.example.mobilemap.listener.ShowCategoryDetailListener;
 
 import java.util.List;
 
@@ -34,8 +35,9 @@ public class CategoryListRecyclerViewAdapter extends BaseAdapter<CategoryListRec
         Category category = values.get(position);
 
         holder.contentView.setText(category.getName());
-        holder.editBtn.setOnClickListener(new EditCategoryListener(category.getId(), activity));
-        holder.deleteBtn.setOnClickListener(new DeleteCategoryListListener(category.getId(), activity, position, this));
+        holder.editBtn.setOnClickListener(new ShowCategoryDetailListener(category.getId(), activity));
+        holder.deleteBtn.setOnClickListener(new DeleteDatabaseListListener<>(category.getId(), activity,
+                ((CategoriesActivity) activity).getDeleteContext(), position, this));
     }
 
     @Override

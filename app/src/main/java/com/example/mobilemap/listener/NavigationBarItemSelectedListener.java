@@ -25,6 +25,7 @@ public class NavigationBarItemSelectedListener implements NavigationBarView.OnIt
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int menuId = item.getItemId();
 
+        // TODO handler
         if (menuId == R.id.navigation_map) {
             if(currentActivityId == R.id.navigation_map) {
                 return false;

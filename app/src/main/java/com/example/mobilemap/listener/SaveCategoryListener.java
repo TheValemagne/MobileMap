@@ -16,10 +16,10 @@ public class SaveCategoryListener implements View.OnClickListener {
     private final CategoryFragment fragment;
     private final ContentResolver contentResolver;
 
-    public SaveCategoryListener(AppCompatActivity activity, CategoryFragment fragment, ContentResolver contentResolver) {
+    public SaveCategoryListener(AppCompatActivity activity, CategoryFragment fragment) {
         this.activity = activity;
         this.fragment = fragment;
-        this.contentResolver = contentResolver;
+        this.contentResolver = activity.getContentResolver();
     }
 
     @Override

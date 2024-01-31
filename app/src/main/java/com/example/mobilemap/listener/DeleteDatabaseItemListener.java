@@ -3,37 +3,41 @@ package com.example.mobilemap.listener;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.res.Resources;
+import android.provider.BaseColumns;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.mobilemap.DeleteItemContext;
 import com.example.mobilemap.R;
-import com.example.mobilemap.database.DatabaseContract;
 import com.example.mobilemap.databinding.DialogConfirmDeleteBinding;
 
 import java.text.MessageFormat;
 
-public class DeleteCategoryListener implements View.OnClickListener{
+public class DeleteDatabaseItemListener implements View.OnClickListener{
     private final long itemId;
     private final AppCompatActivity activity;
     private final ContentResolver contentResolver;
+    private final DeleteItemContext deleteDataContext;
 
-    public DeleteCategoryListener(long itemId, AppCompatActivity activity) {
+    public DeleteDatabaseItemListener(long itemId, AppCompatActivity activity, DeleteItemContext deleteCategoryContext) {
         this.itemId = itemId;
         this.activity = activity;
         this.contentResolver = activity.getContentResolver();
+
+        this.deleteDataContext = deleteCategoryContext;
     }
 
     @Override
     public void onClick(View v) {
         // affichage du dialogue de confirmation
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         Resources resources = activity.getResources();
 
-        builder.setTitle(resources.getString(R.string.dialog_delete_category_title));
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle(resources.getString(deleteDataContext.getDialogTitleId()));
 
         DialogConfirmDeleteBinding binding = DialogConfirmDeleteBinding.inflate(activity.getLayoutInflater());
-        binding.dialogMsg.setText(resources.getText(R.string.confirm_delete_category_msg));
+        binding.dialogMsg.setText(resources.getText(deleteDataContext.getDialogMsgId()));
         builder.setView(binding.getRoot());
 
         builder.setPositiveButton(resources.getText(R.string.dialog_confirm), (dialog, which) -> {
@@ -47,8 +51,8 @@ public class DeleteCategoryListener implements View.OnClickListener{
 
     private void deleteItem() {
         contentResolver
-                .delete(DatabaseContract.Category.CONTENT_URI,
-                        MessageFormat.format("{0} = {1}", DatabaseContract.Category._ID, itemId), null);
+                .delete(deleteDataContext.getDatabaseUri(),
+                        MessageFormat.format("{0} = {1}", BaseColumns._ID, itemId), null);
     }
 
     protected void afterItemDeleted() {

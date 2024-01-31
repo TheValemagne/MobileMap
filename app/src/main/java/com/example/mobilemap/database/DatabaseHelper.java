@@ -43,6 +43,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("CREATE TABLE " + DatabaseContract.Category.TABLE_NAME + " (" +
                 DatabaseContract.Category._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 DatabaseContract.Category.COLUMN_NAME + " text NOT NULL UNIQUE);");
+
+        sqLiteDatabase.execSQL("CREATE VIEW "+ DatabaseContract.PoiDetail.TABLE_NAME + " \n" +
+                "AS SELECT S." + DatabaseContract.Site._ID + " AS " + DatabaseContract.PoiDetail._ID +
+                ", S." + DatabaseContract.Site.COLUMN_NAME + " AS " + DatabaseContract.PoiDetail.COLUMN_SITE_NAME + ", " +
+                "C." + DatabaseContract.Category.COLUMN_NAME + " AS " + DatabaseContract.PoiDetail.COLUMN_CATEGORY_NAME +
+                " FROM " + DatabaseContract.Site.TABLE_NAME + " AS S INNER JOIN "
+                + DatabaseContract.Category.TABLE_NAME + " AS C ON S." + DatabaseContract.Site.COLUMN_CATEGORY_ID + " = C." + DatabaseContract.Category._ID + ";");
+
+        sqLiteDatabase.execSQL("INSERT INTO " + DatabaseContract.Category.TABLE_NAME + "(" + DatabaseContract.Category.COLUMN_NAME + ")" +
+                "VALUES ('Auberge'), ('Bar'), ('Château'), ('Eglise'), ('Hôtel'), ('Jardin'), ('Musée'), ('Restaurant')");
     }
 
     @Override
@@ -58,6 +68,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private void migrateDatabase(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + DatabaseContract.Site.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + DatabaseContract.Category.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + DatabaseContract.PoiDetail.TABLE_NAME);
 
         onCreate(sqLiteDatabase);
     }
