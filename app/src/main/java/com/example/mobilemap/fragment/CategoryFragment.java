@@ -1,5 +1,6 @@
 package com.example.mobilemap.fragment;
 
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.os.Bundle;
 
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.mobilemap.CategoriesActivity;
+import com.example.mobilemap.R;
 import com.example.mobilemap.database.DatabaseContract;
 import com.example.mobilemap.database.table.Category;
 import com.example.mobilemap.databinding.FragmentCategoryBinding;
@@ -80,7 +82,7 @@ public class CategoryFragment extends Fragment {
         } else {
             category = findCategory(itemId);
             categoryName.setText(category.getName());
-            binding.categoryDeleteBtn.setOnClickListener(new DeleteCategoryListener(category.getId(), requireActivity().getContentResolver()));
+            binding.categoryDeleteBtn.setOnClickListener(new DeleteCategoryListener(category.getId(), (CategoriesActivity) requireActivity()));
         }
 
         return binding.getRoot();
@@ -98,6 +100,15 @@ public class CategoryFragment extends Fragment {
 
     public boolean check() {
         String name = categoryName.getText().toString().trim();
+        Resources resources = requireActivity().getResources();
+
+        if(name.length() == 0) {
+            categoryName.setError(resources.getString(R.string.error_field_is_empty));
+        }
+
+        if(categoryNames.contains(name)) {
+            categoryName.setError(resources.getString(R.string.error_category_not_unique));
+        }
 
         return name.length() != 0 && !categoryNames.contains(name);
     }

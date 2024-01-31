@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mobilemap.database.table.Category;
 import com.example.mobilemap.databinding.CategoryListItemBinding;
-import com.example.mobilemap.listener.DeleteCateoryListListener;
+import com.example.mobilemap.listener.DeleteCategoryListListener;
 import com.example.mobilemap.listener.EditCategoryListener;
 
 import java.util.List;
@@ -35,7 +35,7 @@ public class CategoryListRecyclerViewAdapter extends BaseAdapter<CategoryListRec
 
         holder.contentView.setText(category.getName());
         holder.editBtn.setOnClickListener(new EditCategoryListener(category.getId(), activity));
-        holder.deleteBtn.setOnClickListener(new DeleteCateoryListListener(category.getId(), contentResolver, position, this));
+        holder.deleteBtn.setOnClickListener(new DeleteCategoryListListener(category.getId(), activity, position, this));
     }
 
     @Override

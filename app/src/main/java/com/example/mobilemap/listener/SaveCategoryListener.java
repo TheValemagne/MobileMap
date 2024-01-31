@@ -9,6 +9,8 @@ import com.example.mobilemap.database.DatabaseContract;
 import com.example.mobilemap.database.table.Category;
 import com.example.mobilemap.fragment.CategoryFragment;
 
+import java.text.MessageFormat;
+
 public class SaveCategoryListener implements View.OnClickListener {
     private final AppCompatActivity activity;
     private final CategoryFragment fragment;
@@ -32,7 +34,7 @@ public class SaveCategoryListener implements View.OnClickListener {
             contentResolver.insert(DatabaseContract.Category.CONTENT_URI, category.toContentValues());
         } else {
             contentResolver.update(DatabaseContract.Category.CONTENT_URI, category.toContentValues(),
-                    DatabaseContract.Category._ID + " =" + category.getId(), null);
+                    MessageFormat.format("{0} = {1}", DatabaseContract.Category._ID, category.getId()), null);
         }
 
         activity.getSupportFragmentManager().popBackStackImmediate();

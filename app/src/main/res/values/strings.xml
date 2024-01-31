@@ -1,15 +1,23 @@
 <resources>
     <string name="app_name">Sortir à Metz</string>
-    <string name="latitudeLabel">"Latitude: "</string>
-    <string name="longitudeLabel">Longitude:</string>
-    <string name="itemNameLabel">Name:</string>
+    <string name="latitude_label">"Latitude: "</string>
+    <string name="longitude_label">Longitude:</string>
+    <string name="item_name_label">Name:</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
-    <string name="CategoryName">Name</string>
-    <string name="EmptyList">Empty list</string>
-    <string name="CategoryList">List of categories</string>
+    <string name="Category_name">Name</string>
+    <string name="Empty_list">Empty list</string>
+    <string name="Category_list">List of categories</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
+    <string name="category_name_hint">name of category</string>
+    <string name="confirm_delete_category_msg" >Are you sure you want to delete this category? Related POIs will be deleted too.</string>
+    <string name="dialog_delete_category_title">Confirm category delete</string>
+    <string name="dialog_confirm">Confirm</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="error_field_is_empty">Please fill this field</string>
+    <string name="error_category_not_unique">Category name should be unique</string>
+    <string name="add_new_category">add new category</string>
 </resources>

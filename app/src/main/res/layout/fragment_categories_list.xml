@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:text="@string/CategoryList"
+            android:text="@string/Category_list"
             android:textSize="20sp" />
 
         <RelativeLayout
@@ -44,7 +44,7 @@
                 android:layout_marginEnd="15dp"
                 android:layout_marginBottom="15dp"
                 android:clickable="true"
-                android:contentDescription="navigation bar"
+                android:contentDescription="@string/add_new_category"
                 android:src="@android:drawable/ic_input_add" />
 
             <TextView
@@ -52,7 +52,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="@string/EmptyList"
+                android:text="@string/Empty_list"
                 android:textSize="34sp" />
 
         </RelativeLayout>

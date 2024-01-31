@@ -27,7 +27,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/CategoryName"
+                android:text="@string/Category_name"
                 android:textSize="20sp" />
 
             <EditText
@@ -36,7 +36,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:autofillHints=""
-                android:hint="@string/categoryNameHint"
+                android:hint="@string/category_name_hint"
                 android:ems="10"
                 android:inputType="textCapSentences"
                 android:textSize="20sp" />
