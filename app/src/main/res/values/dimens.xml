@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="textViewWidth">300dp</dimen>
+    <dimen name="titleTextSize">34dp</dimen>
+    <dimen name="contentTextSize">20dp</dimen>
+    <dimen name="spaceWidth">15dp</dimen>
+</resources>

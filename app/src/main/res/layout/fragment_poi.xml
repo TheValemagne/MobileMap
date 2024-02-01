@@ -16,7 +16,8 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/hello_blank_fragment" />
+            android:text="@string/hello_blank_fragment"
+            android:textSize="@dimen/titleTextSize" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -26,10 +27,10 @@
 
             <TextView
                 android:id="@+id/nameLabel"
-                android:layout_width="300dp"
+                android:layout_width="@dimen/textViewWidth"
                 android:layout_height="wrap_content"
                 android:text="@string/category_name"
-                android:textSize="20sp" />
+                android:textSize="@dimen/contentTextSize" />
 
             <EditText
                 android:id="@+id/poiName"
@@ -39,7 +40,7 @@
                 android:ems="10"
                 android:hint="@string/poi_name_hint"
                 android:inputType="textCapSentences"
-                android:textSize="20sp" />
+                android:textSize="@dimen/contentTextSize" />
 
         </LinearLayout>
 
@@ -51,18 +52,19 @@
 
             <TextView
                 android:id="@+id/textView"
-                android:layout_width="300dp"
+                android:layout_width="@dimen/textViewWidth"
                 android:layout_height="wrap_content"
                 android:text="@string/latitude_label"
-                android:textSize="20sp" />
+                android:textSize="@dimen/contentTextSize" />
 
             <EditText
                 android:id="@+id/poiLatitude"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:autofillHints=""
                 android:ems="10"
                 android:inputType="numberDecimal"
-                android:autofillHints="" />
+                android:textSize="@dimen/contentTextSize" />
 
         </LinearLayout>
 
@@ -74,17 +76,18 @@
 
             <TextView
                 android:id="@+id/textView3"
-                android:layout_width="300dp"
+                android:layout_width="@dimen/textViewWidth"
                 android:layout_height="wrap_content"
                 android:text="@string/longitude_label"
-                android:textSize="20sp" />
+                android:textSize="@dimen/contentTextSize" />
 
             <EditText
                 android:id="@+id/poiLongitude"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:inputType="numberDecimal" />
+                android:inputType="numberDecimal"
+                android:textSize="@dimen/contentTextSize" />
 
         </LinearLayout>
 
@@ -95,17 +98,18 @@
 
             <TextView
                 android:id="@+id/textView2"
-                android:layout_width="300dp"
+                android:layout_width="@dimen/textViewWidth"
                 android:layout_height="wrap_content"
                 android:text="@string/postal_adress"
-                android:textSize="20sp" />
+                android:textSize="@dimen/contentTextSize" />
 
             <EditText
                 android:id="@+id/poiPostalAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:inputType="textPostalAddress" />
+                android:inputType="textPostalAddress"
+                android:textSize="@dimen/contentTextSize" />
         </LinearLayout>
 
         <LinearLayout
@@ -115,10 +119,10 @@
 
             <TextView
                 android:id="@+id/textView4"
-                android:layout_width="300dp"
+                android:layout_width="@dimen/textViewWidth"
                 android:layout_height="wrap_content"
                 android:text="@string/category"
-                android:textSize="20sp"/>
+                android:textSize="@dimen/contentTextSize" />
 
             <Spinner
                 android:id="@+id/categoryDropDown"
@@ -134,19 +138,20 @@
 
             <TextView
                 android:id="@+id/textView5"
-                android:layout_width="300dp"
+                android:layout_width="@dimen/textViewWidth"
                 android:layout_height="wrap_content"
                 android:text="@string/resume"
-                android:textSize="20sp"/>
+                android:textSize="@dimen/contentTextSize" />
 
             <EditText
                 android:id="@+id/poiResume"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:autofillHints=""
                 android:ems="10"
                 android:gravity="start|top"
                 android:inputType="textMultiLine"
-                android:autofillHints="" />
+                android:textSize="@dimen/contentTextSize" />
         </LinearLayout>
 
     </LinearLayout>
@@ -173,7 +178,7 @@
                 app:icon="@android:drawable/ic_menu_close_clear_cancel" />
 
             <Space
-                android:layout_width="15dp"
+                android:layout_width="@dimen/spaceWidth"
                 android:layout_height="wrap_content" />
 
             <Button
@@ -187,7 +192,7 @@
 
             <Space
                 android:id="@+id/poiBtnSpace"
-                android:layout_width="15dp"
+                android:layout_width="@dimen/spaceWidth"
                 android:layout_height="wrap_content" />
 
             <Button
