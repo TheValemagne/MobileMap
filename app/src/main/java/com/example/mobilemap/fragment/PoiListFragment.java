@@ -17,6 +17,7 @@ import com.example.mobilemap.adapter.PoisListRecyclerViewAdapter;
 import com.example.mobilemap.database.ContentResolverHelper;
 import com.example.mobilemap.database.table.PoiDetail;
 import com.example.mobilemap.databinding.FragmentPoiListBinding;
+import com.example.mobilemap.listener.ShowPoiListener;
 
 import java.util.List;
 
@@ -36,6 +37,7 @@ public class PoiListFragment extends Fragment {
         FragmentPoiListBinding binding = FragmentPoiListBinding.inflate(inflater, container, false);
 
         initRecyclerView(binding, (AppCompatActivity) requireActivity());
+        binding.addPoiButton.setOnClickListener(new ShowPoiListener((AppCompatActivity) requireActivity()));
 
         return binding.getRoot();
     }
@@ -45,7 +47,7 @@ public class PoiListFragment extends Fragment {
     }
 
     private void initRecyclerView(FragmentPoiListBinding binding, AppCompatActivity activity) {
-        List<PoiDetail> poiDetails = ContentResolverHelper.getPois(activity.getContentResolver());
+        List<PoiDetail> poiDetails = ContentResolverHelper.getPoisDetail(activity.getContentResolver());
 
         if (!poiDetails.isEmpty()) {
             binding.informationLabel.setVisibility(View.INVISIBLE);

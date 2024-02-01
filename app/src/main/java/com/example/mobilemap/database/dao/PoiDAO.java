@@ -11,7 +11,7 @@ import java.util.Optional;
 public class PoiDAO extends DAO<Poi> {
 
     public PoiDAO(DatabaseHelper databaseHelper) {
-        super(databaseHelper, DatabaseContract.Site.TABLE_NAME, DatabaseContract.Site.COLUMNS);
+        super(databaseHelper, DatabaseContract.Poi.TABLE_NAME, DatabaseContract.Poi.COLUMNS);
     }
 
     @Override
@@ -19,7 +19,7 @@ public class PoiDAO extends DAO<Poi> {
         if (cursor == null)
             return Optional.empty();
 
-        return Optional.of(Poi.fromCursor(cursor));
+        return Optional.of(com.example.mobilemap.database.table.Poi.fromCursor(cursor));
     }
 
 }

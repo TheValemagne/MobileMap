@@ -12,7 +12,7 @@
     <string name="cancel">Annuler</string>
     <string name="edit">Modifier</string>
     <string name="delete">Supprimer</string>
-    <string name="category_name_hint">nom de la catégorie</string>
+    <string name="category_name_hint">Nom de la catégorie</string>
     <string name="dialog_delete_category_title">Confirmer la supression de la catégorie</string>
     <string name="dialog_confirm">Confirmer</string>
     <string name="dialog_cancel">Annuler</string>
@@ -23,4 +23,8 @@
     <string name="confirm_delete_poi_msg">Etes-vous sûr de vouloir supprimer ce site ?</string>
     <string name="dialog_delete_poi_title">Confirmer la supression du site</string>
     <string name="require_category">Vous devez d\'abord créer au moins une catégorie.</string>
+    <string name="poi_name_hint">Nom du site</string>
+    <string name="category">Catégorie :</string>
+    <string name="resume">Résumé :</string>
+    <string name="postal_adress">Addresse postale :</string>
 </resources>

@@ -19,7 +19,7 @@ import com.example.mobilemap.database.DatabaseContract;
 import com.example.mobilemap.database.table.Category;
 import com.example.mobilemap.databinding.FragmentCategoryBinding;
 import com.example.mobilemap.listener.DeleteDatabaseItemListener;
-import com.example.mobilemap.listener.SaveCategoryListener;
+import com.example.mobilemap.listener.SaveDatabaseItemListener;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,11 +29,11 @@ import java.util.stream.Collectors;
  * Use the {@link CategoryFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CategoryFragment extends Fragment {
+public class CategoryFragment extends Fragment implements ItemView<Category> {
     private static final String ARG_ITEM_ID = "itemId";
     private long itemId = -1;
     private Category category = null;
-    private TextView categoryName;
+    private FragmentCategoryBinding binding;
     private List<String> categoryNames;
 
     private CategoriesActivity activity;
@@ -73,24 +73,27 @@ public class CategoryFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        FragmentCategoryBinding binding = FragmentCategoryBinding.inflate(inflater, container, false);
-
-        categoryName = binding.categoryName;
-
-        binding.categorySaveBtn.setOnClickListener(new SaveCategoryListener(activity, this));
-        binding.categoryCancelBtn.setOnClickListener(v -> requireActivity().getSupportFragmentManager().popBackStackImmediate());
+        binding = FragmentCategoryBinding.inflate(inflater, container, false);
 
         if (itemId == -1) {
             binding.categoryDeleteBtn.setVisibility(View.GONE);
             binding.deleteBtnSpace.setVisibility(View.GONE);
         } else {
             category = findCategory(itemId);
-            categoryName.setText(category.getName());
-
-            binding.categoryDeleteBtn.setOnClickListener(new DeleteDatabaseItemListener(category.getId(), activity, activity.getDeleteContext()));
+            binding.categoryName.setText(category.getName());
         }
 
+        bindActionButtons();
+
         return binding.getRoot();
+    }
+
+    private void bindActionButtons() {
+        binding.categorySaveBtn.setOnClickListener(new SaveDatabaseItemListener<>(activity, this, DatabaseContract.Category.CONTENT_URI));
+        binding.categoryCancelBtn.setOnClickListener(v -> requireActivity().getSupportFragmentManager().popBackStackImmediate());
+        if(category != null) {
+            binding.categoryDeleteBtn.setOnClickListener(new DeleteDatabaseItemListener(category.getId(), activity, activity.getDeleteContext()));
+        }
     }
 
     private Category findCategory(long id) {
@@ -104,6 +107,8 @@ public class CategoryFragment extends Fragment {
     }
 
     public boolean check() {
+        TextView categoryName = binding.categoryName;
+
         String name = categoryName.getText().toString().trim();
         Resources resources = requireActivity().getResources();
 
@@ -119,7 +124,7 @@ public class CategoryFragment extends Fragment {
     }
 
     public Category getValues() {
-        String name = categoryName.getText().toString();
+        String name = binding.categoryName.getText().toString();
 
         if (category == null) {
             return new Category(name);

@@ -14,6 +14,7 @@ import com.example.mobilemap.PoisActivity;
 import com.example.mobilemap.database.table.PoiDetail;
 import com.example.mobilemap.databinding.PoiListItemBinding;
 import com.example.mobilemap.listener.DeleteDatabaseListListener;
+import com.example.mobilemap.listener.ShowPoiListener;
 
 import java.util.List;
 
@@ -34,6 +35,7 @@ public class PoisListRecyclerViewAdapter extends BaseAdapter<PoisListRecyclerVie
 
         holder.contentView.setText(poiDetail.getName());
         holder.categoryName.setText(poiDetail.getCategoryName());
+        holder.editBtn.setOnClickListener(new ShowPoiListener(poiDetail.getId(), activity));
         holder.deleteBtn.setOnClickListener(new DeleteDatabaseListListener<>(poiDetail.getId(), activity,
                 ((PoisActivity) activity).getDeleteContext(), position, this));
     }

@@ -6,27 +6,27 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.example.mobilemap.R;
-import com.example.mobilemap.fragment.CategoryFragment;
+import com.example.mobilemap.fragment.PoiFragment;
 
-public class ShowCategoryDetailListener implements View.OnClickListener {
+public class ShowPoiListener implements View.OnClickListener {
     private final long itemId;
     private final AppCompatActivity activity;
 
-    public ShowCategoryDetailListener(long itemId, AppCompatActivity activity) {
+    public ShowPoiListener(long itemId, AppCompatActivity activity) {
         this.itemId = itemId;
         this.activity = activity;
     }
 
-    public ShowCategoryDetailListener(AppCompatActivity activity) {
-        this(-1,activity);
+    public ShowPoiListener(androidx.appcompat.app.AppCompatActivity activity) {
+        this(-1, activity);
     }
 
     @Override
     public void onClick(View v) {
-        Fragment fragment = itemId > -1 ? CategoryFragment.newInstance(itemId) : new CategoryFragment();
+        Fragment fragment = itemId > -1 ? PoiFragment.newInstance(itemId) : new PoiFragment();
 
         activity.getSupportFragmentManager().beginTransaction()
-                .replace(R.id.categoriesFragmentContainer, fragment)
+                .replace(R.id.poisFragmentContainer, fragment)
                 .addToBackStack(null)
                 .commit();
     }

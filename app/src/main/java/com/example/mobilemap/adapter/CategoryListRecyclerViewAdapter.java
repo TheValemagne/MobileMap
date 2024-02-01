@@ -14,7 +14,7 @@ import com.example.mobilemap.CategoriesActivity;
 import com.example.mobilemap.database.table.Category;
 import com.example.mobilemap.databinding.CategoryListItemBinding;
 import com.example.mobilemap.listener.DeleteDatabaseListListener;
-import com.example.mobilemap.listener.ShowCategoryDetailListener;
+import com.example.mobilemap.listener.ShowCategoryListener;
 
 import java.util.List;
 
@@ -35,7 +35,7 @@ public class CategoryListRecyclerViewAdapter extends BaseAdapter<CategoryListRec
         Category category = values.get(position);
 
         holder.contentView.setText(category.getName());
-        holder.editBtn.setOnClickListener(new ShowCategoryDetailListener(category.getId(), activity));
+        holder.editBtn.setOnClickListener(new ShowCategoryListener(category.getId(), activity));
         holder.deleteBtn.setOnClickListener(new DeleteDatabaseListListener<>(category.getId(), activity,
                 ((CategoriesActivity) activity).getDeleteContext(), position, this));
     }

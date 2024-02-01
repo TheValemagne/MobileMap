@@ -38,8 +38,8 @@ public class Category extends DatabaseItem {
     @SuppressLint("Range")
     public static Category fromCursor(Cursor cursor) {
         return new Category(
-                cursor.getLong(cursor.getColumnIndex(DatabaseContract.Site._ID)),
-                cursor.getString(cursor.getColumnIndex(DatabaseContract.Site.COLUMN_NAME))
+                cursor.getLong(cursor.getColumnIndex(DatabaseContract.Poi._ID)),
+                cursor.getString(cursor.getColumnIndex(DatabaseContract.Poi.COLUMN_NAME))
         );
     }
 
@@ -52,7 +52,7 @@ public class Category extends DatabaseItem {
     @Override
     public ContentValues toContentValues() {
         ContentValues contentValue = new ContentValues();
-        contentValue.put(DatabaseContract.Site.COLUMN_NAME, getName());
+        contentValue.put(DatabaseContract.Poi.COLUMN_NAME, getName());
 
         return contentValue;
     }

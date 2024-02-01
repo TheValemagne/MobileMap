@@ -16,7 +16,7 @@ import com.example.mobilemap.adapter.CategoryListRecyclerViewAdapter;
 import com.example.mobilemap.database.ContentResolverHelper;
 import com.example.mobilemap.database.table.Category;
 import com.example.mobilemap.databinding.FragmentCategoriesListBinding;
-import com.example.mobilemap.listener.ShowCategoryDetailListener;
+import com.example.mobilemap.listener.ShowCategoryListener;
 
 import java.util.List;
 
@@ -35,7 +35,7 @@ public class CategoryListFragment extends Fragment {
         FragmentCategoriesListBinding binding = FragmentCategoriesListBinding.inflate(inflater, container, false);
 
         AppCompatActivity activity = (AppCompatActivity) requireActivity();
-        binding.addCategoryButton.setOnClickListener(new ShowCategoryDetailListener(activity));
+        binding.addCategoryButton.setOnClickListener(new ShowCategoryListener(activity));
 
         initRecyclerView(binding, activity);
 

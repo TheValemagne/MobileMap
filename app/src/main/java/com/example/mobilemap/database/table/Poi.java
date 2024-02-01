@@ -93,13 +93,13 @@ public class Poi extends DatabaseItem {
     @SuppressLint("Range")
     public static Poi fromCursor(Cursor cursor) {
         return new Poi(
-                cursor.getLong(cursor.getColumnIndex(DatabaseContract.Site._ID)),
-                cursor.getString(cursor.getColumnIndex(DatabaseContract.Site.COLUMN_NAME)),
-                cursor.getDouble(cursor.getColumnIndex(DatabaseContract.Site.COLUMN_LATITUDE)),
-                cursor.getDouble(cursor.getColumnIndex(DatabaseContract.Site.COLUMN_LONGITUDE)),
-                cursor.getString(cursor.getColumnIndex(DatabaseContract.Site.COLUMN_POSTAL_ADDRESS)),
-                cursor.getLong(cursor.getColumnIndex(DatabaseContract.Site.COLUMN_CATEGORY_ID)),
-                cursor.getString(cursor.getColumnIndex(DatabaseContract.Site.COLUMN_RESUME))
+                cursor.getLong(cursor.getColumnIndex(DatabaseContract.Poi._ID)),
+                cursor.getString(cursor.getColumnIndex(DatabaseContract.Poi.COLUMN_NAME)),
+                cursor.getDouble(cursor.getColumnIndex(DatabaseContract.Poi.COLUMN_LATITUDE)),
+                cursor.getDouble(cursor.getColumnIndex(DatabaseContract.Poi.COLUMN_LONGITUDE)),
+                cursor.getString(cursor.getColumnIndex(DatabaseContract.Poi.COLUMN_POSTAL_ADDRESS)),
+                cursor.getLong(cursor.getColumnIndex(DatabaseContract.Poi.COLUMN_CATEGORY_ID)),
+                cursor.getString(cursor.getColumnIndex(DatabaseContract.Poi.COLUMN_RESUME))
         );
     }
 
@@ -113,12 +113,12 @@ public class Poi extends DatabaseItem {
     @Override
     public ContentValues toContentValues() {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(DatabaseContract.Site.COLUMN_NAME, getName());
-        contentValues.put(DatabaseContract.Site.COLUMN_LATITUDE, getLatitude());
-        contentValues.put(DatabaseContract.Site.COLUMN_LONGITUDE, getLongitude());
-        contentValues.put(DatabaseContract.Site.COLUMN_POSTAL_ADDRESS, getPostalAddress());
-        contentValues.put(DatabaseContract.Site.COLUMN_CATEGORY_ID, getCategoryId());
-        contentValues.put(DatabaseContract.Site.COLUMN_RESUME, getResume());
+        contentValues.put(DatabaseContract.Poi.COLUMN_NAME, getName());
+        contentValues.put(DatabaseContract.Poi.COLUMN_LATITUDE, getLatitude());
+        contentValues.put(DatabaseContract.Poi.COLUMN_LONGITUDE, getLongitude());
+        contentValues.put(DatabaseContract.Poi.COLUMN_POSTAL_ADDRESS, getPostalAddress());
+        contentValues.put(DatabaseContract.Poi.COLUMN_CATEGORY_ID, getCategoryId());
+        contentValues.put(DatabaseContract.Poi.COLUMN_RESUME, getResume());
 
         return contentValues;
     }
@@ -131,7 +131,7 @@ public class Poi extends DatabaseItem {
         }
 
         do{
-            result.add(Poi.fromCursor(cursor));
+            result.add(com.example.mobilemap.database.table.Poi.fromCursor(cursor));
         } while(cursor.moveToNext());
 
         return result;

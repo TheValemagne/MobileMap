@@ -5,7 +5,7 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 public final class DatabaseContract {
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "metzMap";
 
     private DatabaseContract() {}
@@ -19,12 +19,12 @@ public final class DatabaseContract {
     }
     public static final Uri CONTENT_URI = builder.build();
 
-    public static class Site implements BaseColumns {
+    public static class Poi implements BaseColumns {
         private static final Uri.Builder builder;
         public static final String TABLE_NAME = "poi";
         static {
             builder = DatabaseContract.CONTENT_URI.buildUpon();
-            builder.path(Site.TABLE_NAME);
+            builder.path(Poi.TABLE_NAME);
         }
 
         public static final Uri CONTENT_URI = builder.build();

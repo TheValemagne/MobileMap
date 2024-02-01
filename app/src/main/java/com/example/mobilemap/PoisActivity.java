@@ -30,7 +30,7 @@ public class PoisActivity extends AppCompatActivity {
     }
 
     public DeleteItemContext getDeleteContext() {
-        return new DeleteItemContext(DatabaseContract.Site.CONTENT_URI,
+        return new DeleteItemContext(DatabaseContract.Poi.CONTENT_URI,
                 R.string.dialog_delete_poi_title,
                 R.string.confirm_delete_poi_msg);
     }

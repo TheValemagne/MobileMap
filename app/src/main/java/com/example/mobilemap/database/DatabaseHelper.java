@@ -29,15 +29,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL("CREATE TABLE " + DatabaseContract.Site.TABLE_NAME + " (" +
-                DatabaseContract.Site._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                DatabaseContract.Site.COLUMN_NAME + " text NOT NULL," +
-                DatabaseContract.Site.COLUMN_LATITUDE + " REAL NOT NULL," +
-                DatabaseContract.Site.COLUMN_LONGITUDE + " REAL NOT NULL," +
-                DatabaseContract.Site.COLUMN_POSTAL_ADDRESS + " text NOT NULL," +
-                DatabaseContract.Site.COLUMN_CATEGORY_ID + " INTEGER NOT NULL," +
-                DatabaseContract.Site.COLUMN_RESUME + " text NOT NULL," +
-                "FOREIGN KEY(" + DatabaseContract.Site.COLUMN_CATEGORY_ID + ") REFERENCES "
+        sqLiteDatabase.execSQL("CREATE TABLE " + DatabaseContract.Poi.TABLE_NAME + " (" +
+                DatabaseContract.Poi._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                DatabaseContract.Poi.COLUMN_NAME + " text NOT NULL," +
+                DatabaseContract.Poi.COLUMN_LATITUDE + " REAL NOT NULL," +
+                DatabaseContract.Poi.COLUMN_LONGITUDE + " REAL NOT NULL," +
+                DatabaseContract.Poi.COLUMN_POSTAL_ADDRESS + " text NOT NULL," +
+                DatabaseContract.Poi.COLUMN_CATEGORY_ID + " INTEGER NOT NULL," +
+                DatabaseContract.Poi.COLUMN_RESUME + " text NOT NULL," +
+                "FOREIGN KEY(" + DatabaseContract.Poi.COLUMN_CATEGORY_ID + ") REFERENCES "
                 + DatabaseContract.Category.TABLE_NAME + "(" + DatabaseContract.Category._ID + ") ON DELETE CASCADE);");
 
         sqLiteDatabase.execSQL("CREATE TABLE " + DatabaseContract.Category.TABLE_NAME + " (" +
@@ -45,11 +45,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 DatabaseContract.Category.COLUMN_NAME + " text NOT NULL UNIQUE);");
 
         sqLiteDatabase.execSQL("CREATE VIEW "+ DatabaseContract.PoiDetail.TABLE_NAME + " \n" +
-                "AS SELECT S." + DatabaseContract.Site._ID + " AS " + DatabaseContract.PoiDetail._ID +
-                ", S." + DatabaseContract.Site.COLUMN_NAME + " AS " + DatabaseContract.PoiDetail.COLUMN_SITE_NAME + ", " +
+                "AS SELECT S." + DatabaseContract.Poi._ID + " AS " + DatabaseContract.PoiDetail._ID +
+                ", S." + DatabaseContract.Poi.COLUMN_NAME + " AS " + DatabaseContract.PoiDetail.COLUMN_SITE_NAME + ", " +
                 "C." + DatabaseContract.Category.COLUMN_NAME + " AS " + DatabaseContract.PoiDetail.COLUMN_CATEGORY_NAME +
-                " FROM " + DatabaseContract.Site.TABLE_NAME + " AS S INNER JOIN "
-                + DatabaseContract.Category.TABLE_NAME + " AS C ON S." + DatabaseContract.Site.COLUMN_CATEGORY_ID + " = C." + DatabaseContract.Category._ID + ";");
+                " FROM " + DatabaseContract.Poi.TABLE_NAME + " AS S INNER JOIN "
+                + DatabaseContract.Category.TABLE_NAME + " AS C ON S." + DatabaseContract.Poi.COLUMN_CATEGORY_ID + " = C." + DatabaseContract.Category._ID + ";");
 
         sqLiteDatabase.execSQL("INSERT INTO " + DatabaseContract.Category.TABLE_NAME + "(" + DatabaseContract.Category.COLUMN_NAME + ")" +
                 "VALUES ('Auberge'), ('Bar'), ('Château'), ('Eglise'), ('Hôtel'), ('Jardin'), ('Musée'), ('Restaurant')");
@@ -66,9 +66,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     private void migrateDatabase(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + DatabaseContract.Site.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + DatabaseContract.Poi.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + DatabaseContract.Category.TABLE_NAME);
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + DatabaseContract.PoiDetail.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP VIEW IF EXISTS " + DatabaseContract.PoiDetail.TABLE_NAME);
 
         onCreate(sqLiteDatabase);
     }
@@ -107,9 +107,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getPoiDetails() {
         String request = "SELECT A.name, P.name, year " +
-                "FROM " + DatabaseContract.Site.TABLE_NAME + " AS A " +
+                "FROM " + DatabaseContract.Poi.TABLE_NAME + " AS A " +
                 "JOIN " + DatabaseContract.Category.TABLE_NAME + " AS P " +
-                "ON A." + DatabaseContract.Site.COLUMN_CATEGORY_ID + " = P." + DatabaseContract.Category._ID  +
+                "ON A." + DatabaseContract.Poi.COLUMN_CATEGORY_ID + " = P." + DatabaseContract.Category._ID  +
                 ";";
 
         return getReadableDatabase().rawQuery(request, null);
