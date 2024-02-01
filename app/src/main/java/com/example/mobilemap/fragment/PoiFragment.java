@@ -18,6 +18,7 @@ import com.example.mobilemap.database.DatabaseContract;
 import com.example.mobilemap.database.table.Category;
 import com.example.mobilemap.database.table.Poi;
 import com.example.mobilemap.databinding.FragmentPoiBinding;
+import com.example.mobilemap.listener.CancelAction;
 import com.example.mobilemap.listener.DeleteDatabaseItemListener;
 import com.example.mobilemap.listener.SaveDatabaseItemListener;
 
@@ -32,11 +33,12 @@ import java.util.stream.Collectors;
 public class PoiFragment extends Fragment implements ItemView<Poi> {
 
     private static final String ARG_ITEM_ID = "itemId";
+    public static final String ARG_LATITUDE = "latitude";
+    public static final String ARG_LONGITUDE = "longitude";
     private long itemId = -1;
     private Poi poi = null;
     private FragmentPoiBinding binding;
     private List<Category> categories;
-
     private PoisActivity activity;
 
     public PoiFragment() {
@@ -58,14 +60,38 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
         return fragment;
     }
 
+    public static PoiFragment newInstance(double latitude, double longitude) {
+        PoiFragment fragment = new PoiFragment();
+        Bundle args = new Bundle();
+        args.putDouble(ARG_LATITUDE, latitude);
+        args.putDouble(ARG_LONGITUDE, longitude);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
+        if (getArguments() != null && getArguments().containsKey(ARG_ITEM_ID)) {
             itemId = getArguments().getLong(ARG_ITEM_ID);
         }
 
         activity = (PoisActivity) requireActivity();
+    }
+
+    private void updateFromArguments() {
+        Bundle bundle = getArguments();
+        if (bundle == null) {
+            return;
+        }
+
+        if (bundle.containsKey(ARG_LATITUDE)) {
+            binding.poiLatitude.setText(String.valueOf(bundle.getDouble(ARG_LATITUDE)));
+        }
+
+        if (bundle.containsKey(ARG_LONGITUDE)) {
+            binding.poiLongitude.setText(String.valueOf(bundle.getDouble(ARG_LONGITUDE)));
+        }
     }
 
     @Override
@@ -79,6 +105,7 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
         if (itemId == -1) {
             binding.poiDeleteBtn.setVisibility(View.GONE);
             binding.poiBtnSpace.setVisibility(View.GONE);
+            updateFromArguments();
         } else {
             poi = findPoi(itemId);
             updateFields(binding);
@@ -105,14 +132,23 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
     }
 
     private void bindActionButtons(FragmentPoiBinding binding) {
-        binding.poiSaveBtn.setOnClickListener(new SaveDatabaseItemListener<>(activity, this, DatabaseContract.Poi.CONTENT_URI));
-        binding.poiCancelBtn.setOnClickListener(v -> requireActivity().getSupportFragmentManager().popBackStackImmediate());
+        binding.poiSaveBtn.setOnClickListener(new SaveDatabaseItemListener<>(activity, this, DatabaseContract.Poi.CONTENT_URI, isLaunchedForResult()));
+        binding.poiCancelBtn.setOnClickListener(new CancelAction(activity, isLaunchedForResult()));
 
         if(poi != null) {
             binding.poiDeleteBtn.setOnClickListener(new DeleteDatabaseItemListener(poi.getId(), activity, activity.getDeleteContext()));
         }
     }
 
+    private boolean isLaunchedForResult() {
+        Bundle bundle = getArguments();
+
+        if (bundle == null) {
+            return false;
+        }
+
+        return bundle.containsKey(ARG_LATITUDE) && bundle.containsKey(ARG_LONGITUDE);
+    }
     private void updateFields(FragmentPoiBinding binding) {
         binding.poiName.setText(poi.getName());
         binding.poiLatitude.setText(String.valueOf(poi.getLatitude()));

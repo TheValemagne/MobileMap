@@ -17,12 +17,18 @@ public class SaveDatabaseItemListener<T extends DatabaseItem> implements View.On
     private final ItemView<T> fragment;
     private final ContentResolver contentResolver;
     private final Uri databaseUri;
+    private final boolean launchedForResult;
 
-    public SaveDatabaseItemListener(AppCompatActivity activity, ItemView<T> fragment, Uri databaseUri) {
+    public SaveDatabaseItemListener(AppCompatActivity activity, ItemView<T> fragment, Uri databaseUri, boolean launchedForResult) {
         this.activity = activity;
         this.fragment = fragment;
         this.contentResolver = activity.getContentResolver();
         this.databaseUri = databaseUri;
+        this.launchedForResult = launchedForResult;
+    }
+
+    public SaveDatabaseItemListener(AppCompatActivity activity, ItemView<T> fragment, Uri databaseUri) {
+        this(activity, fragment, databaseUri, false);
     }
 
     @Override
@@ -38,6 +44,11 @@ public class SaveDatabaseItemListener<T extends DatabaseItem> implements View.On
         } else {
             contentResolver.update(databaseUri, databaseItem.toContentValues(),
                     MessageFormat.format("{0} = {1}", BaseColumns._ID, databaseItem.getId()), null);
+        }
+
+        if (launchedForResult) {
+            activity.finish();
+            return;
         }
 
         activity.getSupportFragmentManager().popBackStackImmediate();

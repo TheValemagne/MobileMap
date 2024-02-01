@@ -3,6 +3,8 @@ package com.example.mobilemap;
 import android.Manifest;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -11,22 +13,18 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.preference.PreferenceManager;
 
-import org.osmdroid.api.IMapController;
-import org.osmdroid.config.Configuration;
-import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.Marker;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 
-import com.example.mobilemap.database.ContentResolverHelper;
-import com.example.mobilemap.database.table.Poi;
 import com.example.mobilemap.databinding.ActivityMainBinding;
 import com.example.mobilemap.listener.NavigationBarItemSelectedListener;
 import com.example.mobilemap.map.MapManager;
@@ -51,8 +49,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         Context context = getApplicationContext();
-
-        Configuration.getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context));
         EdgeToEdge.enable(this); // permet d'étendre l'affichage de l'application à tout l'écran
 
         ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
@@ -71,22 +67,6 @@ public class MainActivity extends AppCompatActivity {
 
         mapManager = new MapManager(mapView, this, context);
         mapManager.initMap();
-
-        List<Poi> pois = ContentResolverHelper.getPois(this.getContentResolver());
-
-
-        GeoPoint startPoint = new GeoPoint(49.109523, 6.1768191);
-        Marker startMarker = new Marker(mapView);
-        startMarker.setPosition(startPoint);
-        startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
-        startMarker.setTitle("Gare de Metz");
-        startMarker.showInfoWindow();
-        startMarker.closeInfoWindow();
-        mapView.getOverlays().add(startMarker);
-
-        IMapController mapController = mapView.getController();
-        mapController.setZoom(13.5);
-        mapController.setCenter(startPoint);
     }
 
     private void initBottomNavigationView(ActivityMainBinding binding) {
@@ -111,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        mapManager.onPause();
         mapView.onPause();
     }
 
@@ -118,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         mapView.onResume();
+        mapManager.restoreMap();
     }
 
     @Override
@@ -139,6 +121,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if(mapManager != null) {
+            mapManager.updateMarkers();
+        }
+    }
+
     private void requestPermissionsIfNecessary(List<String> permissions) {
         ArrayList<String> permissionsToRequest = new ArrayList<>();
         for (String permission : permissions) {
@@ -155,4 +146,11 @@ public class MainActivity extends AppCompatActivity {
                     REQUEST_PERMISSIONS_REQUEST_CODE);
         }
     }
+
+    public ActivityResultLauncher<Intent> poiActivityLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    mapManager.updateMarkers();
+                }
+            });
 }

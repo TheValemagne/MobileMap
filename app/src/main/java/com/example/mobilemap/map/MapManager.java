@@ -1,15 +1,20 @@
 package com.example.mobilemap.map;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
+import androidx.preference.PreferenceManager;
+
 import com.example.mobilemap.MainActivity;
+import com.example.mobilemap.database.ContentResolverHelper;
+import com.example.mobilemap.database.table.Poi;
 
 import org.osmdroid.api.IMapController;
+import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.CustomZoomButtonsController;
@@ -24,25 +29,42 @@ import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public final class MapManager {
     private final MapView mapView;
     private final MainActivity activity;
     private final Context context;
+    private final SharedPreferences sharedPreferences;
     private Polygon circleOverlay;
     private ItemizedIconOverlay<OverlayItem> overlayItemItemizedOverlay;
     private MyLocationNewOverlay myLocationNewOverlay;
-    private final static int MAX_CIRCLE_POINTS = 360;
+    private final static int MAX_ANGLE_IN_DEGREE = 360;
+
+    // préférence par défaut
+    private final static float DEFAULT_ZOOM = 13.5F;
+    private final static String DEFAULT_LATITUDE = "49.109523";
+    private final static String DEFAULT_LONGITUDE = "6.1768191";
+
+    // Pour le stockage des préférences
+    private static final String PREFS_NAME = "com.exemple.mobileMap";
+    private static final String PREFS_TILE_SOURCE = "tilesource";
+    private static final String PREFS_LATITUDE_STRING = "latitudeString";
+    private static final String PREFS_LONGITUDE_STRING = "longitudeString";
+    private static final String PREFS_ORIENTATION = "orientation";
+    private static final String PREFS_ZOOM_LEVEL_DOUBLE = "zoomLevelDouble";
 
     public MapManager(MapView mapView, MainActivity activity, Context context) {
         this.mapView = mapView;
         this.activity = activity;
         this.context = context;
+
+        sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
     }
 
     public void initMap() {
+        Configuration.getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context));
         DisplayMetrics dm = context.getResources().getDisplayMetrics();
 
         mapView.setTileSource(TileSourceFactory.MAPNIK);
@@ -71,18 +93,14 @@ public final class MapManager {
         mapView.getOverlays().add(mRotationGestureOverlay);
 
         initMarkers();
-        mapView.getOverlays().add(new AddMarkerOverlay());
+        mapView.getOverlays().add(new AddMarkerOverlay(activity));
+
+        IMapController mapController = mapView.getController();
+        mapController.setZoom(13.5);
     }
 
     private void initMarkers() {
-        List<OverlayItem> overlayItems = new ArrayList<>(Arrays.asList(
-                new OverlayItem("ISFATES Metz", "ISFATES", new GeoPoint(49.094168, 6.230186)),
-                new OverlayItem("UFR MIM Metz", "MIM", new GeoPoint(49.0946557, 6.2297174))
-        ));
-
-        Drawable drawable = overlayItems.get(0).getMarker(0);
-
-        overlayItemItemizedOverlay = new ItemizedIconOverlay<>(context, overlayItems, new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
+        overlayItemItemizedOverlay = new ItemizedIconOverlay<>(context, new ArrayList<>(), new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
             @Override
             public boolean onItemSingleTapUp(int index, OverlayItem item) {
                 Log.d("MainActivity", item.getTitle());
@@ -95,7 +113,53 @@ public final class MapManager {
             }
         });
 
+        updateMarkers();
         mapView.getOverlays().add(overlayItemItemizedOverlay);
+    }
+
+    public void updateMarkers() {
+        List<Poi> pois = ContentResolverHelper.getPois(activity.getContentResolver());
+
+        List<OverlayItem> items = pois.stream()
+                .map(poi -> new OverlayItem(poi.getName(), poi.getResume(), new GeoPoint(poi.getLatitude(), poi.getLongitude())))
+                .collect(Collectors.toList());
+
+        overlayItemItemizedOverlay.removeAllItems();
+        overlayItemItemizedOverlay.addItems(items);
+    }
+
+    /**
+     * Enregistrement des paramètres de la carte avant fermeture
+     */
+    public void onPause() {
+        final SharedPreferences.Editor edit = sharedPreferences.edit();
+        edit.putString(PREFS_TILE_SOURCE, mapView.getTileProvider().getTileSource().name());
+        edit.putFloat(PREFS_ORIENTATION, mapView.getMapOrientation());
+        edit.putString(PREFS_LATITUDE_STRING, String.valueOf(mapView.getMapCenter().getLatitude()));
+        edit.putString(PREFS_LONGITUDE_STRING, String.valueOf(mapView.getMapCenter().getLongitude()));
+        edit.putFloat(PREFS_ZOOM_LEVEL_DOUBLE, (float) mapView.getZoomLevelDouble());
+        edit.apply();
+    }
+
+    /**
+     * Restauration de la carte avec les paramètres sauvegardés
+     */
+    public void restoreMap() {
+        if(sharedPreferences == null){
+            return;
+        }
+
+        float zoomLevel = sharedPreferences.getFloat(PREFS_ZOOM_LEVEL_DOUBLE, DEFAULT_ZOOM);
+        mapView.getController().setZoom(zoomLevel);
+
+        float orientation = sharedPreferences.getFloat(PREFS_ORIENTATION, 0);
+        mapView.setMapOrientation(orientation, false);
+
+        String latitudeString = sharedPreferences.getString(PREFS_LATITUDE_STRING, DEFAULT_LATITUDE);
+        String longitudeString = sharedPreferences.getString(PREFS_LONGITUDE_STRING, DEFAULT_LONGITUDE);
+        double latitude = Double.parseDouble(latitudeString);
+        double longitude = Double.parseDouble(longitudeString);
+        mapView.setExpectedCenter(new GeoPoint(latitude, longitude));
     }
 
     private void drawCircle(OverlayItem overlayItem, double radiusInMeters) {
@@ -124,7 +188,7 @@ public final class MapManager {
     private List<GeoPoint> generateCirclePerimeterPoints(GeoPoint center, double radiusInMeters) {
         List<GeoPoint> points = new ArrayList<>();
 
-        for (int angleInDegree = 0; angleInDegree < MAX_CIRCLE_POINTS; angleInDegree += 5) {
+        for (int angleInDegree = 0; angleInDegree < MAX_ANGLE_IN_DEGREE; angleInDegree += 5) {
             double angleInRadians = Math.toRadians(angleInDegree);
 
             double latitude = center.getLatitude()
