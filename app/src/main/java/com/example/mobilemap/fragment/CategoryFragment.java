@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.example.mobilemap.CategoriesActivity;
 import com.example.mobilemap.R;
+import com.example.mobilemap.database.ContentResolverHelper;
 import com.example.mobilemap.database.DatabaseContract;
 import com.example.mobilemap.database.table.Category;
 import com.example.mobilemap.databinding.FragmentCategoryBinding;
@@ -64,8 +65,9 @@ public class CategoryFragment extends Fragment {
         }
 
         activity = (CategoriesActivity) requireActivity();
-        categoryNames = activity.getCategories().stream()
-                .map(Category::getName).collect(Collectors.toList());
+        categoryNames = ContentResolverHelper.getCategories(activity.getContentResolver())
+                .stream().map(Category::getName)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -94,7 +96,7 @@ public class CategoryFragment extends Fragment {
     private Category findCategory(long id) {
         Cursor cursor = requireActivity().getContentResolver()
                 .query(DatabaseContract.Category.CONTENT_URI, DatabaseContract.Category.COLUMNS, DatabaseContract.Category._ID + " = " + id,
-                        null, DatabaseContract.Category.COLUMN_NAME);
+                        null, null);
         assert cursor != null;
         cursor.moveToFirst();
 

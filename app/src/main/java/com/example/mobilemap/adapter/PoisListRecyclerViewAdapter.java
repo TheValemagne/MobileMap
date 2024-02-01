@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mobilemap.PoisActivity;
-import com.example.mobilemap.database.PoiDetail;
+import com.example.mobilemap.database.table.PoiDetail;
 import com.example.mobilemap.databinding.PoiListItemBinding;
 import com.example.mobilemap.listener.DeleteDatabaseListListener;
 

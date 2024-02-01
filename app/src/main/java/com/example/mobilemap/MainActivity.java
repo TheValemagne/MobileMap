@@ -23,7 +23,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 
 import com.example.mobilemap.databinding.ActivityMainBinding;
 import com.example.mobilemap.listener.NavigationBarItemSelectedListener;
@@ -47,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         Context context = getApplicationContext();
-        DisplayMetrics dm = context.getResources().getDisplayMetrics();
 
         Configuration.getInstance().load(context,
                 PreferenceManager.getDefaultSharedPreferences(context));

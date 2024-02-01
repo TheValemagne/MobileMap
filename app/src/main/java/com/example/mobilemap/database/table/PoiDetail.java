@@ -1,7 +1,9 @@
-package com.example.mobilemap.database;
+package com.example.mobilemap.database.table;
 
 import android.annotation.SuppressLint;
 import android.database.Cursor;
+
+import com.example.mobilemap.database.DatabaseContract;
 
 import java.util.ArrayList;
 import java.util.List;

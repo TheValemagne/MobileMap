@@ -12,7 +12,7 @@ import androidx.annotation.Nullable;
 
 import java.util.Objects;
 
-public class DatabaseContentProvider extends ContentProvider {
+public final class DatabaseContentProvider extends ContentProvider {
     private DatabaseHelper databaseHelper;
 
     private String getTable(Uri uri) {
@@ -40,7 +40,6 @@ public class DatabaseContentProvider extends ContentProvider {
         return null;
     }
 
-    @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
         long id = databaseHelper.getReadableDatabase().insert(getTable(uri), null, values);

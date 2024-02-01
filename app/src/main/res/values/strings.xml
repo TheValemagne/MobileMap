@@ -3,11 +3,10 @@
     <string name="latitude_label">"Latitude: "</string>
     <string name="longitude_label">Longitude:</string>
     <string name="item_name_label">Name:</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
     <string name="category_name">Name</string>
     <string name="empty_list">Empty list</string>
-    <string name="category_list">List of categories</string>
+    <string name="category_list">Your categories</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
     <string name="edit">Edit</string>
@@ -20,7 +19,8 @@
     <string name="error_field_is_empty">Please fill this field</string>
     <string name="error_category_not_unique">Category name should be unique</string>
     <string name="add_new_category">add new category</string>
-    <string name="poi_list">List of POIs</string>
+    <string name="poi_list">Your POIs</string>
     <string name="confirm_delete_poi_msg">Are you sure you want to delete this POI?</string>
     <string name="dialog_delete_poi_title">Confirm POI delete</string>
+    <string name="require_category">You first need to create at least one category.</string>
 </resources>

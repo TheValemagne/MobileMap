@@ -3,6 +3,7 @@ package com.example.mobilemap.fragment;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,9 +12,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.mobilemap.PoisActivity;
+import com.example.mobilemap.R;
 import com.example.mobilemap.adapter.PoisListRecyclerViewAdapter;
-import com.example.mobilemap.database.PoiDetail;
+import com.example.mobilemap.database.ContentResolverHelper;
+import com.example.mobilemap.database.table.PoiDetail;
 import com.example.mobilemap.databinding.FragmentPoiListBinding;
 
 import java.util.List;
@@ -33,19 +35,25 @@ public class PoiListFragment extends Fragment {
         // Inflate the layout for this fragment
         FragmentPoiListBinding binding = FragmentPoiListBinding.inflate(inflater, container, false);
 
-        PoisActivity activity = (PoisActivity) requireActivity();
-
-        initRecyclerView(binding, activity);
+        initRecyclerView(binding, (AppCompatActivity) requireActivity());
 
         return binding.getRoot();
     }
 
-    private void initRecyclerView(FragmentPoiListBinding binding, PoisActivity activity) {
-        List<PoiDetail> poiDetails = activity.getPois();
+    private boolean shouldEnableList() {
+        return !ContentResolverHelper.getCategories(requireActivity().getContentResolver()).isEmpty();
+    }
+
+    private void initRecyclerView(FragmentPoiListBinding binding, AppCompatActivity activity) {
+        List<PoiDetail> poiDetails = ContentResolverHelper.getPois(activity.getContentResolver());
 
         if (!poiDetails.isEmpty()) {
-            binding.emptyLabel.setVisibility(View.INVISIBLE);
+            binding.informationLabel.setVisibility(View.INVISIBLE);
         }
+
+        int informationMsgId = shouldEnableList() ? R.string.empty_list : R.string.require_category;
+        binding.informationLabel.setText(requireActivity().getResources().getText(informationMsgId));
+        binding.addPoiButton.setVisibility(shouldEnableList() ? View.VISIBLE : View.INVISIBLE);
 
         RecyclerView recyclerView = binding.poiList;
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));

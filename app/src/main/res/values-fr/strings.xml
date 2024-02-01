@@ -7,7 +7,7 @@
     <string name="item_name_label">"Nom : "</string>
     <string name="category_name">Nom</string>
     <string name="empty_list">Liste vide</string>
-    <string name="category_list">Liste de catégories</string>
+    <string name="category_list">Vos catégories</string>
     <string name="save">Enregistrer</string>
     <string name="cancel">Annuler</string>
     <string name="edit">Modifier</string>
@@ -19,7 +19,8 @@
     <string name="error_field_is_empty">Veuillez compléter ce champ</string>
     <string name="error_category_not_unique">Le nom de la catégorie doit être unique</string>
     <string name="add_new_category">ajouter une nouvelle catégorie</string>
-    <string name="poi_list">Liste de sites</string>
+    <string name="poi_list">Vos sites</string>
     <string name="confirm_delete_poi_msg">Etes-vous sûr de vouloir supprimer ce site ?</string>
     <string name="dialog_delete_poi_title">Confirmer la supression du site</string>
+    <string name="require_category">Vous devez d\'abord créer au moins une catégorie.</string>
 </resources>
