@@ -1,4 +1,4 @@
-package com.example.mobilemap;
+package com.example.mobilemap.map;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -7,6 +7,9 @@ import android.location.Location;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
+import com.example.mobilemap.MainActivity;
+
+import org.osmdroid.api.IMapController;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.CustomZoomButtonsController;
@@ -24,15 +27,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MapManager {
+public final class MapManager {
     private final MapView mapView;
+    private final MainActivity activity;
     private final Context context;
     private Polygon circleOverlay;
     private ItemizedIconOverlay<OverlayItem> overlayItemItemizedOverlay;
+    private MyLocationNewOverlay myLocationNewOverlay;
     private final static int MAX_CIRCLE_POINTS = 360;
 
-    public MapManager(MapView mapView, Context context) {
+    public MapManager(MapView mapView, MainActivity activity, Context context) {
         this.mapView = mapView;
+        this.activity = activity;
         this.context = context;
     }
 
@@ -43,13 +49,13 @@ public class MapManager {
         mapView.getZoomController()
                 .setVisibility(CustomZoomButtonsController.Visibility.NEVER);
         mapView.setMultiTouchControls(true);
-        mapView.setMinZoomLevel(12.0);
 
         mapView.setHorizontalMapRepetitionEnabled(false);
         mapView.setVerticalMapRepetitionEnabled(false);
 
-        MyLocationNewOverlay myLocationNewOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(context), mapView);
+        myLocationNewOverlay = new MyLocationOverlay(new GpsMyLocationProvider(context), mapView, activity);
         myLocationNewOverlay.enableMyLocation();
+        myLocationNewOverlay.enableFollowLocation();
         mapView.getOverlays().add(myLocationNewOverlay);
 
         CopyrightOverlay mCopyrightOverlay = new CopyrightOverlay(context);
@@ -64,6 +70,11 @@ public class MapManager {
         mRotationGestureOverlay.setEnabled(true);
         mapView.getOverlays().add(mRotationGestureOverlay);
 
+        initMarkers();
+        mapView.getOverlays().add(new AddMarkerOverlay());
+    }
+
+    private void initMarkers() {
         List<OverlayItem> overlayItems = new ArrayList<>(Arrays.asList(
                 new OverlayItem("ISFATES Metz", "ISFATES", new GeoPoint(49.094168, 6.230186)),
                 new OverlayItem("UFR MIM Metz", "MIM", new GeoPoint(49.0946557, 6.2297174))
@@ -153,5 +164,15 @@ public class MapManager {
 
         overlayItemItemizedOverlay.addItems(overlayItems);
         mapView.invalidate();
+    }
+
+    public void centerToUserLocation() {
+        if (myLocationNewOverlay == null || myLocationNewOverlay.getMyLocation() == null) {
+            return;
+        }
+
+        myLocationNewOverlay.enableFollowLocation();
+        IMapController mapController = mapView.getController();
+        mapController.setZoom(15.0);
     }
 }

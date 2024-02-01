@@ -23,10 +23,15 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.view.View;
 
+import com.example.mobilemap.database.ContentResolverHelper;
+import com.example.mobilemap.database.table.Poi;
 import com.example.mobilemap.databinding.ActivityMainBinding;
 import com.example.mobilemap.listener.NavigationBarItemSelectedListener;
+import com.example.mobilemap.map.MapManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
     private MapView mapView;
     private MapManager mapManager;
-
+    private FloatingActionButton locateMeBtn;
 
     @SuppressLint("Range")
     @Override
@@ -47,34 +52,28 @@ public class MainActivity extends AppCompatActivity {
 
         Context context = getApplicationContext();
 
-        Configuration.getInstance().load(context,
-                PreferenceManager.getDefaultSharedPreferences(context));
+        Configuration.getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context));
         EdgeToEdge.enable(this); // permet d'étendre l'affichage de l'application à tout l'écran
 
         ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
 
         setContentView(binding.getRoot());
 
-        ConstraintLayout view = binding.getRoot();
-        // ajustement de la bar de navigation pour éviter tout dépassement ou superposition avec la bar aec les 3 boutons
-        ViewCompat.setOnApplyWindowInsetsListener(view, (v, windowInsets) -> {
-            Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemGestures());
-            view.setPadding(0, 0, 0, insets.bottom);
-            return WindowInsetsCompat.CONSUMED;
-        });
+        initBottomNavigationView(binding);
 
-        BottomNavigationView bottomNavigationMenuView = binding.mainNavigationBar;
-        bottomNavigationMenuView.setSelectedItemId(R.id.navigation_map);
-        bottomNavigationMenuView.setOnItemSelectedListener(new NavigationBarItemSelectedListener(this, R.id.navigation_map));
-
+        locateMeBtn = binding.locateMeBtn;
+        locateMeBtn.setOnClickListener(v -> mapManager.centerToUserLocation());
         mapView = binding.mapView;
 
         requestPermissionsIfNecessary(Collections.singletonList(
                 Manifest.permission.ACCESS_FINE_LOCATION
         ));
 
-        mapManager = new MapManager(mapView, context);
+        mapManager = new MapManager(mapView, this, context);
         mapManager.initMap();
+
+        List<Poi> pois = ContentResolverHelper.getPois(this.getContentResolver());
+
 
         GeoPoint startPoint = new GeoPoint(49.109523, 6.1768191);
         Marker startMarker = new Marker(mapView);
@@ -90,7 +89,26 @@ public class MainActivity extends AppCompatActivity {
         mapController.setCenter(startPoint);
     }
 
-        @Override
+    private void initBottomNavigationView(ActivityMainBinding binding) {
+        ConstraintLayout view = binding.getRoot();
+        // ajustement de la bar de navigation pour éviter tout dépassement ou superposition avec la bar aec les 3 boutons
+        ViewCompat.setOnApplyWindowInsetsListener(view, (v, windowInsets) -> {
+            Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemGestures());
+            view.setPadding(0, 0, 0, insets.bottom);
+            return WindowInsetsCompat.CONSUMED;
+        });
+
+        BottomNavigationView bottomNavigationMenuView = binding.mainNavigationBar;
+        bottomNavigationMenuView.setSelectedItemId(R.id.navigation_map);
+        bottomNavigationMenuView.setOnItemSelectedListener(new NavigationBarItemSelectedListener(this, R.id.navigation_map));
+    }
+
+    public void shouldShowLocationBtn(boolean isVisible) {
+        int visibility = isVisible ? View.VISIBLE : View.GONE;
+        locateMeBtn.setVisibility(visibility);
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
         mapView.onPause();
