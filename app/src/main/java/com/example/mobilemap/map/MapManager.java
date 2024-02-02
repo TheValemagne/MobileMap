@@ -102,7 +102,7 @@ public final class MapManager {
         initMarkers();
 
         IMapController mapController = mapView.getController();
-        mapController.setZoom(13.5);
+        mapController.setZoom(DEFAULT_ZOOM);
     }
 
     private void initMarkers() {
@@ -137,6 +137,7 @@ public final class MapManager {
      * Enregistrement des paramètres de la carte avant fermeture
      */
     public void onPause() {
+        // Sauvegarde des paramètres actuels de la carte
         final SharedPreferences.Editor edit = sharedPreferences.edit();
         edit.putString(PREFS_TILE_SOURCE, mapView.getTileProvider().getTileSource().name());
         edit.putFloat(PREFS_ORIENTATION, mapView.getMapOrientation());
@@ -178,8 +179,22 @@ public final class MapManager {
     }
 
     public void addMarkerToCurrentLocation() {
+        if (myLocationNewOverlay == null || myLocationNewOverlay.getMyLocation() == null) {
+            return;
+        }
+
         GeoPoint point = myLocationNewOverlay.getMyLocation();
         activity.poiActivityLauncher.launch(PoisActivity.createIntent(activity, point.getLatitude(), point.getLongitude()));
+    }
+
+    public void centerToUserLocation() {
+        if (myLocationNewOverlay == null || myLocationNewOverlay.getMyLocation() == null) {
+            return;
+        }
+
+        myLocationNewOverlay.enableFollowLocation(); // centrage de la carte sur la position actuelle
+        IMapController mapController = mapView.getController();
+        mapController.setZoom(15.0);
     }
 
     private void drawCircle(GeoPoint center, double radiusInMeters) {
@@ -263,15 +278,5 @@ public final class MapManager {
 
         overlayItemItemizedOverlay.addItems(overlayItems);
         mapView.invalidate();
-    }
-
-    public void centerToUserLocation() {
-        if (myLocationNewOverlay == null || myLocationNewOverlay.getMyLocation() == null) {
-            return;
-        }
-
-        myLocationNewOverlay.enableFollowLocation(); // centrage de la carte sur la position actuelle
-        IMapController mapController = mapView.getController();
-        mapController.setZoom(15.0);
     }
 }
