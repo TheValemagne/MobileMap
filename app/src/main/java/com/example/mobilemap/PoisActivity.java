@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.example.mobilemap.database.ContentResolverHelper;
 import com.example.mobilemap.database.DatabaseContract;
 import com.example.mobilemap.databinding.ActivityPoisBinding;
 import com.example.mobilemap.fragment.PoiFragment;
@@ -32,7 +33,7 @@ public class PoisActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         Fragment fragment;
-        if(intent.hasExtra(PoiFragment.ARG_LATITUDE) && intent.hasExtra(PoiFragment.ARG_LONGITUDE)) {
+        if(shouldShowPoiFragment(intent)) {
             fragment = PoiFragment.newInstance(intent.getDoubleExtra(PoiFragment.ARG_LATITUDE, 0.0),
                     intent.getDoubleExtra(PoiFragment.ARG_LONGITUDE, 0.0));
         } else {
@@ -42,6 +43,12 @@ public class PoisActivity extends AppCompatActivity {
         this.getSupportFragmentManager().beginTransaction()
                 .replace(R.id.poisFragmentContainer, fragment)
                 .commit();
+    }
+
+    private boolean shouldShowPoiFragment(Intent intent) {
+        return intent.hasExtra(PoiFragment.ARG_LATITUDE)
+                && intent.hasExtra(PoiFragment.ARG_LONGITUDE)
+                && !ContentResolverHelper.getCategories(getContentResolver()).isEmpty();
     }
 
     public DeleteItemContext getDeleteContext() {

@@ -20,16 +20,15 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import com.example.mobilemap.databinding.ActivityMainBinding;
 import com.example.mobilemap.listener.NavigationBarItemSelectedListener;
 import com.example.mobilemap.map.MapManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
     private MapView mapView;
     private MapManager mapManager;
-    private FloatingActionButton locateMeBtn;
+    private LinearLayout floatingButtons;
 
     @SuppressLint("Range")
     @Override
@@ -57,8 +56,12 @@ public class MainActivity extends AppCompatActivity {
 
         initBottomNavigationView(binding);
 
-        locateMeBtn = binding.locateMeBtn;
-        locateMeBtn.setOnClickListener(v -> mapManager.centerToUserLocation());
+        floatingButtons = binding.floatingButtons;
+        floatingButtons.setVisibility(View.GONE);
+
+        binding.locateMeBtn.setOnClickListener(v -> mapManager.centerToUserLocation());
+        binding.addMarkerAtLocation.setOnClickListener(v -> mapManager.addMarkerToCurrentLocation());
+
         mapView = binding.mapView;
 
         requestPermissionsIfNecessary(Collections.singletonList(
@@ -85,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void shouldShowLocationBtn(boolean isVisible) {
         int visibility = isVisible ? View.VISIBLE : View.GONE;
-        locateMeBtn.setVisibility(visibility);
+        floatingButtons.setVisibility(visibility);
     }
 
     @Override
@@ -106,6 +109,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         mapView.onDetach();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 
     @Override

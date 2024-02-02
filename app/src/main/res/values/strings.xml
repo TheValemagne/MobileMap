@@ -27,4 +27,6 @@
     <string name="category">Category</string>
     <string name="resume">Resume:</string>
     <string name="postal_adress">Postal address:</string>
+    <string name="center_to_my_location">Center the map to my current location</string>
+    <string name="add_marker_to_my_location">Add a new marker on my current location</string>
 </resources>

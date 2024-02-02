@@ -27,19 +27,49 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:visibility="visible">
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/locateMeBtn"
+                <LinearLayout
+                    android:id="@+id/floatingButtons"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="10dp"
                     android:layout_marginBottom="10dp"
-                    android:clickable="true"
-                    android:src="@drawable/ic_menu_mylocation"
-                    android:visibility="gone"
+                    android:orientation="vertical"
+                    android:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/locateMeBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="1dp"
+                        android:clickable="true"
+                        android:src="@drawable/ic_menu_mylocation"
+                        android:visibility="visible"
+                        app:elevation="2dp"
+                        android:contentDescription="@string/center_to_my_location" />
+
+                    <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="10dp"
+                        android:layout_weight="1" />
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/addMarkerAtLocation"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="1dp"
+                        android:layout_weight="1"
+                        android:clickable="true"
+                        android:src="@drawable/marker_default"
+                        app:elevation="2dp"
+                        android:contentDescription="@string/add_marker_to_my_location" />
+
+                </LinearLayout>
+
             </androidx.constraintlayout.widget.ConstraintLayout>
         </RelativeLayout>
 

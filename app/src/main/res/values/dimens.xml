@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="textViewWidth">300dp</dimen>
+    <dimen name="textViewWidth">200dp</dimen>
     <dimen name="titleTextSize">34sp</dimen>
     <dimen name="contentTextSize">20sp</dimen>
     <dimen name="spaceWidth">15dp</dimen>

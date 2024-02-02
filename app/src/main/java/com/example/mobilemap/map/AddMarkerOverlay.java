@@ -1,6 +1,5 @@
 package com.example.mobilemap.map;
 
-import android.util.Log;
 import android.view.MotionEvent;
 
 import com.example.mobilemap.MainActivity;
@@ -19,11 +18,11 @@ public class AddMarkerOverlay extends Overlay {
 
     @Override
     public boolean onLongPress(MotionEvent event, MapView mapView) {
+        // récupération de la position du futur marqueur
         double latitude = mapView.getProjection().fromPixels((int) event.getX(), (int) event.getY()).getLatitude();
         double longitude = mapView.getProjection().fromPixels((int) event.getX(), (int) event.getY()).getLongitude();
 
-        Log.d("LongPress", "Latitude: " + latitude + ", Longitude: " + longitude);
-
+        // lancement de l'activité gérant les sites
         activity.poiActivityLauncher.launch(PoisActivity.createIntent(activity, latitude, longitude));
         return true;
     }

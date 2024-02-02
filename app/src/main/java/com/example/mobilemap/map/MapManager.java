@@ -5,13 +5,15 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.location.Location;
 import android.util.DisplayMetrics;
-import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
 import com.example.mobilemap.MainActivity;
+import com.example.mobilemap.PoisActivity;
 import com.example.mobilemap.database.ContentResolverHelper;
 import com.example.mobilemap.database.table.Poi;
+import com.example.mobilemap.listener.MarkerGertureListener;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
@@ -55,6 +57,10 @@ public final class MapManager {
     private static final String PREFS_ORIENTATION = "orientation";
     private static final String PREFS_ZOOM_LEVEL_DOUBLE = "zoomLevelDouble";
 
+    private static final String CIRCLE_LATITUDE_STRING = "circleLatitudeString";
+    private static final String CIRCLE_LONGITUDE_STRING = "circleLongitudeString";
+    private static final String CIRCLE_RADIUS_STRING = "cicleRadiusString";
+
     public MapManager(MapView mapView, MainActivity activity, Context context) {
         this.mapView = mapView;
         this.activity = activity;
@@ -92,40 +98,39 @@ public final class MapManager {
         mRotationGestureOverlay.setEnabled(true);
         mapView.getOverlays().add(mRotationGestureOverlay);
 
-        initMarkers();
         mapView.getOverlays().add(new AddMarkerOverlay(activity));
+        initMarkers();
 
         IMapController mapController = mapView.getController();
         mapController.setZoom(13.5);
     }
 
     private void initMarkers() {
-        overlayItemItemizedOverlay = new ItemizedIconOverlay<>(context, new ArrayList<>(), new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
-            @Override
-            public boolean onItemSingleTapUp(int index, OverlayItem item) {
-                Log.d("MainActivity", item.getTitle());
-                return true;
-            }
-
-            @Override
-            public boolean onItemLongPress(int index, OverlayItem item) {
-                return false;
-            }
-        });
-
-        updateMarkers();
+        overlayItemItemizedOverlay = new ItemizedIconOverlay<>(context, getOverlayItems(),new MarkerGertureListener(this));
+        overlayItemItemizedOverlay.setDrawFocusedItem(true);
         mapView.getOverlays().add(overlayItemItemizedOverlay);
     }
 
-    public void updateMarkers() {
-        List<Poi> pois = ContentResolverHelper.getPois(activity.getContentResolver());
+    public void addOverlayItemCircle(OverlayItem item) {
+        removeCircle();
+        drawCircle((GeoPoint) item.getPoint(), 200);
+        mapView.invalidate();
+    }
 
-        List<OverlayItem> items = pois.stream()
-                .map(poi -> new OverlayItem(poi.getName(), poi.getResume(), new GeoPoint(poi.getLatitude(), poi.getLongitude())))
-                .collect(Collectors.toList());
+    public void updateMarkers() {
+        List<OverlayItem> items = getOverlayItems();
 
         overlayItemItemizedOverlay.removeAllItems();
         overlayItemItemizedOverlay.addItems(items);
+    }
+
+    @NonNull
+    private List<OverlayItem> getOverlayItems() {
+        List<Poi> pois = ContentResolverHelper.getPois(activity.getContentResolver());
+
+        return pois.stream()
+                .map(poi -> new OverlayItem(poi.getName(), poi.getResume(), new GeoPoint(poi.getLatitude(), poi.getLongitude())))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -160,12 +165,26 @@ public final class MapManager {
         double latitude = Double.parseDouble(latitudeString);
         double longitude = Double.parseDouble(longitudeString);
         mapView.setExpectedCenter(new GeoPoint(latitude, longitude));
+
+        String circleRadius = sharedPreferences.getString(CIRCLE_RADIUS_STRING, "");
+
+        if(circleRadius.isEmpty()) {
+            return;
+        }
+        String circleLatitude = sharedPreferences.getString(CIRCLE_LATITUDE_STRING, "0.0");
+        String circleLongitude = sharedPreferences.getString(CIRCLE_LONGITUDE_STRING, "0.0");
+
+        showPoisInsideCircle(getOverlayItems(), new GeoPoint(Double.parseDouble(circleLatitude), Double.parseDouble(circleLongitude)), Double.parseDouble(circleRadius));
     }
 
-    private void drawCircle(OverlayItem overlayItem, double radiusInMeters) {
-        GeoPoint itemPosition = (GeoPoint) overlayItem.getPoint();
+    public void addMarkerToCurrentLocation() {
+        GeoPoint point = myLocationNewOverlay.getMyLocation();
+        activity.poiActivityLauncher.launch(PoisActivity.createIntent(activity, point.getLatitude(), point.getLongitude()));
+    }
+
+    private void drawCircle(GeoPoint center, double radiusInMeters) {
         // Générez les points du périmètre du cercle
-        List<GeoPoint> circlePoints = generateCirclePerimeterPoints(itemPosition, radiusInMeters);
+        List<GeoPoint> circlePoints = generateCirclePerimeterPoints(center, radiusInMeters);
         // Ajoutez le cercle à la carte
         circleOverlay = new Polygon();
         // intérieur du cercle
@@ -176,6 +195,15 @@ public final class MapManager {
 
         circleOverlay.setPoints(circlePoints);
         mapView.getOverlayManager().add(circleOverlay);
+
+        showPoisInsideCircle(getOverlayItems(), center, radiusInMeters);
+
+        // Sauvegarde les données du circle pour retracer le cercle si l'application est mise en pause
+        final SharedPreferences.Editor edit = sharedPreferences.edit();
+        edit.putString(CIRCLE_LATITUDE_STRING, String.valueOf(center.getLatitude()));
+        edit.putString(CIRCLE_LONGITUDE_STRING, String.valueOf(center.getLongitude()));
+        edit.putString(CIRCLE_RADIUS_STRING, String.valueOf(radiusInMeters));
+        edit.apply();
     }
 
     public void removeCircle() {
@@ -183,6 +211,16 @@ public final class MapManager {
             mapView.getOverlayManager().remove(circleOverlay);
             circleOverlay = null;
         }
+
+        // Supprimer les données du cercle
+        final SharedPreferences.Editor edit = sharedPreferences.edit();
+        edit.putString(CIRCLE_LATITUDE_STRING, "");
+        edit.putString(CIRCLE_LONGITUDE_STRING, "");
+        edit.putString(CIRCLE_RADIUS_STRING, "");
+        edit.apply();
+
+        updateMarkers();
+        mapView.invalidate();
     }
 
     private List<GeoPoint> generateCirclePerimeterPoints(GeoPoint center, double radiusInMeters) {
@@ -201,17 +239,14 @@ public final class MapManager {
         return points;
     }
 
-    private void drawCircleWithPOIs(ArrayList<OverlayItem> items, OverlayItem center, double radiusInMeters) {
-        overlayItemItemizedOverlay.removeAllItems(); // supprime tous les marqueurs de sites
+    private void showPoisInsideCircle(List<OverlayItem> items, GeoPoint center, double radiusInMeters) {
+        overlayItemItemizedOverlay.removeAllItems(); // supprime tous les marqueurs de sites affichés
 
-        drawCircle(center, radiusInMeters); // Add the circle to the map
-
-        GeoPoint centerPoint = (GeoPoint) center.getPoint();
         ArrayList<OverlayItem> overlayItems = new ArrayList<>();
 
         Location centerLocation = new Location("Center");
-        centerLocation.setLatitude(centerPoint.getLatitude());
-        centerLocation.setLongitude(centerPoint.getLongitude());
+        centerLocation.setLatitude(center.getLatitude());
+        centerLocation.setLongitude(center.getLongitude());
 
         for (OverlayItem item : items) {
             GeoPoint markerPosition = (GeoPoint) item.getPoint();
@@ -235,7 +270,7 @@ public final class MapManager {
             return;
         }
 
-        myLocationNewOverlay.enableFollowLocation();
+        myLocationNewOverlay.enableFollowLocation(); // centrage de la carte sur la position actuelle
         IMapController mapController = mapView.getController();
         mapController.setZoom(15.0);
     }

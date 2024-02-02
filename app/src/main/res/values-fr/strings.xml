@@ -27,4 +27,6 @@
     <string name="category">Catégorie :</string>
     <string name="resume">Résumé :</string>
     <string name="postal_adress">Adresse postale :</string>
+    <string name="center_to_my_location">Centrer la ccarte sur ma position actuelle</string>
+    <string name="add_marker_to_my_location">Ajouter un nouveau marqueur sur ma position actuelle</string>
 </resources>
