@@ -26,5 +26,5 @@
     <string name="poi_name_hint">Nom du site</string>
     <string name="category">Catégorie :</string>
     <string name="resume">Résumé :</string>
-    <string name="postal_adress">Addresse postale :</string>
+    <string name="postal_adress">Adresse postale :</string>
 </resources>
