@@ -12,7 +12,6 @@ import com.example.mobilemap.MainActivity;
 import com.example.mobilemap.PoisActivity;
 import com.example.mobilemap.database.ContentResolverHelper;
 import com.example.mobilemap.database.table.Poi;
-import com.example.mobilemap.listener.MarkerGertureListener;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
@@ -23,8 +22,10 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.CopyrightOverlay;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.OverlayItem;
+import org.osmdroid.views.overlay.OverlayWithIW;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay;
+import org.osmdroid.views.overlay.infowindow.InfoWindow;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
@@ -35,10 +36,25 @@ public final class MapManager {
     private final MapView mapView;
     private final MainActivity activity;
     private final Context context;
+
+    public SharedPreferences getSharedPreferences() {
+        return sharedPreferences;
+    }
+
     private final SharedPreferences sharedPreferences;
-    private CircleManager circleManager;
+    private final CircleManager circleManager;
+
+    public ItemizedIconOverlay<OverlayItem> getOverlayItemItemizedOverlay() {
+        return overlayItemItemizedOverlay;
+    }
+
     private ItemizedIconOverlay<OverlayItem> overlayItemItemizedOverlay;
-    private final MarkerGertureListener markerGertureListener;
+
+    public MarkerGestureListener getMarkerGertureListener() {
+        return markerGertureListener;
+    }
+
+    private final MarkerGestureListener markerGertureListener;
     private MyLocationNewOverlay myLocationNewOverlay;
 
     // préférence par défaut
@@ -60,7 +76,8 @@ public final class MapManager {
         this.context = context;
 
         sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        markerGertureListener = new MarkerGertureListener(this);
+        markerGertureListener = new MarkerGestureListener(mapView, this);
+        circleManager = new CircleManager(mapView, activity, this);
     }
 
     public void initMap() {
@@ -101,7 +118,6 @@ public final class MapManager {
     private void initMarkers() {
         overlayItemItemizedOverlay = new ItemizedIconOverlay<>(context, getOverlayItems(), markerGertureListener);
         mapView.getOverlays().add(overlayItemItemizedOverlay);
-        circleManager = new CircleManager(mapView, activity, this, sharedPreferences, overlayItemItemizedOverlay, markerGertureListener);
     }
 
     public void addOverlayItemCircle(int index) {
@@ -117,6 +133,7 @@ public final class MapManager {
         List<OverlayItem> items = getOverlayItems();
         overlayItemItemizedOverlay.addItems(items);
 
+        circleManager.restorePreviousCircle();
         mapView.invalidate();
     }
 
@@ -194,6 +211,16 @@ public final class MapManager {
 
     public void removeCircle() {
         circleManager.removeCircle();
+    }
+
+    public void showInfoWindow(OverlayItem item, InfoWindow infoWindow) {
+        OverlayWithIW overlayWithIW = new CustomOverlayWithIW(item);
+
+        overlayWithIW.setInfoWindow(infoWindow);
+        overlayWithIW.getInfoWindow().open(overlayWithIW, (GeoPoint) item.getPoint(),
+                CustomInfoWindow.OFFSET_X, CustomInfoWindow.OFFSET_Y);
+
+        mapView.getOverlays().add(overlayWithIW);
     }
 
 }

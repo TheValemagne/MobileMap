@@ -7,6 +7,8 @@ import org.osmdroid.views.overlay.OverlayWithIW;
 import org.osmdroid.views.overlay.infowindow.InfoWindow;
 
 public class CustomInfoWindow extends InfoWindow {
+    public static final int OFFSET_X = 0;
+    public static final int OFFSET_Y = -50;
     public CustomInfoWindow(int layoutResId, MapView mapView) {
         super(layoutResId, mapView);
     }

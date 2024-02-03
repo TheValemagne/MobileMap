@@ -1,5 +1,6 @@
 package com.example.mobilemap.listener;
 
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.net.Uri;
 import android.provider.BaseColumns;
@@ -47,6 +48,7 @@ public class SaveDatabaseItemListener<T extends DatabaseItem> implements View.On
         }
 
         if (launchedForResult) {
+            activity.setResult(Activity.RESULT_OK);
             activity.finish();
             return;
         }

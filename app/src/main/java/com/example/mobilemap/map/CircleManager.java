@@ -7,14 +7,11 @@ import android.location.Location;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.example.mobilemap.MainActivity;
-import com.example.mobilemap.listener.MarkerGertureListener;
 
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.OverlayItem;
-import org.osmdroid.views.overlay.OverlayWithIW;
 import org.osmdroid.views.overlay.Polygon;
 import org.osmdroid.views.overlay.infowindow.InfoWindow;
 
@@ -25,12 +22,9 @@ public class CircleManager {
     private final MapView mapView;
     private final MapManager mapManager;
     private final MainActivity activity;
-    private final SharedPreferences sharedPreferences;
     private Polygon circleOverlay;
-    private final ItemizedIconOverlay<OverlayItem> overlayItemItemizedOverlay;
-    private final MarkerGertureListener markerGertureListener;
     private final static int MAX_ANGLE_IN_DEGREE = 360;
-    private InfoWindow infoWindow;
+    private final InfoWindow infoWindow;
 
     // Pour le stockage le circle actuellement affiché
     private static final String CIRCLE_LATITUDE_STRING = "circleLatitudeString";
@@ -39,13 +33,11 @@ public class CircleManager {
     private static final String CIRCLE_RADIUS_STRING = "cicleRadiusString";
     private static final String CIRCLE_CATEGORY_FILTER = "cicleCategoryFilter";
 
-    public CircleManager(MapView mapView, MainActivity activity, MapManager mapManager, SharedPreferences sharedPreferences, ItemizedIconOverlay<OverlayItem> overlayItemItemizedOverlay, MarkerGertureListener markerGertureListener) {
+    public CircleManager(MapView mapView, MainActivity activity, MapManager mapManager) {
         this.mapView = mapView;
         this.activity = activity;
         this.mapManager = mapManager;
-        this.sharedPreferences = sharedPreferences;
-        this.overlayItemItemizedOverlay = overlayItemItemizedOverlay;
-        this.markerGertureListener = markerGertureListener;
+        infoWindow = new CustomInfoWindow(org.osmdroid.library.R.layout.bonuspack_bubble, mapView);
     }
 
     public void drawCircle(int index, double radiusInMeters, long categoryFilter) {
@@ -53,22 +45,16 @@ public class CircleManager {
             removeCircle();
         }
 
-        OverlayItem centerItem = overlayItemItemizedOverlay.getItem(index);
+        OverlayItem centerItem = mapManager.getOverlayItemItemizedOverlay().getItem(index);
         centerItem.setMarker(ResourcesCompat.getDrawable(activity.getResources(), org.osmdroid.library.R.drawable.marker_default, activity.getTheme()));
-        drawCenterInfoWindow(centerItem);
+        //mapManager.showInfoWindow(centerItem, infoWindow);
+
         IGeoPoint center = centerItem.getPoint();
 
         // Générez les points du périmètre du cercle
         List<GeoPoint> circlePoints = generateCirclePerimeterPoints(center, radiusInMeters);
         // Ajoutez le cercle à la carte
-        circleOverlay = new Polygon();
-        // intérieur du cercle
-        circleOverlay.getFillPaint().setColor(Color.TRANSPARENT);
-        // bordure du cercle
-        circleOverlay.getOutlinePaint().setColor(Color.BLUE);
-        circleOverlay.getOutlinePaint().setStrokeWidth(2f);
-
-        circleOverlay.setPoints(circlePoints);
+        circleOverlay = createCircle(circlePoints);
         mapView.getOverlayManager().add(circleOverlay);
 
         List<OverlayItem> filteredItems = mapManager.getOverlayItems(categoryFilter);
@@ -77,10 +63,27 @@ public class CircleManager {
             filteredItems.add(centerItem);
         }
 
-        showPoisInsideCircle(filteredItems, center, radiusInMeters);
+        showOnlyPoisInsideCircle(filteredItems, center, radiusInMeters);
 
         // Sauvegarde les données du circle pour retracer le cercle si l'application est mise en pause
-        final SharedPreferences.Editor edit = sharedPreferences.edit();
+        saveCircleValues(index, radiusInMeters, categoryFilter, center);
+    }
+
+    private Polygon createCircle(List<GeoPoint> circlePoints) {
+        Polygon circleOverlay = new Polygon();
+        // intérieur du cercle
+        circleOverlay.getFillPaint().setColor(Color.TRANSPARENT);
+        // bordure du cercle
+        circleOverlay.getOutlinePaint().setColor(Color.BLUE);
+        circleOverlay.getOutlinePaint().setStrokeWidth(2f);
+
+        circleOverlay.setPoints(circlePoints);
+
+        return circleOverlay;
+    }
+
+    private void saveCircleValues(int index, double radiusInMeters, long categoryFilter, IGeoPoint center) {
+        final SharedPreferences.Editor edit = mapManager.getSharedPreferences().edit();
         edit.putString(CIRCLE_LATITUDE_STRING, String.valueOf(center.getLatitude()));
         edit.putString(CIRCLE_LONGITUDE_STRING, String.valueOf(center.getLongitude()));
         edit.putString(CIRCLE_RADIUS_STRING, String.valueOf(radiusInMeters));
@@ -89,26 +92,18 @@ public class CircleManager {
         edit.apply();
     }
 
-    private void drawCenterInfoWindow(OverlayItem centerItem) {
-        OverlayWithIW overlayWithIW = new CustomOverlayWithIW(centerItem);
-        infoWindow = new CustomInfoWindow(org.osmdroid.library.R.layout.bonuspack_bubble, mapView);
-        overlayWithIW.setInfoWindow(infoWindow);
-        mapView.getOverlays().add(overlayWithIW);
-        overlayWithIW.getInfoWindow().open(overlayWithIW, (GeoPoint) centerItem.getPoint(), 0, -25);
-    }
-
     public void removeCircle() {
         if (circleOverlay != null) {
             mapView.getOverlayManager().remove(circleOverlay);
             circleOverlay = null;
         }
 
-        if (infoWindow != null && infoWindow.isOpen()) {
+        if (infoWindow.isOpen()) {
             infoWindow.close();
         }
 
         // Supprimer les données du cercle
-        final SharedPreferences.Editor edit = sharedPreferences.edit();
+        final SharedPreferences.Editor edit = mapManager.getSharedPreferences().edit();
         edit.putString(CIRCLE_LATITUDE_STRING, "");
         edit.putString(CIRCLE_LONGITUDE_STRING, "");
         edit.putString(CIRCLE_RADIUS_STRING, "");
@@ -133,8 +128,8 @@ public class CircleManager {
         return points;
     }
 
-    private void showPoisInsideCircle(List<OverlayItem> items, IGeoPoint center, double radiusInMeters) {
-        overlayItemItemizedOverlay.removeAllItems(); // supprime tous les marqueurs de sites affichés
+    private void showOnlyPoisInsideCircle(List<OverlayItem> items, IGeoPoint center, double radiusInMeters) {
+        mapManager.getOverlayItemItemizedOverlay().removeAllItems(); // supprime tous les marqueurs de sites affichés
 
         ArrayList<OverlayItem> overlayItems = new ArrayList<>();
 
@@ -155,11 +150,13 @@ public class CircleManager {
             }
         }
 
-        overlayItemItemizedOverlay.addItems(overlayItems);
+        mapManager.getOverlayItemItemizedOverlay().addItems(overlayItems);
         mapView.invalidate();
     }
 
     public void restorePreviousCircle() {
+        SharedPreferences sharedPreferences = mapManager.getSharedPreferences();
+
         String circleRadius = sharedPreferences.getString(CIRCLE_RADIUS_STRING, "");
         int itemIndex = sharedPreferences.getInt(CIRCLE_ITEM_INDEX, -1);
 
@@ -170,15 +167,9 @@ public class CircleManager {
         String circleLongitude = sharedPreferences.getString(CIRCLE_LONGITUDE_STRING, "0.0");
         IGeoPoint center = new GeoPoint(Double.parseDouble(circleLatitude), Double.parseDouble(circleLongitude));
 
-        OverlayItem centerItem = overlayItemItemizedOverlay.getItem(itemIndex);
-
-        if(!centerItem.getPoint().equals(center)){
-            return;
-        }
-
         long categoryFilter = sharedPreferences.getLong(CIRCLE_CATEGORY_FILTER, -1);
 
         drawCircle(itemIndex, Double.parseDouble(circleRadius), categoryFilter);
-        markerGertureListener.setLastItemUid(center);
+        mapManager.getMarkerGertureListener().setLastCircleCenterItemUid(center);
     }
 }
