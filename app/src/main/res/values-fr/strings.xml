@@ -30,7 +30,7 @@
     <string name="center_to_my_location">Centrer la ccarte sur ma position actuelle</string>
     <string name="add_marker_to_my_location">Ajouter un nouveau marqueur sur ma position actuelle</string>
     <string name="radius_in_meters">Rayon du cercle en mètres</string>
-    <string name="input_circle_perimeter_label">"Veuillez indiquer un périmètre en mètres : "</string>
+    <string name="input_circle_perimeter_label">"Veuillez indiquer le rayon du cercle en mètres : "</string>
     <string name="ask_circle_perimeter_title">Recherche de lieux autour de ce point</string>
     <string name="dialog_show">Afficher</string>
 </resources>

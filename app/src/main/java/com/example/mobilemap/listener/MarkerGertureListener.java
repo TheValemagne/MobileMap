@@ -39,7 +39,7 @@ public class MarkerGertureListener implements ItemizedIconOverlay.OnItemGestureL
             return true;
         }
 
-        mapManager.addOverlayItemCircle(item);
+        mapManager.addOverlayItemCircle(index);
         lastItemUid = getItemUid(point);
 
         return true;

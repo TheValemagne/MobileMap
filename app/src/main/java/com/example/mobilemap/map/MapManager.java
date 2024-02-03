@@ -2,22 +2,19 @@ package com.example.mobilemap.map;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.location.Location;
 import android.util.DisplayMetrics;
-import android.widget.EditText;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.preference.PreferenceManager;
 
+import com.example.mobilemap.CircleRadiusDialog;
 import com.example.mobilemap.MainActivity;
 import com.example.mobilemap.PoisActivity;
-import com.example.mobilemap.R;
 import com.example.mobilemap.database.ContentResolverHelper;
 import com.example.mobilemap.database.table.Poi;
-import com.example.mobilemap.databinding.DialogAskPerimeterBinding;
 import com.example.mobilemap.listener.MarkerGertureListener;
 
 import org.osmdroid.api.IGeoPoint;
@@ -30,9 +27,11 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.CopyrightOverlay;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.OverlayItem;
+import org.osmdroid.views.overlay.OverlayWithIW;
 import org.osmdroid.views.overlay.Polygon;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay;
+import org.osmdroid.views.overlay.infowindow.InfoWindow;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
@@ -50,6 +49,7 @@ public final class MapManager {
     private MarkerGertureListener markerGertureListener;
     private MyLocationNewOverlay myLocationNewOverlay;
     private final static int MAX_ANGLE_IN_DEGREE = 360;
+    private InfoWindow infoWindow;
 
     // préférence par défaut
     private final static float DEFAULT_ZOOM = 13.5F;
@@ -66,7 +66,9 @@ public final class MapManager {
 
     private static final String CIRCLE_LATITUDE_STRING = "circleLatitudeString";
     private static final String CIRCLE_LONGITUDE_STRING = "circleLongitudeString";
+    private static final String CIRCLE_ITEM_INDEX = "circleItemIndex";
     private static final String CIRCLE_RADIUS_STRING = "cicleRadiusString";
+    private static final String CIRCLE_CATEGORY_FILTER = "cicleCategoryFilter";
 
     public MapManager(MapView mapView, MainActivity activity, Context context) {
         this.mapView = mapView;
@@ -117,24 +119,32 @@ public final class MapManager {
         mapView.getOverlays().add(overlayItemItemizedOverlay);
     }
 
-    public void addOverlayItemCircle(OverlayItem item) {
+    public void addOverlayItemCircle(int index) {
         removeCircle();
-        showCirclePerimeterDialog(item);
+        CircleRadiusDialog builder = new CircleRadiusDialog(activity, this, index);
+        builder.show();
         mapView.invalidate();
     }
 
     public void updateMarkers() {
-        List<OverlayItem> items = getOverlayItems();
-
         overlayItemItemizedOverlay.removeAllItems();
+
+        List<OverlayItem> items = getOverlayItems();
         overlayItemItemizedOverlay.addItems(items);
+
+        mapView.invalidate();
     }
 
     @NonNull
     private List<OverlayItem> getOverlayItems() {
+        return getOverlayItems(-1);
+    }
+
+    @NonNull
+    private List<OverlayItem> getOverlayItems(long categoryFilter) {
         List<Poi> pois = ContentResolverHelper.getPois(activity.getContentResolver());
 
-        return pois.stream()
+        return pois.stream().filter(poi -> categoryFilter == -1 || poi.getCategoryId() == categoryFilter)
                 .map(poi -> new OverlayItem(poi.getName(), poi.getResume(), new GeoPoint(poi.getLatitude(), poi.getLongitude())))
                 .collect(Collectors.toList());
     }
@@ -173,16 +183,29 @@ public final class MapManager {
         double longitude = Double.parseDouble(longitudeString);
         mapView.setExpectedCenter(new GeoPoint(latitude, longitude));
 
-        String circleRadius = sharedPreferences.getString(CIRCLE_RADIUS_STRING, "");
+        restorePreviousCircle();
+    }
 
-        if(circleRadius.isEmpty()) {
+    private void restorePreviousCircle() {
+        String circleRadius = sharedPreferences.getString(CIRCLE_RADIUS_STRING, "");
+        int itemIndex = sharedPreferences.getInt(CIRCLE_ITEM_INDEX, -1);
+
+        if(circleRadius.isEmpty() || itemIndex == -1) {
             return;
         }
         String circleLatitude = sharedPreferences.getString(CIRCLE_LATITUDE_STRING, "0.0");
         String circleLongitude = sharedPreferences.getString(CIRCLE_LONGITUDE_STRING, "0.0");
-
         IGeoPoint center = new GeoPoint(Double.parseDouble(circleLatitude), Double.parseDouble(circleLongitude));
-        drawCircle(center, Double.parseDouble(circleRadius));
+
+        OverlayItem centerItem = overlayItemItemizedOverlay.getItem(itemIndex);
+
+        if(!centerItem.getPoint().equals(center)){
+            return;
+        }
+
+        long categoryFilter = sharedPreferences.getLong(CIRCLE_CATEGORY_FILTER, -1);
+
+        drawCircle(itemIndex, Double.parseDouble(circleRadius), categoryFilter);
         markerGertureListener.setLastItemUid(center);
     }
 
@@ -205,35 +228,15 @@ public final class MapManager {
         mapController.setZoom(15.0);
     }
 
-    private void showCirclePerimeterDialog(OverlayItem item) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        Resources resources = activity.getResources();
-        builder.setTitle(resources.getString(R.string.ask_circle_perimeter_title));
-
-        DialogAskPerimeterBinding binding = DialogAskPerimeterBinding.inflate(activity.getLayoutInflater());
-        builder.setView(binding.getRoot());
-
-        final EditText editCirclePerimeter = binding.editCirclePerimeter;
-
-        builder.setPositiveButton(resources.getString(R.string.dialog_show), (dialog, which) -> {
-            String perimeter = editCirclePerimeter.getText().toString();
-
-            if (perimeter.isEmpty()) {
-                return;
-            }
-
-            double circlePerimeter = Double.parseDouble(perimeter);
-            drawCircle(item.getPoint(), circlePerimeter);
-        });
-        builder.setNegativeButton(resources.getString(R.string.dialog_cancel), (dialog, which) -> dialog.cancel());
-
-        builder.show();
-    }
-
-    private void drawCircle(IGeoPoint center, double radiusInMeters) {
+    public void drawCircle(int index, double radiusInMeters, long categoryFilter) {
         if (circleOverlay != null) {
             removeCircle();
         }
+
+        OverlayItem centerItem = overlayItemItemizedOverlay.getItem(index);
+        centerItem.setMarker(ResourcesCompat.getDrawable(activity.getResources(), org.osmdroid.library.R.drawable.marker_default, activity.getTheme()));
+        drawCenterInfoWindow(centerItem);
+        IGeoPoint center = centerItem.getPoint();
 
         // Générez les points du périmètre du cercle
         List<GeoPoint> circlePoints = generateCirclePerimeterPoints(center, radiusInMeters);
@@ -248,20 +251,41 @@ public final class MapManager {
         circleOverlay.setPoints(circlePoints);
         mapView.getOverlayManager().add(circleOverlay);
 
-        showPoisInsideCircle(getOverlayItems(), center, radiusInMeters);
+        List<OverlayItem> filteredItems = getOverlayItems(categoryFilter);
+
+        if(!filteredItems.contains(centerItem)) { // affiche toujour le point centrale du cercle
+            filteredItems.add(centerItem);
+        }
+
+        showPoisInsideCircle(filteredItems, center, radiusInMeters);
 
         // Sauvegarde les données du circle pour retracer le cercle si l'application est mise en pause
         final SharedPreferences.Editor edit = sharedPreferences.edit();
         edit.putString(CIRCLE_LATITUDE_STRING, String.valueOf(center.getLatitude()));
         edit.putString(CIRCLE_LONGITUDE_STRING, String.valueOf(center.getLongitude()));
         edit.putString(CIRCLE_RADIUS_STRING, String.valueOf(radiusInMeters));
+        edit.putLong(CIRCLE_CATEGORY_FILTER, categoryFilter);
+        edit.putInt(CIRCLE_ITEM_INDEX, index);
         edit.apply();
     }
+
+    private void drawCenterInfoWindow(OverlayItem centerItem) {
+        OverlayWithIW overlayWithIW = new CustomOverlayWithIW(centerItem);
+        infoWindow = new CustomInfoWindow(org.osmdroid.library.R.layout.bonuspack_bubble, mapView);
+        overlayWithIW.setInfoWindow(infoWindow);
+        mapView.getOverlays().add(overlayWithIW);
+        overlayWithIW.getInfoWindow().open(overlayWithIW, (GeoPoint) centerItem.getPoint(), 0, -25);
+    }
+
 
     public void removeCircle() {
         if (circleOverlay != null) {
             mapView.getOverlayManager().remove(circleOverlay);
             circleOverlay = null;
+        }
+
+        if (infoWindow != null && infoWindow.isOpen()) {
+            infoWindow.close();
         }
 
         // Supprimer les données du cercle
@@ -272,7 +296,6 @@ public final class MapManager {
         edit.apply();
 
         updateMarkers();
-        mapView.invalidate();
     }
 
     private List<GeoPoint> generateCirclePerimeterPoints(IGeoPoint center, double radiusInMeters) {
