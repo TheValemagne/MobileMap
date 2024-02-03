@@ -15,6 +15,10 @@ import com.example.mobilemap.databinding.DialogConfirmDeleteBinding;
 import java.text.MessageFormat;
 
 public class DeleteDatabaseItemListener implements View.OnClickListener{
+    protected long getItemId() {
+        return itemId;
+    }
+
     private final long itemId;
     private final AppCompatActivity activity;
     private final ContentResolver contentResolver;

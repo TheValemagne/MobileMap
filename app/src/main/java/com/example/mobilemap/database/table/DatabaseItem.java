@@ -2,10 +2,12 @@ package com.example.mobilemap.database.table;
 
 import android.content.ContentValues;
 
+import com.example.mobilemap.database.HasId;
+
 /**
  * Classe conteneur représentant une table SQL sous Android
  */
-public abstract class DatabaseItem {
+public abstract class DatabaseItem implements HasId {
     public long getId() {
         return id;
     }

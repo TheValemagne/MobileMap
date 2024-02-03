@@ -3,12 +3,13 @@ package com.example.mobilemap.database.table;
 import android.annotation.SuppressLint;
 import android.database.Cursor;
 
+import com.example.mobilemap.database.HasId;
 import com.example.mobilemap.database.DatabaseContract;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PoiDetail {
+public class PoiDetail implements HasId {
     private final long id;
     private final String name;
 

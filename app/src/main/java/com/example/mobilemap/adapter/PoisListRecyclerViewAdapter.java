@@ -37,7 +37,7 @@ public class PoisListRecyclerViewAdapter extends BaseAdapter<PoisListRecyclerVie
         holder.categoryName.setText(poiDetail.getCategoryName());
         holder.editBtn.setOnClickListener(new ShowPoiListener(poiDetail.getId(), activity));
         holder.deleteBtn.setOnClickListener(new DeleteDatabaseListListener<>(poiDetail.getId(), activity,
-                ((PoisActivity) activity).getDeleteContext(), position, this));
+                ((PoisActivity) activity).getDeleteContext(), this));
     }
 
     @Override
