@@ -26,4 +26,6 @@ public class AddMarkerOverlay extends Overlay {
         activity.poiActivityLauncher.launch(PoisActivity.createIntent(activity, latitude, longitude));
         return true;
     }
+
+
 }

@@ -2,19 +2,25 @@ package com.example.mobilemap.map;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.location.Location;
 import android.util.DisplayMetrics;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.preference.PreferenceManager;
 
 import com.example.mobilemap.MainActivity;
 import com.example.mobilemap.PoisActivity;
+import com.example.mobilemap.R;
 import com.example.mobilemap.database.ContentResolverHelper;
 import com.example.mobilemap.database.table.Poi;
+import com.example.mobilemap.databinding.DialogAskPerimeterBinding;
 import com.example.mobilemap.listener.MarkerGertureListener;
 
+import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -41,6 +47,7 @@ public final class MapManager {
     private final SharedPreferences sharedPreferences;
     private Polygon circleOverlay;
     private ItemizedIconOverlay<OverlayItem> overlayItemItemizedOverlay;
+    private MarkerGertureListener markerGertureListener;
     private MyLocationNewOverlay myLocationNewOverlay;
     private final static int MAX_ANGLE_IN_DEGREE = 360;
 
@@ -83,7 +90,6 @@ public final class MapManager {
 
         myLocationNewOverlay = new MyLocationOverlay(new GpsMyLocationProvider(context), mapView, activity);
         myLocationNewOverlay.enableMyLocation();
-        myLocationNewOverlay.enableFollowLocation();
         mapView.getOverlays().add(myLocationNewOverlay);
 
         CopyrightOverlay mCopyrightOverlay = new CopyrightOverlay(context);
@@ -106,14 +112,14 @@ public final class MapManager {
     }
 
     private void initMarkers() {
-        overlayItemItemizedOverlay = new ItemizedIconOverlay<>(context, getOverlayItems(),new MarkerGertureListener(this));
-        overlayItemItemizedOverlay.setDrawFocusedItem(true);
+        markerGertureListener = new MarkerGertureListener(this);
+        overlayItemItemizedOverlay = new ItemizedIconOverlay<>(context, getOverlayItems(), markerGertureListener);
         mapView.getOverlays().add(overlayItemItemizedOverlay);
     }
 
     public void addOverlayItemCircle(OverlayItem item) {
         removeCircle();
-        drawCircle((GeoPoint) item.getPoint(), 200);
+        showCirclePerimeterDialog(item);
         mapView.invalidate();
     }
 
@@ -175,7 +181,9 @@ public final class MapManager {
         String circleLatitude = sharedPreferences.getString(CIRCLE_LATITUDE_STRING, "0.0");
         String circleLongitude = sharedPreferences.getString(CIRCLE_LONGITUDE_STRING, "0.0");
 
-        showPoisInsideCircle(getOverlayItems(), new GeoPoint(Double.parseDouble(circleLatitude), Double.parseDouble(circleLongitude)), Double.parseDouble(circleRadius));
+        IGeoPoint center = new GeoPoint(Double.parseDouble(circleLatitude), Double.parseDouble(circleLongitude));
+        drawCircle(center, Double.parseDouble(circleRadius));
+        markerGertureListener.setLastItemUid(center);
     }
 
     public void addMarkerToCurrentLocation() {
@@ -197,7 +205,36 @@ public final class MapManager {
         mapController.setZoom(15.0);
     }
 
-    private void drawCircle(GeoPoint center, double radiusInMeters) {
+    private void showCirclePerimeterDialog(OverlayItem item) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        Resources resources = activity.getResources();
+        builder.setTitle(resources.getString(R.string.ask_circle_perimeter_title));
+
+        DialogAskPerimeterBinding binding = DialogAskPerimeterBinding.inflate(activity.getLayoutInflater());
+        builder.setView(binding.getRoot());
+
+        final EditText editCirclePerimeter = binding.editCirclePerimeter;
+
+        builder.setPositiveButton(resources.getString(R.string.dialog_show), (dialog, which) -> {
+            String perimeter = editCirclePerimeter.getText().toString();
+
+            if (perimeter.isEmpty()) {
+                return;
+            }
+
+            double circlePerimeter = Double.parseDouble(perimeter);
+            drawCircle(item.getPoint(), circlePerimeter);
+        });
+        builder.setNegativeButton(resources.getString(R.string.dialog_cancel), (dialog, which) -> dialog.cancel());
+
+        builder.show();
+    }
+
+    private void drawCircle(IGeoPoint center, double radiusInMeters) {
+        if (circleOverlay != null) {
+            removeCircle();
+        }
+
         // Générez les points du périmètre du cercle
         List<GeoPoint> circlePoints = generateCirclePerimeterPoints(center, radiusInMeters);
         // Ajoutez le cercle à la carte
@@ -238,7 +275,7 @@ public final class MapManager {
         mapView.invalidate();
     }
 
-    private List<GeoPoint> generateCirclePerimeterPoints(GeoPoint center, double radiusInMeters) {
+    private List<GeoPoint> generateCirclePerimeterPoints(IGeoPoint center, double radiusInMeters) {
         List<GeoPoint> points = new ArrayList<>();
 
         for (int angleInDegree = 0; angleInDegree < MAX_ANGLE_IN_DEGREE; angleInDegree += 5) {
@@ -254,7 +291,7 @@ public final class MapManager {
         return points;
     }
 
-    private void showPoisInsideCircle(List<OverlayItem> items, GeoPoint center, double radiusInMeters) {
+    private void showPoisInsideCircle(List<OverlayItem> items, IGeoPoint center, double radiusInMeters) {
         overlayItemItemizedOverlay.removeAllItems(); // supprime tous les marqueurs de sites affichés
 
         ArrayList<OverlayItem> overlayItems = new ArrayList<>();
