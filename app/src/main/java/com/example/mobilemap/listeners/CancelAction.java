@@ -1,4 +1,4 @@
-package com.example.mobilemap.listener;
+package com.example.mobilemap.listeners;
 
 import android.view.View;
 

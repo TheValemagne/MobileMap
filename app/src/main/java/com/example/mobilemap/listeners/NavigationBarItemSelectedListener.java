@@ -1,4 +1,4 @@
-package com.example.mobilemap.listener;
+package com.example.mobilemap.listeners;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -6,9 +6,9 @@ import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 
-import com.example.mobilemap.CategoriesActivity;
-import com.example.mobilemap.MainActivity;
-import com.example.mobilemap.PoisActivity;
+import com.example.mobilemap.categories.CategoriesActivity;
+import com.example.mobilemap.map.MainActivity;
+import com.example.mobilemap.pois.PoisActivity;
 import com.example.mobilemap.R;
 import com.google.android.material.navigation.NavigationBarView;
 

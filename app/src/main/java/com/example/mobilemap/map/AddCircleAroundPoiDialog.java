@@ -1,4 +1,4 @@
-package com.example.mobilemap;
+package com.example.mobilemap.map;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -7,18 +7,18 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.example.mobilemap.R;
 import com.example.mobilemap.database.ContentResolverHelper;
 import com.example.mobilemap.database.table.Category;
 import com.example.mobilemap.databinding.DialogAskCircleRadiusBinding;
-import com.example.mobilemap.map.MapManager;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class CircleRadiusDialog extends AlertDialog.Builder {
+public class AddCircleAroundPoiDialog extends AlertDialog.Builder {
     private final MapManager mapManager;
     private List<Category> categories;
-    public CircleRadiusDialog(Activity activity, MapManager mapManager, int index) {
+    public AddCircleAroundPoiDialog(Activity activity, MapManager mapManager, int index) {
         super(activity);
         this.mapManager = mapManager;
 

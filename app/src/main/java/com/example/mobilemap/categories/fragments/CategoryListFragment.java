@@ -1,4 +1,4 @@
-package com.example.mobilemap.fragment;
+package com.example.mobilemap.categories.fragments;
 
 import android.os.Bundle;
 
@@ -12,11 +12,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.mobilemap.adapter.CategoryListRecyclerViewAdapter;
+import com.example.mobilemap.categories.CategoryListRecyclerViewAdapter;
 import com.example.mobilemap.database.ContentResolverHelper;
 import com.example.mobilemap.database.table.Category;
 import com.example.mobilemap.databinding.FragmentCategoriesListBinding;
-import com.example.mobilemap.listener.ShowCategoryListener;
+import com.example.mobilemap.categories.ShowCategoryListener;
 
 import java.util.List;
 

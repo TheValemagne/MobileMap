@@ -1,4 +1,4 @@
-package com.example.mobilemap.adapter;
+package com.example.mobilemap.categories;
 
 import android.content.ContentResolver;
 import android.view.LayoutInflater;
@@ -10,11 +10,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.mobilemap.CategoriesActivity;
+import com.example.mobilemap.adapters.BaseAdapter;
 import com.example.mobilemap.database.table.Category;
 import com.example.mobilemap.databinding.CategoryListItemBinding;
-import com.example.mobilemap.listener.DeleteDatabaseListListener;
-import com.example.mobilemap.listener.ShowCategoryListener;
+import com.example.mobilemap.listeners.DeleteDatabaseListListener;
 
 import java.util.List;
 

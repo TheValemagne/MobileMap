@@ -1,4 +1,4 @@
-package com.example.mobilemap.listener;
+package com.example.mobilemap.listeners;
 
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -9,7 +9,7 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mobilemap.database.table.DatabaseItem;
-import com.example.mobilemap.fragment.ItemView;
+import com.example.mobilemap.database.interfaces.ItemView;
 
 import java.text.MessageFormat;
 

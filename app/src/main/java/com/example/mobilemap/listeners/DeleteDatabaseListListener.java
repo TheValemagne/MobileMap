@@ -1,11 +1,11 @@
-package com.example.mobilemap.listener;
+package com.example.mobilemap.listeners;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.mobilemap.DeleteItemContext;
-import com.example.mobilemap.adapter.BaseAdapter;
-import com.example.mobilemap.database.HasId;
+import com.example.mobilemap.database.DeleteItemContext;
+import com.example.mobilemap.adapters.BaseAdapter;
+import com.example.mobilemap.database.interfaces.HasId;
 
 import java.util.List;
 

@@ -3,8 +3,8 @@ package com.example.mobilemap.database.table;
 import android.annotation.SuppressLint;
 import android.database.Cursor;
 
-import com.example.mobilemap.database.HasId;
 import com.example.mobilemap.database.DatabaseContract;
+import com.example.mobilemap.database.interfaces.HasId;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,8 +1,8 @@
-package com.example.mobilemap.map;
+package com.example.mobilemap.map.overlays;
 
 import android.location.Location;
 
-import com.example.mobilemap.MainActivity;
+import com.example.mobilemap.map.MainActivity;
 
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;

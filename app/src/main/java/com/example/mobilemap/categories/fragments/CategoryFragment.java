@@ -1,4 +1,4 @@
-package com.example.mobilemap.fragment;
+package com.example.mobilemap.categories.fragments;
 
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -12,14 +12,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.mobilemap.CategoriesActivity;
+import com.example.mobilemap.categories.CategoriesActivity;
 import com.example.mobilemap.R;
 import com.example.mobilemap.database.ContentResolverHelper;
 import com.example.mobilemap.database.DatabaseContract;
 import com.example.mobilemap.database.table.Category;
 import com.example.mobilemap.databinding.FragmentCategoryBinding;
-import com.example.mobilemap.listener.DeleteDatabaseItemListener;
-import com.example.mobilemap.listener.SaveDatabaseItemListener;
+import com.example.mobilemap.database.interfaces.ItemView;
+import com.example.mobilemap.listeners.CancelAction;
+import com.example.mobilemap.listeners.DeleteDatabaseItemListener;
+import com.example.mobilemap.listeners.SaveDatabaseItemListener;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -90,7 +92,7 @@ public class CategoryFragment extends Fragment implements ItemView<Category> {
 
     private void bindActionButtons() {
         binding.categorySaveBtn.setOnClickListener(new SaveDatabaseItemListener<>(activity, this, DatabaseContract.Category.CONTENT_URI));
-        binding.categoryCancelBtn.setOnClickListener(v -> requireActivity().getSupportFragmentManager().popBackStackImmediate());
+        binding.categoryCancelBtn.setOnClickListener(new CancelAction(activity, false));
         if(category != null) {
             binding.categoryDeleteBtn.setOnClickListener(new DeleteDatabaseItemListener(category.getId(), activity, activity.getDeleteContext()));
         }

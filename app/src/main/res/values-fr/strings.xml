@@ -33,4 +33,5 @@
     <string name="input_circle_perimeter_label">"Veuillez indiquer le rayon du cercle en mètres : "</string>
     <string name="ask_circle_perimeter_title">Recherche de lieux autour de ce point</string>
     <string name="dialog_show">Afficher</string>
+    <string name="select_category_filter">"Veuillez choisir la catégorie à afficher : "</string>
 </resources>

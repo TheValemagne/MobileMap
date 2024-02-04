@@ -1,4 +1,4 @@
-package com.example.mobilemap.fragment;
+package com.example.mobilemap.database.interfaces;
 
 import com.example.mobilemap.database.table.DatabaseItem;
 

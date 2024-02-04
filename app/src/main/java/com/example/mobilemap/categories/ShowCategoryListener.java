@@ -1,4 +1,4 @@
-package com.example.mobilemap.listener;
+package com.example.mobilemap.categories;
 
 import android.view.View;
 
@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.example.mobilemap.R;
-import com.example.mobilemap.fragment.CategoryFragment;
+import com.example.mobilemap.categories.fragments.CategoryFragment;
 
 public class ShowCategoryListener implements View.OnClickListener {
     private final long itemId;

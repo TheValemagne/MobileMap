@@ -1,4 +1,4 @@
-package com.example.mobilemap.adapter;
+package com.example.mobilemap.pois;
 
 import android.content.ContentResolver;
 import android.view.LayoutInflater;
@@ -10,15 +10,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.mobilemap.PoisActivity;
+import com.example.mobilemap.adapters.BaseAdapter;
 import com.example.mobilemap.database.table.PoiDetail;
 import com.example.mobilemap.databinding.PoiListItemBinding;
-import com.example.mobilemap.listener.DeleteDatabaseListListener;
-import com.example.mobilemap.listener.ShowPoiListener;
+import com.example.mobilemap.listeners.DeleteDatabaseListListener;
 
 import java.util.List;
 
-public class PoisListRecyclerViewAdapter extends BaseAdapter<PoisListRecyclerViewAdapter.ViewHolder, PoiDetail>{
+public class PoisListRecyclerViewAdapter extends BaseAdapter<PoisListRecyclerViewAdapter.ViewHolder, PoiDetail> {
     public PoisListRecyclerViewAdapter(List<PoiDetail> values, ContentResolver contentResolver, AppCompatActivity activity) {
         super(values, contentResolver, activity);
     }

@@ -7,9 +7,10 @@ import android.util.DisplayMetrics;
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
-import com.example.mobilemap.CircleRadiusDialog;
-import com.example.mobilemap.MainActivity;
-import com.example.mobilemap.PoisActivity;
+import com.example.mobilemap.map.overlays.AddMarkerOverlay;
+import com.example.mobilemap.map.overlays.CustomOverlayWithIW;
+import com.example.mobilemap.map.overlays.MyLocationOverlay;
+import com.example.mobilemap.pois.PoisActivity;
 import com.example.mobilemap.database.ContentResolverHelper;
 import com.example.mobilemap.database.table.Poi;
 
@@ -50,39 +51,27 @@ public final class MapManager {
 
     private ItemizedIconOverlay<OverlayItem> overlayItemItemizedOverlay;
 
-    public MarkerGestureListener getMarkerGertureListener() {
-        return markerGertureListener;
+    public MarkerGestureListener getMarkerGestureListener() {
+        return markerGestureListener;
     }
 
-    private final MarkerGestureListener markerGertureListener;
+    private final MarkerGestureListener markerGestureListener;
     private MyLocationNewOverlay myLocationNewOverlay;
 
-    // préférence par défaut
-    private final static float DEFAULT_ZOOM = 13.5F;
-    private final static String DEFAULT_LATITUDE = "49.109523";
-    private final static String DEFAULT_LONGITUDE = "6.1768191";
 
-    // Pour le stockage des préférences
-    private static final String PREFS_NAME = "com.exemple.mobileMap";
-    private static final String PREFS_TILE_SOURCE = "tilesource";
-    private static final String PREFS_LATITUDE_STRING = "latitudeString";
-    private static final String PREFS_LONGITUDE_STRING = "longitudeString";
-    private static final String PREFS_ORIENTATION = "orientation";
-    private static final String PREFS_ZOOM_LEVEL_DOUBLE = "zoomLevelDouble";
 
     public MapManager(MapView mapView, MainActivity activity, Context context) {
         this.mapView = mapView;
         this.activity = activity;
         this.context = context;
 
-        sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        markerGertureListener = new MarkerGestureListener(mapView, this);
-        circleManager = new CircleManager(mapView, activity, this);
+        sharedPreferences = context.getSharedPreferences(SharedPreferencesConstant.PREFS_NAME, Context.MODE_PRIVATE);
+        markerGestureListener = new MarkerGestureListener(mapView, this);
+        circleManager = new CircleManager(mapView, this);
     }
 
     public void initMap() {
         Configuration.getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context));
-        DisplayMetrics dm = context.getResources().getDisplayMetrics();
 
         mapView.setTileSource(TileSourceFactory.MAPNIK);
         mapView.getZoomController()
@@ -92,6 +81,13 @@ public final class MapManager {
         mapView.setHorizontalMapRepetitionEnabled(false);
         mapView.setVerticalMapRepetitionEnabled(false);
 
+        IMapController mapController = mapView.getController();
+        mapController.setZoom(SharedPreferencesConstant.DEFAULT_ZOOM);
+
+        initMapOverlays();
+    }
+
+    private void initMapOverlays() {
         myLocationNewOverlay = new MyLocationOverlay(new GpsMyLocationProvider(context), mapView, activity);
         myLocationNewOverlay.enableMyLocation();
         mapView.getOverlays().add(myLocationNewOverlay);
@@ -99,9 +95,10 @@ public final class MapManager {
         CopyrightOverlay mCopyrightOverlay = new CopyrightOverlay(context);
         mapView.getOverlays().add(mCopyrightOverlay);
 
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         ScaleBarOverlay mScaleBarOverlay = new ScaleBarOverlay(mapView);
         mScaleBarOverlay.setCentred(true);
-        mScaleBarOverlay.setScaleBarOffset(dm.widthPixels / 2, 10);
+        mScaleBarOverlay.setScaleBarOffset(displayMetrics.widthPixels / 2, 10);
         mapView.getOverlays().add(mScaleBarOverlay);
 
         RotationGestureOverlay mRotationGestureOverlay = new RotationGestureOverlay(mapView);
@@ -109,31 +106,28 @@ public final class MapManager {
         mapView.getOverlays().add(mRotationGestureOverlay);
 
         mapView.getOverlays().add(new AddMarkerOverlay(activity));
-        initMarkers();
 
-        IMapController mapController = mapView.getController();
-        mapController.setZoom(DEFAULT_ZOOM);
-    }
-
-    private void initMarkers() {
-        overlayItemItemizedOverlay = new ItemizedIconOverlay<>(context, getOverlayItems(), markerGertureListener);
+        overlayItemItemizedOverlay = new ItemizedIconOverlay<>(context, getOverlayItems(), markerGestureListener);
         mapView.getOverlays().add(overlayItemItemizedOverlay);
     }
 
-    public void addOverlayItemCircle(int index) {
-        removeCircle();
-        CircleRadiusDialog builder = new CircleRadiusDialog(activity, this, index);
+    public void showAddCircleAroundPoiDialog(int index) {
+        AddCircleAroundPoiDialog builder = new AddCircleAroundPoiDialog(activity, this, index);
         builder.show();
-        mapView.invalidate();
+    }
+
+    public boolean hasSavedCircle() {
+        return circleManager.hasSavedCircle();
     }
 
     public void updateMarkers() {
-        overlayItemItemizedOverlay.removeAllItems();
+        if(hasSavedCircle()) { // actualise le cercle avec les sites dedans
+            circleManager.restorePreviousCircle();
+        } else { // actualise tous les sites de la carte
+            overlayItemItemizedOverlay.removeAllItems();
+            overlayItemItemizedOverlay.addItems(getOverlayItems());
+        }
 
-        List<OverlayItem> items = getOverlayItems();
-        overlayItemItemizedOverlay.addItems(items);
-
-        circleManager.restorePreviousCircle();
         mapView.invalidate();
     }
 
@@ -157,11 +151,11 @@ public final class MapManager {
     public void onPause() {
         // Sauvegarde des paramètres actuels de la carte
         final SharedPreferences.Editor edit = sharedPreferences.edit();
-        edit.putString(PREFS_TILE_SOURCE, mapView.getTileProvider().getTileSource().name());
-        edit.putFloat(PREFS_ORIENTATION, mapView.getMapOrientation());
-        edit.putString(PREFS_LATITUDE_STRING, String.valueOf(mapView.getMapCenter().getLatitude()));
-        edit.putString(PREFS_LONGITUDE_STRING, String.valueOf(mapView.getMapCenter().getLongitude()));
-        edit.putFloat(PREFS_ZOOM_LEVEL_DOUBLE, (float) mapView.getZoomLevelDouble());
+        edit.putString(SharedPreferencesConstant.PREFS_TILE_SOURCE, mapView.getTileProvider().getTileSource().name());
+        edit.putFloat(SharedPreferencesConstant.PREFS_ORIENTATION, mapView.getMapOrientation());
+        edit.putString(SharedPreferencesConstant.PREFS_LATITUDE_STRING, String.valueOf(mapView.getMapCenter().getLatitude()));
+        edit.putString(SharedPreferencesConstant.PREFS_LONGITUDE_STRING, String.valueOf(mapView.getMapCenter().getLongitude()));
+        edit.putFloat(SharedPreferencesConstant.PREFS_ZOOM_LEVEL_DOUBLE, (float) mapView.getZoomLevelDouble());
         edit.apply();
     }
 
@@ -173,14 +167,14 @@ public final class MapManager {
             return;
         }
 
-        float zoomLevel = sharedPreferences.getFloat(PREFS_ZOOM_LEVEL_DOUBLE, DEFAULT_ZOOM);
+        float zoomLevel = sharedPreferences.getFloat(SharedPreferencesConstant.PREFS_ZOOM_LEVEL_DOUBLE, SharedPreferencesConstant.DEFAULT_ZOOM);
         mapView.getController().setZoom(zoomLevel);
 
-        float orientation = sharedPreferences.getFloat(PREFS_ORIENTATION, 0);
+        float orientation = sharedPreferences.getFloat(SharedPreferencesConstant.PREFS_ORIENTATION, 0);
         mapView.setMapOrientation(orientation, false);
 
-        String latitudeString = sharedPreferences.getString(PREFS_LATITUDE_STRING, DEFAULT_LATITUDE);
-        String longitudeString = sharedPreferences.getString(PREFS_LONGITUDE_STRING, DEFAULT_LONGITUDE);
+        String latitudeString = sharedPreferences.getString(SharedPreferencesConstant.PREFS_LATITUDE_STRING, SharedPreferencesConstant.DEFAULT_LATITUDE);
+        String longitudeString = sharedPreferences.getString(SharedPreferencesConstant.PREFS_LONGITUDE_STRING, SharedPreferencesConstant.DEFAULT_LONGITUDE);
         mapView.setExpectedCenter(new GeoPoint(Double.parseDouble(latitudeString), Double.parseDouble(longitudeString)));
 
         circleManager.restorePreviousCircle();
@@ -206,7 +200,13 @@ public final class MapManager {
     }
 
     public void drawCircle(int index, double radiusInMeters, long categoryFilter) {
+        if (hasSavedCircle()) {
+            removeCircle();
+        }
+
         circleManager.drawCircle(index, radiusInMeters, categoryFilter);
+        markerGestureListener.setLastCircleCenterItemUid(overlayItemItemizedOverlay.getItem(index).getPoint());
+        mapView.invalidate(); // demande le rafraichissement de la carte si le cercle a été ajouté
     }
 
     public void removeCircle() {

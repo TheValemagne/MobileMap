@@ -1,4 +1,4 @@
-package com.example.mobilemap;
+package com.example.mobilemap.pois;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -7,12 +7,14 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.example.mobilemap.R;
 import com.example.mobilemap.database.ContentResolverHelper;
 import com.example.mobilemap.database.DatabaseContract;
+import com.example.mobilemap.database.DeleteItemContext;
 import com.example.mobilemap.databinding.ActivityPoisBinding;
-import com.example.mobilemap.fragment.PoiFragment;
-import com.example.mobilemap.fragment.PoiListFragment;
-import com.example.mobilemap.listener.NavigationBarItemSelectedListener;
+import com.example.mobilemap.pois.fragments.PoiFragment;
+import com.example.mobilemap.pois.fragments.PoiListFragment;
+import com.example.mobilemap.listeners.NavigationBarItemSelectedListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class PoisActivity extends AppCompatActivity {

@@ -1,4 +1,4 @@
-package com.example.mobilemap.listener;
+package com.example.mobilemap.listeners;
 
 import android.app.AlertDialog;
 import android.content.ContentResolver;
@@ -8,7 +8,7 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.mobilemap.DeleteItemContext;
+import com.example.mobilemap.database.DeleteItemContext;
 import com.example.mobilemap.R;
 import com.example.mobilemap.databinding.DialogConfirmDeleteBinding;
 

@@ -1,4 +1,4 @@
-package com.example.mobilemap;
+package com.example.mobilemap.map;
 
 import android.Manifest;
 
@@ -25,9 +25,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.example.mobilemap.R;
 import com.example.mobilemap.databinding.ActivityMainBinding;
-import com.example.mobilemap.listener.NavigationBarItemSelectedListener;
-import com.example.mobilemap.map.MapManager;
+import com.example.mobilemap.listeners.NavigationBarItemSelectedListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;

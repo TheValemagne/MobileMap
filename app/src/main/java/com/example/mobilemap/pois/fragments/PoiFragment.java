@@ -1,4 +1,4 @@
-package com.example.mobilemap.fragment;
+package com.example.mobilemap.pois.fragments;
 
 import android.database.Cursor;
 import android.os.Bundle;
@@ -12,15 +12,16 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
-import com.example.mobilemap.PoisActivity;
+import com.example.mobilemap.database.interfaces.ItemView;
+import com.example.mobilemap.pois.PoisActivity;
 import com.example.mobilemap.database.ContentResolverHelper;
 import com.example.mobilemap.database.DatabaseContract;
 import com.example.mobilemap.database.table.Category;
 import com.example.mobilemap.database.table.Poi;
 import com.example.mobilemap.databinding.FragmentPoiBinding;
-import com.example.mobilemap.listener.CancelAction;
-import com.example.mobilemap.listener.DeleteDatabaseItemListener;
-import com.example.mobilemap.listener.SaveDatabaseItemListener;
+import com.example.mobilemap.listeners.CancelAction;
+import com.example.mobilemap.listeners.DeleteDatabaseItemListener;
+import com.example.mobilemap.listeners.SaveDatabaseItemListener;
 
 import java.util.List;
 import java.util.stream.Collectors;

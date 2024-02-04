@@ -1,4 +1,4 @@
-package com.example.mobilemap.fragment;
+package com.example.mobilemap.pois.fragments;
 
 import android.os.Bundle;
 
@@ -13,11 +13,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.mobilemap.R;
-import com.example.mobilemap.adapter.PoisListRecyclerViewAdapter;
+import com.example.mobilemap.pois.PoisListRecyclerViewAdapter;
 import com.example.mobilemap.database.ContentResolverHelper;
 import com.example.mobilemap.database.table.PoiDetail;
 import com.example.mobilemap.databinding.FragmentPoiListBinding;
-import com.example.mobilemap.listener.ShowPoiListener;
+import com.example.mobilemap.pois.ShowPoiListener;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.example.mobilemap;
+package com.example.mobilemap.database;
 
 import android.net.Uri;
 

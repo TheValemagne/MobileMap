@@ -57,8 +57,7 @@ public class MarkerGestureListener implements ItemizedIconOverlay.OnItemGestureL
             return true;
         }
 
-        mapManager.addOverlayItemCircle(index);
-        lastCircleCenterItemUid = getItemUid(point);
+        mapManager.showAddCircleAroundPoiDialog(index);
 
         return true;
     }

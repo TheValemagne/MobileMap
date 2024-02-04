@@ -1,4 +1,4 @@
-package com.example.mobilemap.listener;
+package com.example.mobilemap.pois;
 
 import android.view.View;
 
@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.example.mobilemap.R;
-import com.example.mobilemap.fragment.PoiFragment;
+import com.example.mobilemap.pois.fragments.PoiFragment;
 
 public class ShowPoiListener implements View.OnClickListener {
     private final long itemId;

@@ -1,11 +1,11 @@
-package com.example.mobilemap.adapter;
+package com.example.mobilemap.adapters;
 
 import android.content.ContentResolver;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.mobilemap.database.HasId;
+import com.example.mobilemap.database.interfaces.HasId;
 
 import java.util.List;
 

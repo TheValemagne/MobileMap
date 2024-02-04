@@ -33,4 +33,5 @@
     <string name="input_circle_perimeter_label">"Please specify the circles radius in metres: "</string>
     <string name="ask_circle_perimeter_title">Search for locations around this point</string>
     <string name="dialog_show">Show</string>
+    <string name="select_category_filter">Please select the category to show:</string>
 </resources>

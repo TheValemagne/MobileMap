@@ -1,4 +1,4 @@
-package com.example.mobilemap.map;
+package com.example.mobilemap.map.overlays;
 
 import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.OverlayWithIW;

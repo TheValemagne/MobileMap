@@ -2,7 +2,7 @@ package com.example.mobilemap.database.table;
 
 import android.content.ContentValues;
 
-import com.example.mobilemap.database.HasId;
+import com.example.mobilemap.database.interfaces.HasId;
 
 /**
  * Classe conteneur représentant une table SQL sous Android

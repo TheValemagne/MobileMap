@@ -1,9 +1,9 @@
-package com.example.mobilemap.map;
+package com.example.mobilemap.map.overlays;
 
 import android.view.MotionEvent;
 
-import com.example.mobilemap.MainActivity;
-import com.example.mobilemap.PoisActivity;
+import com.example.mobilemap.map.MainActivity;
+import com.example.mobilemap.pois.PoisActivity;
 
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Overlay;
