@@ -9,7 +9,7 @@ import android.widget.Spinner;
 
 import com.example.mobilemap.R;
 import com.example.mobilemap.database.ContentResolverHelper;
-import com.example.mobilemap.database.table.Category;
+import com.example.mobilemap.database.tables.Category;
 import com.example.mobilemap.databinding.DialogAskCircleRadiusBinding;
 
 import java.util.List;
@@ -39,7 +39,15 @@ public class AddCircleAroundPoiDialog extends AlertDialog.Builder {
                 return;
             }
 
-            this.mapManager.drawCircle(index, Double.parseDouble(textRadius), getSelectedValue(categoryFilter));
+            double circleRadius = Double.parseDouble(textRadius);
+            long categoryFilterValue = getSelectedValue(categoryFilter);
+
+            if (index != -1){
+                this.mapManager.drawCircle(index, circleRadius, categoryFilterValue);
+            } else {
+                this.mapManager.drawCircleAroundMe(circleRadius, categoryFilterValue);
+            }
+
         });
         this.setNegativeButton(resources.getString(R.string.dialog_cancel), (dialog, which) -> dialog.cancel());
     }

@@ -8,7 +8,7 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.mobilemap.database.table.DatabaseItem;
+import com.example.mobilemap.database.tables.DatabaseItem;
 import com.example.mobilemap.database.interfaces.ItemView;
 
 import java.text.MessageFormat;

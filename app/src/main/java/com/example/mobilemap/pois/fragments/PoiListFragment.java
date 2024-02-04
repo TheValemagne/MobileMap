@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 import com.example.mobilemap.R;
 import com.example.mobilemap.pois.PoisListRecyclerViewAdapter;
 import com.example.mobilemap.database.ContentResolverHelper;
-import com.example.mobilemap.database.table.PoiDetail;
+import com.example.mobilemap.database.tables.PoiDetail;
 import com.example.mobilemap.databinding.FragmentPoiListBinding;
 import com.example.mobilemap.pois.ShowPoiListener;
 

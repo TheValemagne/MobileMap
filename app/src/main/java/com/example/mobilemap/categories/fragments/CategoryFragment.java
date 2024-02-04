@@ -16,7 +16,7 @@ import com.example.mobilemap.categories.CategoriesActivity;
 import com.example.mobilemap.R;
 import com.example.mobilemap.database.ContentResolverHelper;
 import com.example.mobilemap.database.DatabaseContract;
-import com.example.mobilemap.database.table.Category;
+import com.example.mobilemap.database.tables.Category;
 import com.example.mobilemap.databinding.FragmentCategoryBinding;
 import com.example.mobilemap.database.interfaces.ItemView;
 import com.example.mobilemap.listeners.CancelAction;

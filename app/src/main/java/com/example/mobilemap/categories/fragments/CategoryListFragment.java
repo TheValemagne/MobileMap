@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 
 import com.example.mobilemap.categories.CategoryListRecyclerViewAdapter;
 import com.example.mobilemap.database.ContentResolverHelper;
-import com.example.mobilemap.database.table.Category;
+import com.example.mobilemap.database.tables.Category;
 import com.example.mobilemap.databinding.FragmentCategoriesListBinding;
 import com.example.mobilemap.categories.ShowCategoryListener;
 

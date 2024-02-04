@@ -1,4 +1,4 @@
-package com.example.mobilemap.database.table;
+package com.example.mobilemap.database.tables;
 
 import android.annotation.SuppressLint;
 import android.content.ContentValues;

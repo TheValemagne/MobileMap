@@ -3,9 +3,9 @@ package com.example.mobilemap.database;
 import android.content.ContentResolver;
 import android.database.Cursor;
 
-import com.example.mobilemap.database.table.Category;
-import com.example.mobilemap.database.table.Poi;
-import com.example.mobilemap.database.table.PoiDetail;
+import com.example.mobilemap.database.tables.Category;
+import com.example.mobilemap.database.tables.Poi;
+import com.example.mobilemap.database.tables.PoiDetail;
 
 import java.util.List;
 

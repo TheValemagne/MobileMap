@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mobilemap.adapters.BaseAdapter;
-import com.example.mobilemap.database.table.Category;
+import com.example.mobilemap.database.tables.Category;
 import com.example.mobilemap.databinding.CategoryListItemBinding;
 import com.example.mobilemap.listeners.DeleteDatabaseListListener;
 

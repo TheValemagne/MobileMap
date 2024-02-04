@@ -29,6 +29,7 @@ import com.example.mobilemap.R;
 import com.example.mobilemap.databinding.ActivityMainBinding;
 import com.example.mobilemap.listeners.NavigationBarItemSelectedListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,6 +42,18 @@ public class MainActivity extends AppCompatActivity {
     private MapView mapView;
     private MapManager mapManager;
     private LinearLayout floatingButtons;
+
+    public FloatingActionButton getShowCircleAroundMe() {
+        return showCircleAroundMe;
+    }
+
+    private FloatingActionButton showCircleAroundMe;
+
+    public FloatingActionButton getRemoveCircleAroundMe() {
+        return removeCircleAroundMe;
+    }
+
+    private FloatingActionButton removeCircleAroundMe;
 
     @SuppressLint("Range")
     @Override
@@ -59,15 +72,20 @@ public class MainActivity extends AppCompatActivity {
         floatingButtons = binding.floatingButtons;
         floatingButtons.setVisibility(View.GONE);
 
+        showCircleAroundMe = binding.showCircleAroundMe;
+        showCircleAroundMe.setOnClickListener(v -> mapManager.showAddCircleAroundMeDialog());
+
+        removeCircleAroundMe = binding.removeCircleAroundMe;
+        removeCircleAroundMe.setOnClickListener(v -> mapManager.removeCircle());
+
         binding.locateMeBtn.setOnClickListener(v -> mapManager.centerToUserLocation());
         binding.addMarkerAtLocation.setOnClickListener(v -> mapManager.addMarkerToCurrentLocation());
-
-        mapView = binding.mapView;
 
         requestPermissionsIfNecessary(Collections.singletonList(
                 Manifest.permission.ACCESS_FINE_LOCATION
         ));
 
+        mapView = binding.mapView;
         mapManager = new MapManager(mapView, this, context);
         mapManager.initMap();
     }

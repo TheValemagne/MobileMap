@@ -1,4 +1,4 @@
-package com.example.mobilemap.database.table;
+package com.example.mobilemap.database.tables;
 
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
@@ -131,7 +131,7 @@ public class Poi extends DatabaseItem {
         }
 
         do{
-            result.add(com.example.mobilemap.database.table.Poi.fromCursor(cursor));
+            result.add(com.example.mobilemap.database.tables.Poi.fromCursor(cursor));
         } while(cursor.moveToNext());
 
         return result;

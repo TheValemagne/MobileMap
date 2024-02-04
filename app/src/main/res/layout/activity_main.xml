@@ -46,10 +46,10 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="1dp"
                         android:clickable="true"
+                        android:contentDescription="@string/center_to_my_location"
                         android:src="@drawable/ic_menu_mylocation"
                         android:visibility="visible"
-                        app:elevation="2dp"
-                        android:contentDescription="@string/center_to_my_location" />
+                        app:elevation="2dp" />
 
                     <Space
                         android:layout_width="match_parent"
@@ -63,9 +63,31 @@
                         android:layout_margin="1dp"
                         android:layout_weight="1"
                         android:clickable="true"
-                        android:src="@drawable/marker_default"
-                        app:elevation="2dp"
-                        android:contentDescription="@string/add_marker_to_my_location" />
+                        android:contentDescription="@string/add_marker_to_my_location"
+                        android:src="@android:drawable/ic_menu_add"
+                        app:elevation="2dp" />
+
+                    <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="10dp"
+                        android:layout_weight="1" />
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/showCircleAroundMe"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:src="@android:drawable/ic_menu_search"
+                        app:elevation="2dp" />
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/removeCircleAroundMe"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:src="@android:drawable/ic_menu_close_clear_cancel"
+                        android:visibility="gone"
+                        app:elevation="2dp" />
 
                 </LinearLayout>
 
