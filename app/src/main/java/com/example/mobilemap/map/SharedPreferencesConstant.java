@@ -15,9 +15,9 @@ public final class SharedPreferencesConstant {
     public static final String PREFS_ZOOM_LEVEL_DOUBLE = "zoomLevelDouble";
 
     // Pour le stockage le circle actuellement affiché
+    public static final String CIRCLE_IS_AROUND_ME = "circleAroundMe";
     public static final String CIRCLE_LATITUDE_STRING = "circleLatitudeString";
     public static final String CIRCLE_LONGITUDE_STRING = "circleLongitudeString";
-    public static final String CIRCLE_ITEM_INDEX = "circleItemIndex";
     public static final String CIRCLE_RADIUS_STRING = "cicleRadiusString";
     public static final String CIRCLE_CATEGORY_FILTER = "cicleCategoryFilter";
 

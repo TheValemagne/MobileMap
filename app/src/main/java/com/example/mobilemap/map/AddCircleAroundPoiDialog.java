@@ -12,13 +12,15 @@ import com.example.mobilemap.database.ContentResolverHelper;
 import com.example.mobilemap.database.tables.Category;
 import com.example.mobilemap.databinding.DialogAskCircleRadiusBinding;
 
+import org.osmdroid.views.overlay.OverlayItem;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class AddCircleAroundPoiDialog extends AlertDialog.Builder {
     private final MapManager mapManager;
     private List<Category> categories;
-    public AddCircleAroundPoiDialog(Activity activity, MapManager mapManager, int index) {
+    public AddCircleAroundPoiDialog(Activity activity, MapManager mapManager, OverlayItem item) {
         super(activity);
         this.mapManager = mapManager;
 
@@ -42,8 +44,8 @@ public class AddCircleAroundPoiDialog extends AlertDialog.Builder {
             double circleRadius = Double.parseDouble(textRadius);
             long categoryFilterValue = getSelectedValue(categoryFilter);
 
-            if (index != -1){
-                this.mapManager.drawCircle(index, circleRadius, categoryFilterValue);
+            if (item != null){
+                this.mapManager.drawCircle(item, circleRadius, categoryFilterValue);
             } else {
                 this.mapManager.drawCircleAroundMe(circleRadius, categoryFilterValue);
             }

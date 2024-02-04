@@ -3,6 +3,7 @@ package com.example.mobilemap.map;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.DisplayMetrics;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
@@ -12,8 +13,9 @@ import com.example.mobilemap.map.overlays.CustomOverlayWithIW;
 import com.example.mobilemap.map.overlays.MyLocationOverlay;
 import com.example.mobilemap.pois.PoisActivity;
 import com.example.mobilemap.database.ContentResolverHelper;
-import com.example.mobilemap.database.table.Poi;
+import com.example.mobilemap.database.tables.Poi;
 
+import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -30,7 +32,11 @@ import org.osmdroid.views.overlay.infowindow.InfoWindow;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
+import java.text.MessageFormat;
+import java.text.NumberFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public final class MapManager {
@@ -58,16 +64,15 @@ public final class MapManager {
     private final MarkerGestureListener markerGestureListener;
     private MyLocationNewOverlay myLocationNewOverlay;
 
-
-
     public MapManager(MapView mapView, MainActivity activity, Context context) {
         this.mapView = mapView;
         this.activity = activity;
         this.context = context;
 
         sharedPreferences = context.getSharedPreferences(SharedPreferencesConstant.PREFS_NAME, Context.MODE_PRIVATE);
-        markerGestureListener = new MarkerGestureListener(mapView, this);
-        circleManager = new CircleManager(mapView, this);
+        Map<String, InfoWindow> integerInfoWindowMap = new HashMap<>();
+        markerGestureListener = new MarkerGestureListener(mapView, this, integerInfoWindowMap);
+        circleManager = new CircleManager(mapView, this, integerInfoWindowMap);
     }
 
     public void initMap() {
@@ -88,7 +93,7 @@ public final class MapManager {
     }
 
     private void initMapOverlays() {
-        myLocationNewOverlay = new MyLocationOverlay(new GpsMyLocationProvider(context), mapView, activity);
+        myLocationNewOverlay = new MyLocationOverlay(new GpsMyLocationProvider(context), mapView, activity, this);
         myLocationNewOverlay.enableMyLocation();
         mapView.getOverlays().add(myLocationNewOverlay);
 
@@ -111,9 +116,13 @@ public final class MapManager {
         mapView.getOverlays().add(overlayItemItemizedOverlay);
     }
 
-    public void showAddCircleAroundPoiDialog(int index) {
-        AddCircleAroundPoiDialog builder = new AddCircleAroundPoiDialog(activity, this, index);
+    public void showAddCircleAroundPoiDialog(OverlayItem item) {
+        AddCircleAroundPoiDialog builder = new AddCircleAroundPoiDialog(activity, this, item);
         builder.show();
+    }
+
+    public void showAddCircleAroundMeDialog() {
+        showAddCircleAroundPoiDialog(null);
     }
 
     public boolean hasSavedCircle() {
@@ -177,7 +186,13 @@ public final class MapManager {
         String longitudeString = sharedPreferences.getString(SharedPreferencesConstant.PREFS_LONGITUDE_STRING, SharedPreferencesConstant.DEFAULT_LONGITUDE);
         mapView.setExpectedCenter(new GeoPoint(Double.parseDouble(latitudeString), Double.parseDouble(longitudeString)));
 
-        circleManager.restorePreviousCircle();
+
+        boolean isAroundMe = sharedPreferences.getBoolean(SharedPreferencesConstant.CIRCLE_IS_AROUND_ME, false);
+
+        if (isAroundMe) {
+            activity.getShowCircleAroundMe().setVisibility(View.GONE);
+            activity.getRemoveCircleAroundMe().setVisibility(View.VISIBLE);
+        }
     }
 
     public void addMarkerToCurrentLocation() {
@@ -199,18 +214,32 @@ public final class MapManager {
         mapController.setZoom(15.0);
     }
 
-    public void drawCircle(int index, double radiusInMeters, long categoryFilter) {
+    public void drawCircle(OverlayItem item, double radiusInMeters, long categoryFilter) {
+        markerGestureListener.setLastCircleCenterItemUid(item.getPoint());
+
         if (hasSavedCircle()) {
             removeCircle();
         }
 
-        circleManager.drawCircle(index, radiusInMeters, categoryFilter);
-        markerGestureListener.setLastCircleCenterItemUid(overlayItemItemizedOverlay.getItem(index).getPoint());
+        circleManager.drawCircle(item, radiusInMeters, categoryFilter);
         mapView.invalidate(); // demande le rafraichissement de la carte si le cercle a été ajouté
+    }
+
+    public void drawCircleAroundMe(double radiusInMeters, long categoryFilter) {
+        if (hasSavedCircle()) {
+            removeCircle();
+        }
+
+        circleManager.drawCircleAroundMe(myLocationNewOverlay.getMyLocation(), radiusInMeters, categoryFilter);
+        mapView.invalidate(); // demande le rafraichissement de la carte si le cercle a été ajouté
+        activity.getShowCircleAroundMe().setVisibility(View.GONE);
+        activity.getRemoveCircleAroundMe().setVisibility(View.VISIBLE);
     }
 
     public void removeCircle() {
         circleManager.removeCircle();
+        activity.getShowCircleAroundMe().setVisibility(View.VISIBLE);
+        activity.getRemoveCircleAroundMe().setVisibility(View.GONE);
     }
 
     public void showInfoWindow(OverlayItem item, InfoWindow infoWindow) {
@@ -221,6 +250,16 @@ public final class MapManager {
                 CustomInfoWindow.OFFSET_X, CustomInfoWindow.OFFSET_Y);
 
         mapView.getOverlays().add(overlayWithIW);
+    }
+
+    public boolean isCircleAroundMe() {
+        return sharedPreferences.getBoolean(SharedPreferencesConstant.CIRCLE_IS_AROUND_ME, false);
+    }
+
+    public static String getItemUid(IGeoPoint point) {
+        NumberFormat nf= NumberFormat.getInstance();
+        nf.setMaximumFractionDigits(15);
+        return MessageFormat.format("{0}:{1}", nf.format(point.getLatitude()), nf.format(point.getLongitude()));
     }
 
 }
