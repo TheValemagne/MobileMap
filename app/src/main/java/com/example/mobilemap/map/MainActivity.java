@@ -41,17 +41,10 @@ public class MainActivity extends AppCompatActivity {
 
     private MapView mapView;
     private MapManager mapManager;
-    private LinearLayout floatingButtons;
-
-    public FloatingActionButton getShowCircleAroundMe() {
-        return showCircleAroundMe;
-    }
+    private LinearLayout floatingButtonsLayout;
+    private LinearLayout filterFloatingLayout;
 
     private FloatingActionButton showCircleAroundMe;
-
-    public FloatingActionButton getRemoveCircleAroundMe() {
-        return removeCircleAroundMe;
-    }
 
     private FloatingActionButton removeCircleAroundMe;
 
@@ -69,8 +62,11 @@ public class MainActivity extends AppCompatActivity {
 
         initBottomNavigationView(binding);
 
-        floatingButtons = binding.floatingButtons;
-        floatingButtons.setVisibility(View.GONE);
+        floatingButtonsLayout = binding.floatingButtonsLayout;
+        floatingButtonsLayout.setVisibility(View.GONE);
+
+        filterFloatingLayout = binding.filterFloatingLayout;
+        filterFloatingLayout.setVisibility(View.GONE);
 
         showCircleAroundMe = binding.showCircleAroundMe;
         showCircleAroundMe.setOnClickListener(v -> mapManager.showAddCircleAroundMeDialog());
@@ -106,7 +102,29 @@ public class MainActivity extends AppCompatActivity {
 
     public void shouldShowLocationBtn(boolean isVisible) {
         int visibility = isVisible ? View.VISIBLE : View.GONE;
-        floatingButtons.setVisibility(visibility);
+
+        floatingButtonsLayout.setVisibility(visibility);
+        filterFloatingLayout.setVisibility(visibility);
+    }
+
+    public void updateFilterAction(boolean hasCircleAroundMe) {
+        filterFloatingLayout.setVisibility(View.VISIBLE);
+
+        int showCircleAroundMeVisibility = hasCircleAroundMe ? View.GONE : View.VISIBLE;
+        int removeCircleAroundMeVisibility = hasCircleAroundMe ? View.VISIBLE : View.GONE;
+
+        showCircleAroundMe.setVisibility(showCircleAroundMeVisibility);
+        removeCircleAroundMe.setVisibility(removeCircleAroundMeVisibility);
+    }
+
+    @Override
+    protected void onStart() {
+        // TODO voir si utile
+        super.onStart();
+
+        if(mapManager != null) {
+            mapManager.updateMarkers();
+        }
     }
 
     @Override
@@ -130,11 +148,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         ArrayList<String> permissionsToRequest = new ArrayList<>(Arrays.asList(permissions).subList(0, grantResults.length));
@@ -144,15 +157,6 @@ public class MainActivity extends AppCompatActivity {
                     this,
                     permissionsToRequest.toArray(new String[0]),
                     REQUEST_PERMISSIONS_REQUEST_CODE);
-        }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        if(mapManager != null) {
-            mapManager.updateMarkers();
         }
     }
 

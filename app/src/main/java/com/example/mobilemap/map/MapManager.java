@@ -3,13 +3,11 @@ package com.example.mobilemap.map;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.DisplayMetrics;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
 import com.example.mobilemap.map.overlays.AddMarkerOverlay;
-import com.example.mobilemap.map.overlays.CustomOverlayWithIW;
 import com.example.mobilemap.map.overlays.MyLocationOverlay;
 import com.example.mobilemap.pois.PoisActivity;
 import com.example.mobilemap.database.ContentResolverHelper;
@@ -25,7 +23,6 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.CopyrightOverlay;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.OverlayItem;
-import org.osmdroid.views.overlay.OverlayWithIW;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay;
 import org.osmdroid.views.overlay.infowindow.InfoWindow;
@@ -70,9 +67,9 @@ public final class MapManager {
         this.context = context;
 
         sharedPreferences = context.getSharedPreferences(SharedPreferencesConstant.PREFS_NAME, Context.MODE_PRIVATE);
-        Map<String, InfoWindow> integerInfoWindowMap = new HashMap<>();
-        markerGestureListener = new MarkerGestureListener(mapView, this, integerInfoWindowMap);
-        circleManager = new CircleManager(mapView, this, integerInfoWindowMap);
+        Map<String, InfoWindow> itemInfoWindowMap = new HashMap<>();
+        markerGestureListener = new MarkerGestureListener(mapView, this, itemInfoWindowMap);
+        circleManager = new CircleManager(mapView, this, itemInfoWindowMap);
     }
 
     public void initMap() {
@@ -117,7 +114,7 @@ public final class MapManager {
     }
 
     public void showAddCircleAroundPoiDialog(OverlayItem item) {
-        AddCircleAroundPoiDialog builder = new AddCircleAroundPoiDialog(activity, this, item);
+        AddCircleAroundPoiDialogBuilder builder = new AddCircleAroundPoiDialogBuilder(activity, this, item);
         builder.show();
     }
 
@@ -190,8 +187,7 @@ public final class MapManager {
         boolean isAroundMe = sharedPreferences.getBoolean(SharedPreferencesConstant.CIRCLE_IS_AROUND_ME, false);
 
         if (isAroundMe) {
-            activity.getShowCircleAroundMe().setVisibility(View.GONE);
-            activity.getRemoveCircleAroundMe().setVisibility(View.VISIBLE);
+            activity.updateFilterAction(true);
         }
     }
 
@@ -215,13 +211,12 @@ public final class MapManager {
     }
 
     public void drawCircle(OverlayItem item, double radiusInMeters, long categoryFilter) {
-        markerGestureListener.setLastCircleCenterItemUid(item.getPoint());
-
         if (hasSavedCircle()) {
             removeCircle();
         }
 
         circleManager.drawCircle(item, radiusInMeters, categoryFilter);
+        markerGestureListener.setLastCircleCenterItemUid(item.getPoint());
         mapView.invalidate(); // demande le rafraichissement de la carte si le cercle a été ajouté
     }
 
@@ -232,24 +227,12 @@ public final class MapManager {
 
         circleManager.drawCircleAroundMe(myLocationNewOverlay.getMyLocation(), radiusInMeters, categoryFilter);
         mapView.invalidate(); // demande le rafraichissement de la carte si le cercle a été ajouté
-        activity.getShowCircleAroundMe().setVisibility(View.GONE);
-        activity.getRemoveCircleAroundMe().setVisibility(View.VISIBLE);
+        activity.updateFilterAction(true);
     }
 
     public void removeCircle() {
         circleManager.removeCircle();
-        activity.getShowCircleAroundMe().setVisibility(View.VISIBLE);
-        activity.getRemoveCircleAroundMe().setVisibility(View.GONE);
-    }
-
-    public void showInfoWindow(OverlayItem item, InfoWindow infoWindow) {
-        OverlayWithIW overlayWithIW = new CustomOverlayWithIW(item);
-
-        overlayWithIW.setInfoWindow(infoWindow);
-        overlayWithIW.getInfoWindow().open(overlayWithIW, (GeoPoint) item.getPoint(),
-                CustomInfoWindow.OFFSET_X, CustomInfoWindow.OFFSET_Y);
-
-        mapView.getOverlays().add(overlayWithIW);
+        activity.updateFilterAction(false);
     }
 
     public boolean isCircleAroundMe() {

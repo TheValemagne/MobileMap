@@ -17,10 +17,10 @@ import org.osmdroid.views.overlay.OverlayItem;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class AddCircleAroundPoiDialog extends AlertDialog.Builder {
+public class AddCircleAroundPoiDialogBuilder extends AlertDialog.Builder {
     private final MapManager mapManager;
     private List<Category> categories;
-    public AddCircleAroundPoiDialog(Activity activity, MapManager mapManager, OverlayItem item) {
+    public AddCircleAroundPoiDialogBuilder(Activity activity, MapManager mapManager, OverlayItem item) {
         super(activity);
         this.mapManager = mapManager;
 

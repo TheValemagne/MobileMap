@@ -16,9 +16,9 @@ public class CustomInfoWindow extends InfoWindow {
     @Override
     public void onOpen(Object item) {
         OverlayWithIW overlayItem = (OverlayWithIW) item;
+
         TextView bubble_title = mView.findViewById(org.osmdroid.library.R.id.bubble_title);
         bubble_title.setText(overlayItem.getTitle());
-        System.out.println(bubble_title.getText());
 
         TextView bubble_description = mView.findViewById(org.osmdroid.library.R.id.bubble_description);
         bubble_description.setText(overlayItem.getSnippet());

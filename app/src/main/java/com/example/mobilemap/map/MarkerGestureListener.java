@@ -1,9 +1,13 @@
 package com.example.mobilemap.map;
 
+import com.example.mobilemap.map.overlays.CustomOverlayWithIW;
+
 import org.osmdroid.api.IGeoPoint;
+import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.OverlayItem;
+import org.osmdroid.views.overlay.OverlayWithIW;
 import org.osmdroid.views.overlay.infowindow.InfoWindow;
 
 import java.util.Map;
@@ -11,7 +15,7 @@ import java.util.Map;
 public class MarkerGestureListener implements ItemizedIconOverlay.OnItemGestureListener<OverlayItem> {
     private final MapManager mapManager;
     private final MapView mapView;
-    private final Map<String, InfoWindow> integerInfoWindowMap;
+    private final Map<String, InfoWindow> itemInfoWindowMap;
 
     private String lastCircleCenterItemUid;
 
@@ -19,10 +23,10 @@ public class MarkerGestureListener implements ItemizedIconOverlay.OnItemGestureL
         this.lastCircleCenterItemUid = MapManager.getItemUid(point);
     }
 
-    public MarkerGestureListener(MapView mapView, MapManager mapManager, Map<String, InfoWindow> integerInfoWindowMap) {
+    public MarkerGestureListener(MapView mapView, MapManager mapManager, Map<String, InfoWindow> itemInfoWindowMap) {
         this.mapView = mapView;
         this.mapManager = mapManager;
-        this.integerInfoWindowMap = integerInfoWindowMap;
+        this.itemInfoWindowMap = itemInfoWindowMap;
 
         lastCircleCenterItemUid = "";
     }
@@ -30,20 +34,30 @@ public class MarkerGestureListener implements ItemizedIconOverlay.OnItemGestureL
     @Override
     public boolean onItemSingleTapUp(int index, OverlayItem item) {
         String uid = MapManager.getItemUid(item.getPoint());
-        if (!integerInfoWindowMap.containsKey(uid)) {
-            integerInfoWindowMap.put(uid, new CustomInfoWindow(org.osmdroid.library.R.layout.bonuspack_bubble, mapView));
+        if (!itemInfoWindowMap.containsKey(uid)) {
+            itemInfoWindowMap.put(uid, new CustomInfoWindow(org.osmdroid.library.R.layout.bonuspack_bubble, mapView));
         }
 
-        InfoWindow infoWindow = integerInfoWindowMap.get(uid);
+        InfoWindow infoWindow = itemInfoWindowMap.get(uid);
 
         if (infoWindow != null && infoWindow.isOpen()) {
             infoWindow.close();
             return true;
         }
 
-        mapManager.showInfoWindow(item, infoWindow);
+        showInfoWindow(item, infoWindow);
 
         return true;
+    }
+
+    private void showInfoWindow(OverlayItem item, InfoWindow infoWindow) {
+        OverlayWithIW overlayWithIW = new CustomOverlayWithIW(item);
+
+        overlayWithIW.setInfoWindow(infoWindow);
+        overlayWithIW.getInfoWindow().open(overlayWithIW, (GeoPoint) item.getPoint(),
+                CustomInfoWindow.OFFSET_X, CustomInfoWindow.OFFSET_Y);
+
+        mapView.getOverlays().add(overlayWithIW);
     }
 
     @Override

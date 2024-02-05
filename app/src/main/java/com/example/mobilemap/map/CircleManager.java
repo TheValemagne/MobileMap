@@ -20,12 +20,12 @@ public class CircleManager {
     private final MapManager mapManager;
     private Polygon circle;
     private final static int MAX_ANGLE_IN_DEGREE = 360;
-    private final Map<String, InfoWindow> integerInfoWindowMap;
+    private final Map<String, InfoWindow> itemInfoWindowMap;
 
-    public CircleManager(MapView mapView, MapManager mapManager, Map<String, InfoWindow> integerInfoWindowMap) {
+    public CircleManager(MapView mapView, MapManager mapManager, Map<String, InfoWindow> itemInfoWindowMap) {
         this.mapView = mapView;
         this.mapManager = mapManager;
-        this.integerInfoWindowMap = integerInfoWindowMap;
+        this.itemInfoWindowMap = itemInfoWindowMap;
     }
 
     public void drawCircle(OverlayItem centerItem, double radiusInMeters, long categoryFilter) {
@@ -70,7 +70,7 @@ public class CircleManager {
 
     private Polygon createCircle(IGeoPoint center, double radiusInMeters) {
         Polygon circle = new Polygon();
-        circle.setOnClickListener((polygon, mapView1, eventPos) -> false); // le cercle doit transmetre les évéments "click" aux autres couches
+        circle.setOnClickListener((polygon, mapView1, eventPos) -> false); // le cercle doit transmetre les événements "click" aux autres couches
         // intérieur du cercle
         circle.getFillPaint().setColor(Color.TRANSPARENT);
         // bordure du cercle
@@ -111,10 +111,11 @@ public class CircleManager {
 
         for (int index = 0; index < items.size(); index++) {
             OverlayItem item = items.get(index);
+
             if(isInsideCircle(item, centerLocation, radiusInMeters)) {
                 itemsInsideCircle.add(item);
-            }else if (integerInfoWindowMap.containsKey(MapManager.getItemUid(item.getPoint()))) {
-                integerInfoWindowMap.get(MapManager.getItemUid(item.getPoint())).close();
+            }else if (itemInfoWindowMap.containsKey(MapManager.getItemUid(item.getPoint()))) {
+                itemInfoWindowMap.get(MapManager.getItemUid(item.getPoint())).close();
             }
         }
 
@@ -203,7 +204,7 @@ public class CircleManager {
             return;
         }
 
-        OverlayItem item = findItemIndex(center);
+        OverlayItem item = findItem(center);
 
         if (item == null) {
             return;
@@ -213,7 +214,7 @@ public class CircleManager {
         drawCircle(item, circleRadius, categoryFilter);
     }
 
-    private OverlayItem findItemIndex(IGeoPoint center) {
+    private OverlayItem findItem(IGeoPoint center) {
         return mapManager.getOverlayItems().stream()
                 .filter(item -> item.getPoint().getLatitude() == center.getLatitude() && item.getPoint().getLongitude() == center.getLongitude())
                 .findFirst().orElse(null);

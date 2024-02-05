@@ -30,14 +30,14 @@
                 android:visibility="visible">
 
                 <LinearLayout
-                    android:id="@+id/floatingButtons"
+                    android:id="@+id/floatingButtonsLayout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="10dp"
                     android:layout_marginBottom="10dp"
                     android:orientation="vertical"
                     android:visibility="visible"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toTopOf="@+id/filterFloatingLayout"
                     app:layout_constraintEnd_toEndOf="parent">
 
                     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -67,15 +67,23 @@
                         android:src="@android:drawable/ic_menu_add"
                         app:elevation="2dp" />
 
-                    <Space
-                        android:layout_width="match_parent"
-                        android:layout_height="10dp"
-                        android:layout_weight="1" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/filterFloatingLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
 
                     <com.google.android.material.floatingactionbutton.FloatingActionButton
                         android:id="@+id/showCircleAroundMe"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_margin="1dp"
                         android:clickable="true"
                         android:src="@android:drawable/ic_menu_search"
                         app:elevation="2dp" />
@@ -84,11 +92,11 @@
                         android:id="@+id/removeCircleAroundMe"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_margin="1dp"
                         android:clickable="true"
                         android:src="@android:drawable/ic_menu_close_clear_cancel"
                         android:visibility="gone"
                         app:elevation="2dp" />
-
                 </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
