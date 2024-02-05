@@ -34,7 +34,7 @@ public class MyLocationOverlay extends MyLocationNewOverlay {
 
         activity.shouldShowLocationBtn(location != null);
 
-        if (getMyLocation() != null && mapManager.isCircleAroundMe()) { // mise à jour du circle avec le déplacement de l'utilisateur
+        if (location != null && mapManager.isCircleAroundMe()) { // mise à jour du circle avec le déplacement de l'utilisateur
             handler.postAtTime(() -> {
                 SharedPreferences sharedPreferences = mapManager.getSharedPreferences();
 
@@ -44,7 +44,7 @@ public class MyLocationOverlay extends MyLocationNewOverlay {
                 long categoryFilter = sharedPreferences.getLong(SharedPreferencesConstant.CIRCLE_CATEGORY_FILTER, SharedPreferencesConstant.NOT_FOUND_ID);
 
                 mapManager.drawCircleAroundMe(circleRadius, categoryFilter);
-            }, handlerToken, 10);
+            }, handlerToken, 50);
         }
     }
 }
