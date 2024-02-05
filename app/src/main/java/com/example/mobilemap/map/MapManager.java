@@ -31,9 +31,11 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.text.MessageFormat;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public final class MapManager {
@@ -57,6 +59,7 @@ public final class MapManager {
     public MarkerGestureListener getMarkerGestureListener() {
         return markerGestureListener;
     }
+    private final Map<String, InfoWindow> itemInfoWindowMap;
 
     private final MarkerGestureListener markerGestureListener;
     private MyLocationNewOverlay myLocationNewOverlay;
@@ -67,9 +70,9 @@ public final class MapManager {
         this.context = context;
 
         sharedPreferences = context.getSharedPreferences(SharedPreferencesConstant.PREFS_NAME, Context.MODE_PRIVATE);
-        Map<String, InfoWindow> itemInfoWindowMap = new HashMap<>();
+        itemInfoWindowMap = new HashMap<>();
         markerGestureListener = new MarkerGestureListener(mapView, this, itemInfoWindowMap);
-        circleManager = new CircleManager(mapView, this, itemInfoWindowMap);
+        circleManager = new CircleManager(mapView, activity, this, itemInfoWindowMap);
     }
 
     public void initMap() {
@@ -138,17 +141,37 @@ public final class MapManager {
     }
 
     @NonNull
+    private OverlayItem mapPoiToOverlayItem(Poi poi) {
+        return new OverlayItem(poi.getName(), poi.getResume(), new GeoPoint(poi.getLatitude(), poi.getLongitude()));
+    }
+
+    @NonNull
     public List<OverlayItem> getOverlayItems() {
-        return getOverlayItems(-1);
+        List<Poi> pois = ContentResolverHelper.getPois(activity.getContentResolver());
+
+        return pois.stream()
+                .map(this::mapPoiToOverlayItem)
+                .collect(Collectors.toList());
     }
 
     @NonNull
     public List<OverlayItem> getOverlayItems(long categoryFilter) {
         List<Poi> pois = ContentResolverHelper.getPois(activity.getContentResolver());
+        List<OverlayItem> overlayItems = new ArrayList<>();
 
-        return pois.stream().filter(poi -> categoryFilter == -1 || poi.getCategoryId() == categoryFilter)
-                .map(poi -> new OverlayItem(poi.getName(), poi.getResume(), new GeoPoint(poi.getLatitude(), poi.getLongitude())))
-                .collect(Collectors.toList());
+        for (Poi poi : pois) {
+            if (poi.getCategoryId() == categoryFilter) {
+                overlayItems.add(mapPoiToOverlayItem(poi));
+                continue;
+            }
+
+            String uid = getItemUid(new GeoPoint(poi.getLatitude(), poi.getLongitude()));
+            if (itemInfoWindowMap.containsKey(uid)) {
+                Objects.requireNonNull(itemInfoWindowMap.get(uid)).close();
+            }
+        }
+
+        return overlayItems;
     }
 
     /**

@@ -119,10 +119,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
-        // TODO voir si utile
         super.onStart();
 
-        if(mapManager != null) {
+        if(mapManager != null) { // actualise les marques et le circle après navigation dans les autres pages
             mapManager.updateMarkers();
         }
     }
