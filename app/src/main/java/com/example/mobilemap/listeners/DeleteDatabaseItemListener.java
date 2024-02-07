@@ -25,6 +25,7 @@ public class DeleteDatabaseItemListener implements View.OnClickListener{
     private final DeleteItemContext deleteDataContext;
 
     /**
+     * Ecouteur pour supprimer un élément de la base de données
      *
      * @param itemId identifiant de l'élément à supprimer
      * @param activity activité mère

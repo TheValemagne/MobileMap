@@ -34,4 +34,8 @@
     <string name="ask_circle_perimeter_title">Search for locations around this point</string>
     <string name="dialog_show">Show</string>
     <string name="select_category_filter">Please select the category to show:</string>
+    <string name="distanceLabel">{0}m</string>
+    <string name="map">Map</string>
+    <string name="categories">Categories</string>
+    <string name="pois">POIs</string>
 </resources>

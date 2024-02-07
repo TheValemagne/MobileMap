@@ -1,5 +1,7 @@
 package com.example.mobilemap.map;
 
+import android.content.res.Resources;
+
 import com.example.mobilemap.map.overlays.CustomOverlayWithIW;
 
 import org.osmdroid.api.IGeoPoint;
@@ -16,6 +18,7 @@ public class MarkerGestureListener implements ItemizedIconOverlay.OnItemGestureL
     private final MapManager mapManager;
     private final MapView mapView;
     private final Map<String, InfoWindow> itemInfoWindowMap;
+    private Resources resources;
 
     private String lastCircleCenterItemUid;
 
@@ -23,10 +26,11 @@ public class MarkerGestureListener implements ItemizedIconOverlay.OnItemGestureL
         this.lastCircleCenterItemUid = MapManager.getItemUid(point);
     }
 
-    public MarkerGestureListener(MapView mapView, MapManager mapManager, Map<String, InfoWindow> itemInfoWindowMap) {
+    public MarkerGestureListener(MapView mapView, MapManager mapManager, Map<String, InfoWindow> itemInfoWindowMap, Resources resources) {
         this.mapView = mapView;
         this.mapManager = mapManager;
         this.itemInfoWindowMap = itemInfoWindowMap;
+        this.resources = resources;
 
         lastCircleCenterItemUid = "";
     }
@@ -35,7 +39,7 @@ public class MarkerGestureListener implements ItemizedIconOverlay.OnItemGestureL
     public boolean onItemSingleTapUp(int index, OverlayItem item) {
         String uid = MapManager.getItemUid(item.getPoint());
         if (!itemInfoWindowMap.containsKey(uid)) {
-            itemInfoWindowMap.put(uid, new CustomInfoWindow(org.osmdroid.library.R.layout.bonuspack_bubble, mapView));
+            itemInfoWindowMap.put(uid, new CustomInfoWindow(org.osmdroid.library.R.layout.bonuspack_bubble, item.getPoint(), mapView, mapManager.getCircleManager(), resources));
         }
 
         InfoWindow infoWindow = itemInfoWindowMap.get(uid);

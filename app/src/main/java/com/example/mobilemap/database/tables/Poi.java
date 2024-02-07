@@ -137,7 +137,7 @@ public class Poi extends DatabaseItem {
         }
 
         do{
-            result.add(com.example.mobilemap.database.tables.Poi.fromCursor(cursor));
+            result.add(Poi.fromCursor(cursor));
         } while(cursor.moveToNext());
 
         return result;

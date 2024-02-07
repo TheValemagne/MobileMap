@@ -5,18 +5,18 @@
     <item
         android:id="@+id/navigation_map"
         android:icon="@android:drawable/ic_dialog_map"
-        android:title="Carte"
+        android:title="@string/map"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/navigation_categories"
         android:icon="@android:drawable/ic_menu_myplaces"
-        android:title="Categories"
+        android:title="@string/categories"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/navigation_pois"
         android:icon="@drawable/marker_default"
-        android:title="Sites"
+        android:title="@string/pois"
         app:showAsAction="ifRoom" />
 </menu>

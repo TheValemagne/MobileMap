@@ -24,7 +24,7 @@ public class DeleteItemContext {
 
     /**
      *
-     * @param databaseUri addresse de la table
+     * @param databaseUri uri de la table
      * @param dialogTitle titre du dialogue de suppression
      * @param dialogMsg message du dialogue de suppression
      */

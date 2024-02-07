@@ -14,6 +14,9 @@ import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.IMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
+/**
+ * Overlay pour afficher la position actuelle
+ */
 public class MyLocationOverlay extends MyLocationNewOverlay {
     private final MainActivity activity;
     private final MapManager mapManager;
@@ -30,20 +33,21 @@ public class MyLocationOverlay extends MyLocationNewOverlay {
 
     @Override
     public void onLocationChanged(Location location, IMyLocationProvider source) {
-        super.onLocationChanged(location, source);
+        super.onLocationChanged(location, source); // utilisation de hanlder.postAtTime dans le code soruce pour actualiser la position
 
         activity.shouldShowLocationBtn(location != null);
 
         if (location != null && mapManager.isCircleAroundMe()) { // mise à jour du circle avec le déplacement de l'utilisateur
+            // usage de hanlder.postAtTime pour une actualisation en direct avec la localisation (voir code source de MyLocationNewOverlay)
             handler.postAtTime(() -> {
-                SharedPreferences sharedPreferences = mapManager.getSharedPreferences();
+                SharedPreferences sharedPreferences = mapManager.getSharedPreferences(); // récupération des données sauvegardées
 
                 String circleRadiusString = sharedPreferences.getString(SharedPreferencesConstant.CIRCLE_RADIUS_STRING, SharedPreferencesConstant.EMPTY_STRING);
                 double circleRadius = Double.parseDouble(circleRadiusString);
 
                 long categoryFilter = sharedPreferences.getLong(SharedPreferencesConstant.CIRCLE_CATEGORY_FILTER, SharedPreferencesConstant.NOT_FOUND_ID);
 
-                mapManager.drawCircleAroundMe(circleRadius, categoryFilter);
+                mapManager.drawCircleAroundMe(circleRadius, categoryFilter); // actualisation du cercle
             }, handlerToken, 50);
         }
     }

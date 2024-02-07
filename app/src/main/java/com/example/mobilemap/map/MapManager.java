@@ -48,6 +48,11 @@ public final class MapManager {
     }
 
     private final SharedPreferences sharedPreferences;
+
+    public CircleManager getCircleManager() {
+        return circleManager;
+    }
+
     private final CircleManager circleManager;
 
     public ItemizedIconOverlay<OverlayItem> getOverlayItemItemizedOverlay() {
@@ -71,8 +76,8 @@ public final class MapManager {
 
         sharedPreferences = context.getSharedPreferences(SharedPreferencesConstant.PREFS_NAME, Context.MODE_PRIVATE);
         itemInfoWindowMap = new HashMap<>();
-        markerGestureListener = new MarkerGestureListener(mapView, this, itemInfoWindowMap);
         circleManager = new CircleManager(mapView, activity, this, itemInfoWindowMap);
+        markerGestureListener = new MarkerGestureListener(mapView, this, itemInfoWindowMap, activity.getResources());
     }
 
     public void initMap() {

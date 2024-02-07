@@ -22,6 +22,8 @@ public class NavigationBarItemSelectedListener implements NavigationBarView.OnIt
     private final List<NavigationHandler> handlers;
 
     /**
+     * Ecouteur de la bar de navigation
+     *
      * @param activity activité mère
      * @param currentActivityId identifiant de la page actuelle
      */
