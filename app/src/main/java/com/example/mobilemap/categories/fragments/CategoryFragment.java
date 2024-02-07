@@ -23,6 +23,7 @@ import com.example.mobilemap.listeners.CancelAction;
 import com.example.mobilemap.listeners.DeleteDatabaseItemListener;
 import com.example.mobilemap.listeners.SaveDatabaseItemListener;
 
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -114,7 +115,7 @@ public class CategoryFragment extends Fragment implements ItemView<Category> {
      */
     private Optional<Category> findCategory(long id) {
         Cursor cursor = requireActivity().getContentResolver()
-                .query(DatabaseContract.Category.CONTENT_URI, DatabaseContract.Category.COLUMNS, DatabaseContract.Category._ID + " = " + id,
+                .query(DatabaseContract.Category.CONTENT_URI, DatabaseContract.Category.COLUMNS, MessageFormat.format("{0} = {1}", DatabaseContract.Category._ID, id),
                         null, null);
 
         if (cursor == null) {

@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.example.mobilemap.R;
 import com.example.mobilemap.database.interfaces.ItemView;
+import com.example.mobilemap.map.SharedPreferencesConstant;
 import com.example.mobilemap.pois.PoiTextWatcher;
 import com.example.mobilemap.pois.PoisActivity;
 import com.example.mobilemap.database.ContentResolverHelper;
@@ -35,6 +36,7 @@ import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -161,6 +163,11 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
         miniMapView.setMinZoomLevel(5.0);
         miniMapView.setMaxZoomLevel(20.0);
 
+        GeoPoint initialCenter = new GeoPoint(Double.parseDouble(SharedPreferencesConstant.DEFAULT_LATITUDE),
+                Double.parseDouble(SharedPreferencesConstant.DEFAULT_LONGITUDE));
+        miniMapView.setScrollableAreaLimitDouble(new BoundingBox(initialCenter.getLatitude(), initialCenter.getLongitude(),
+                initialCenter.getLatitude(), initialCenter.getLongitude()));
+
         double zoomLevel = 18.5;
         IMapController mapController = miniMapView.getController();
         mapController.setZoom(zoomLevel);
@@ -173,13 +180,11 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
         ));
 
         if (textViews.stream().anyMatch(textView -> textView.getText().toString().isEmpty())) {
-            binding.miniMapView.setVisibility(View.GONE);
             return;
         }
 
         MapView miniMapView = binding.miniMapView;
         miniMapView.getOverlays().clear();
-        miniMapView.setVisibility(View.VISIBLE);
 
         Poi modifiedPoi = getValues();
         GeoPoint point = new GeoPoint(modifiedPoi.getLatitude(), modifiedPoi.getLongitude());
@@ -192,16 +197,19 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
         marker.setSnippet(modifiedPoi.getResume());
         marker.setPosition(point);
         miniMapView.getOverlays().add(marker);
+        marker.showInfoWindow();
     }
 
     private void initCategoryDropDown() {
-        List<String> categoryNames = categories.stream().map(Category::getName).collect(Collectors.toList());
+        List<String> categoryNames = categories.stream()
+                .map(Category::getName)
+                .collect(Collectors.toList());
         binding.categoryDropDown.setAdapter(new ArrayAdapter<>(this.requireContext(), android.R.layout.simple_spinner_dropdown_item, categoryNames));
     }
 
     private Poi findPoi(long id) {
         Cursor cursor = requireActivity().getContentResolver()
-                .query(DatabaseContract.Poi.CONTENT_URI, DatabaseContract.Poi.COLUMNS, DatabaseContract.Poi._ID + " = " + id,
+                .query(DatabaseContract.Poi.CONTENT_URI, DatabaseContract.Poi.COLUMNS, MessageFormat.format("{0} = {1}", DatabaseContract.Poi._ID, id),
                         null, null);
         assert cursor != null;
         cursor.moveToFirst();

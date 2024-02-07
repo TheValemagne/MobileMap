@@ -2,6 +2,7 @@ package com.example.mobilemap.map;
 
 import android.content.res.Resources;
 import android.location.Location;
+import android.os.LocaleList;
 import android.view.View;
 import android.widget.TextView;
 
@@ -13,6 +14,7 @@ import org.osmdroid.views.overlay.OverlayWithIW;
 import org.osmdroid.views.overlay.infowindow.InfoWindow;
 
 import java.text.MessageFormat;
+import java.util.Locale;
 
 /**
  * Dialogue d'information d'un marqueur de la carte
@@ -54,7 +56,8 @@ public class CustomInfoWindow extends InfoWindow {
 
             TextView subDescription = mView.findViewById(org.osmdroid.library.R.id.bubble_subdescription);
             subDescription.setVisibility(View.VISIBLE);
-            subDescription.setText(MessageFormat.format(resources.getString(R.string.distanceLabel), String.valueOf(centerLocation.distanceTo(actualPoint))));
+            Locale locale = LocaleList.getDefault().get(0);
+            subDescription.setText(MessageFormat.format(resources.getString(R.string.distanceLabel), String.format(locale, "%.2f", centerLocation.distanceTo(actualPoint))));
         }
 
     }

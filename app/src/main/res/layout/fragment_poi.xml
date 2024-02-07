@@ -165,8 +165,7 @@
         <org.osmdroid.views.MapView
             android:id="@+id/miniMapView"
             android:layout_width="500dp"
-            android:layout_height="500dp"
-            android:visibility="gone">
+            android:layout_height="500dp">
 
         </org.osmdroid.views.MapView>
     </LinearLayout>
@@ -202,7 +201,6 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="#F44336"
                 android:text="@string/delete"
-                android:visibility="visible"
                 app:icon="@android:drawable/ic_menu_delete" />
 
             <Space
