@@ -38,4 +38,8 @@
     <string name="map">Map</string>
     <string name="categories">Categories</string>
     <string name="pois">POIs</string>
+    <string name="add_category">Add a new category</string>
+    <string name="edit_category">Edit the category</string>
+    <string name="add_poi">Add a new POI</string>
+    <string name="edit_poi">Edit POI</string>
 </resources>

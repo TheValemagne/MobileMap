@@ -1,5 +1,6 @@
 package com.example.mobilemap.pois.fragments;
 
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.os.Bundle;
 
@@ -11,8 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 
+import com.example.mobilemap.R;
 import com.example.mobilemap.database.interfaces.ItemView;
+import com.example.mobilemap.pois.PoiTextWatcher;
 import com.example.mobilemap.pois.PoisActivity;
 import com.example.mobilemap.database.ContentResolverHelper;
 import com.example.mobilemap.database.DatabaseContract;
@@ -23,6 +27,16 @@ import com.example.mobilemap.listeners.CancelAction;
 import com.example.mobilemap.listeners.DeleteDatabaseItemListener;
 import com.example.mobilemap.listeners.SaveDatabaseItemListener;
 
+import org.osmdroid.api.IMapController;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.BoundingBox;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.CustomZoomButtonsController;
+import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.Marker;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -100,6 +114,9 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
                              Bundle savedInstanceState) {
         binding = FragmentPoiBinding.inflate(inflater, container, false);
 
+        Resources resources = requireActivity().getResources();
+        binding.title.setText(resources.getText(itemId == -1 ? R.string.add_poi : R.string.edit_poi));
+
         categories = ContentResolverHelper.getCategories(requireActivity().getContentResolver());
         initCategoryDropDown();
 
@@ -112,9 +129,69 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
             updateFields(binding);
         }
 
+        initMiniMap(binding.miniMapView);
+        updateMiniMap();
+
+        PoiTextWatcher poiTextWatcher = new PoiTextWatcher(this);
+        binding.poiName.addTextChangedListener(poiTextWatcher);
+        binding.poiLatitude.addTextChangedListener(poiTextWatcher);
+        binding.poiLongitude.addTextChangedListener(poiTextWatcher);
+        binding.poiResume.addTextChangedListener(poiTextWatcher);
         bindActionButtons(binding);
 
         return binding.getRoot();
+    }
+
+    private void updateFields(FragmentPoiBinding binding) {
+        binding.poiName.setText(poi.getName());
+        binding.poiLatitude.setText(String.valueOf(poi.getLatitude()));
+        binding.poiLongitude.setText(String.valueOf(poi.getLongitude()));
+        binding.poiPostalAddress.setText(poi.getPostalAddress());
+        setSelectedValue(binding.categoryDropDown, poi.getCategoryId());
+        binding.poiResume.setText(poi.getResume());
+    }
+
+    private void initMiniMap(MapView miniMapView) {
+        miniMapView.setTileSource(TileSourceFactory.MAPNIK);
+        miniMapView.getZoomController()
+                .setVisibility(CustomZoomButtonsController.Visibility.NEVER);
+        miniMapView.setMultiTouchControls(true);
+        miniMapView.setHorizontalMapRepetitionEnabled(false);
+        miniMapView.setVerticalMapRepetitionEnabled(false);
+        miniMapView.setMinZoomLevel(5.0);
+        miniMapView.setMaxZoomLevel(20.0);
+
+        double zoomLevel = 18.5;
+        IMapController mapController = miniMapView.getController();
+        mapController.setZoom(zoomLevel);
+    }
+
+    public void updateMiniMap() {
+        List<TextView> textViews = new ArrayList<>(Arrays.asList(
+                binding.poiLatitude,
+                binding.poiLongitude
+        ));
+
+        if (textViews.stream().anyMatch(textView -> textView.getText().toString().isEmpty())) {
+            binding.miniMapView.setVisibility(View.GONE);
+            return;
+        }
+
+        MapView miniMapView = binding.miniMapView;
+        miniMapView.getOverlays().clear();
+        miniMapView.setVisibility(View.VISIBLE);
+
+        Poi modifiedPoi = getValues();
+        GeoPoint point = new GeoPoint(modifiedPoi.getLatitude(), modifiedPoi.getLongitude());
+        miniMapView.setScrollableAreaLimitDouble(new BoundingBox(modifiedPoi.getLatitude(), modifiedPoi.getLongitude(),
+                modifiedPoi.getLatitude(), modifiedPoi.getLongitude()));
+        miniMapView.setExpectedCenter(point);
+
+        Marker marker = new Marker(miniMapView);
+        marker.setTitle(modifiedPoi.getName());
+        marker.setSnippet(modifiedPoi.getResume());
+        marker.setPosition(point);
+        miniMapView.getOverlays().add(marker);
     }
 
     private void initCategoryDropDown() {
@@ -150,14 +227,6 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
 
         return bundle.containsKey(ARG_LATITUDE) && bundle.containsKey(ARG_LONGITUDE);
     }
-    private void updateFields(FragmentPoiBinding binding) {
-        binding.poiName.setText(poi.getName());
-        binding.poiLatitude.setText(String.valueOf(poi.getLatitude()));
-        binding.poiLongitude.setText(String.valueOf(poi.getLongitude()));
-        binding.poiPostalAddress.setText(poi.getPostalAddress());
-        setSelectedValue(binding.categoryDropDown, poi.getCategoryId());
-        binding.poiResume.setText(poi.getResume());
-    }
 
     private void setSelectedValue(Spinner spinner, long id) {
         for (int index = 0; index < categories.size(); index++) {
@@ -178,8 +247,18 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
 
     @Override
     public boolean check() {
-        return true;
+        List<TextView> textViews = new ArrayList<>(Arrays.asList(
+                binding.poiName,
+                binding.poiLatitude,
+                binding.poiLongitude,
+                binding.poiResume,
+                binding.poiPostalAddress
+        ));
+
+        return textViews.stream().noneMatch(textView -> textView.getText().toString().isEmpty());
     }
+
+
 
     @Override
     public Poi getValues() {
@@ -189,8 +268,6 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
         String postalAddress = binding.poiPostalAddress.getText().toString();
         long categoryId = getSelectedValue(binding.categoryDropDown);
         String resume = binding.poiResume.getText().toString();
-
-        System.out.println(categoryId);
 
         if (poi == null) {
             return new Poi(name, latitude, longitude, postalAddress, categoryId, resume);

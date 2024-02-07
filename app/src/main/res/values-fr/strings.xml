@@ -38,4 +38,8 @@
     <string name="map">Carte</string>
     <string name="categories">Categories</string>
     <string name="pois">Sites</string>
+    <string name="add_category">Ajouter une nouvelle catégorie</string>
+    <string name="edit_category">Modifier la catégorie</string>
+    <string name="add_poi">Ajouter un nouveau site</string>
+    <string name="edit_poi">Modifier le site</string>
 </resources>
