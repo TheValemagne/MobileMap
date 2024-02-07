@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
 import com.example.mobilemap.map.overlays.AddMarkerOverlay;
+import com.example.mobilemap.map.overlays.MapNorthCompassOverlay;
 import com.example.mobilemap.map.overlays.MyLocationOverlay;
 import com.example.mobilemap.pois.PoisActivity;
 import com.example.mobilemap.database.ContentResolverHelper;
@@ -24,6 +25,7 @@ import org.osmdroid.views.overlay.CopyrightOverlay;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
+import org.osmdroid.views.overlay.compass.CompassOverlay;
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay;
 import org.osmdroid.views.overlay.infowindow.InfoWindow;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
@@ -104,6 +106,11 @@ public final class MapManager {
 
         CopyrightOverlay mCopyrightOverlay = new CopyrightOverlay(context);
         mapView.getOverlays().add(mCopyrightOverlay);
+
+        CompassOverlay mapNorthCompassOverlay = new MapNorthCompassOverlay(context, mapView);
+        mapNorthCompassOverlay.enableCompass();
+        mapNorthCompassOverlay.setCompassCenter(40, 55);
+        mapView.getOverlays().add(mapNorthCompassOverlay);
 
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         ScaleBarOverlay mScaleBarOverlay = new ScaleBarOverlay(mapView);
