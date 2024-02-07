@@ -31,6 +31,8 @@ public abstract class BaseAdapter<T extends RecyclerView.ViewHolder, U extends H
      * @param activity activité à l'origine du fragment
      */
     public BaseAdapter(List<U> values, ContentResolver contentResolver, AppCompatActivity activity) {
+        super();
+
         this.values = values;
         this.contentResolver = contentResolver;
         this.activity = activity;

@@ -160,7 +160,7 @@
         </LinearLayout>
 
         <org.osmdroid.views.MapView
-            android:id="@+id/mapView"
+            android:id="@+id/miniMapView"
             android:layout_width="500dp"
             android:layout_height="500dp"
             android:visibility="gone">

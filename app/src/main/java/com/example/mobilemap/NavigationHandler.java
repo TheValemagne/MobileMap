@@ -40,7 +40,7 @@ public class NavigationHandler {
         }
 
         if(currentPageId == menuId) { // la page demandée est déjà affichée
-            return false;
+            return true;
         }
 
         activity.startActivity(destinationIntent); // lancer l'activité voulue

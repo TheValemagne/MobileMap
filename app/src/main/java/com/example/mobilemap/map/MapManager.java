@@ -234,8 +234,6 @@ public final class MapManager {
         }
 
         myLocationNewOverlay.enableFollowLocation(); // centrage de la carte sur la position actuelle
-        IMapController mapController = mapView.getController();
-        mapController.setZoom(15.0);
     }
 
     public void drawCircle(OverlayItem item, double radiusInMeters, long categoryFilter) {

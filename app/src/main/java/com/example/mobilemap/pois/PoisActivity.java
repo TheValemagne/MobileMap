@@ -21,6 +21,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 public class PoisActivity extends AppCompatActivity {
     private static final String ARG_LATITUDE = "latitude";
     private static final String ARG_LONGITUDE = "longitude";
+    private BottomNavigationView bottomNavigationMenuView;
+    private static final int currentPageId = R.id.navigation_pois;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,9 +32,14 @@ public class PoisActivity extends AppCompatActivity {
 
         setContentView(binding.getRoot());
 
-        BottomNavigationView bottomNavigationMenuView = binding.poisNavigationBar;
-        bottomNavigationMenuView.setSelectedItemId(R.id.navigation_pois);
-        bottomNavigationMenuView.setOnItemSelectedListener(new NavigationBarItemSelectedListener(this, R.id.navigation_pois));
+        bottomNavigationMenuView = binding.poisNavigationBar;
+        bottomNavigationMenuView.setSelectedItemId(currentPageId);
+        bottomNavigationMenuView.setOnItemSelectedListener(new NavigationBarItemSelectedListener(this, currentPageId));
+
+
+        if (this.getSupportFragmentManager().findFragmentById(R.id.poisFragmentContainer) != null) {
+            return;
+        }
 
         Intent intent = getIntent();
         Fragment fragment;
@@ -67,5 +74,11 @@ public class PoisActivity extends AppCompatActivity {
         intent.putExtra(ARG_LONGITUDE, longitude);
 
         return intent;
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        bottomNavigationMenuView.setSelectedItemId(currentPageId);
     }
 }

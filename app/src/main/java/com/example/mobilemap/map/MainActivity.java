@@ -41,12 +41,14 @@ public class MainActivity extends AppCompatActivity {
 
     private MapView mapView;
     private MapManager mapManager;
+    private BottomNavigationView bottomNavigationMenuView;
     private LinearLayout floatingButtonsLayout;
     private LinearLayout filterFloatingLayout;
 
     private FloatingActionButton showCircleAroundMe;
 
     private FloatingActionButton removeCircleAroundMe;
+    private static final int currentPageId = R.id.navigation_map;
 
     @SuppressLint("Range")
     @Override
@@ -95,9 +97,9 @@ public class MainActivity extends AppCompatActivity {
             return WindowInsetsCompat.CONSUMED;
         });
 
-        BottomNavigationView bottomNavigationMenuView = binding.mainNavigationBar;
-        bottomNavigationMenuView.setSelectedItemId(R.id.navigation_map);
-        bottomNavigationMenuView.setOnItemSelectedListener(new NavigationBarItemSelectedListener(this, R.id.navigation_map));
+        bottomNavigationMenuView = binding.mainNavigationBar;
+        bottomNavigationMenuView.setSelectedItemId(currentPageId);
+        bottomNavigationMenuView.setOnItemSelectedListener(new NavigationBarItemSelectedListener(this, currentPageId));
     }
 
     public void shouldShowLocationBtn(boolean isVisible) {
@@ -131,6 +133,12 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         mapManager.onPause();
         mapView.onPause();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        bottomNavigationMenuView.setSelectedItemId(currentPageId);
     }
 
     @Override
