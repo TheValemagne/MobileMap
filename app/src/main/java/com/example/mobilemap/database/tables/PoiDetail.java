@@ -9,6 +9,9 @@ import com.example.mobilemap.database.interfaces.HasId;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe représentant la jointure entre la table Poi et le nom de la catégorie
+ */
 public class PoiDetail implements HasId {
     private final long id;
     private final String name;
@@ -42,6 +45,12 @@ public class PoiDetail implements HasId {
         );
     }
 
+    /**
+     * Convertie le cursor en liste de sites détaillées
+     *
+     * @param cursor
+     * @return une liste de sites détaillées
+     */
     public static List<PoiDetail> mapFromList(Cursor cursor) {
         List<PoiDetail> result = new ArrayList<>();
 

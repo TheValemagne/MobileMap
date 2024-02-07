@@ -1,9 +1,11 @@
 package com.example.mobilemap.database;
 
-
 import android.net.Uri;
 import android.provider.BaseColumns;
 
+/**
+ * Contract de la base de données
+ */
 public final class DatabaseContract {
     public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "metzMap";
@@ -82,9 +84,12 @@ public final class DatabaseContract {
 
         public static final Uri CONTENT_URI = builder.build();
         /**
-         * column name : text
+         * column site_name : text
          */
         public static final String COLUMN_SITE_NAME = "site_name";
+        /**
+         * column category_name : text
+         */
         public static final String COLUMN_CATEGORY_NAME = "category_name";
         public static final String[] COLUMNS = new String[] {_ID, COLUMN_SITE_NAME, COLUMN_CATEGORY_NAME};
     }

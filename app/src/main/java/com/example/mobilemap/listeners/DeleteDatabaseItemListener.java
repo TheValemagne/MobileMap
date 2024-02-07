@@ -24,6 +24,12 @@ public class DeleteDatabaseItemListener implements View.OnClickListener{
     private final ContentResolver contentResolver;
     private final DeleteItemContext deleteDataContext;
 
+    /**
+     *
+     * @param itemId identifiant de l'élément à supprimer
+     * @param activity activité mère
+     * @param deleteCategoryContext contexte pour la supression de l'élément
+     */
     public DeleteDatabaseItemListener(long itemId, AppCompatActivity activity, DeleteItemContext deleteCategoryContext) {
         this.itemId = itemId;
         this.activity = activity;
@@ -38,10 +44,10 @@ public class DeleteDatabaseItemListener implements View.OnClickListener{
         Resources resources = activity.getResources();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle(resources.getString(deleteDataContext.getDialogTitleId()));
+        builder.setTitle(deleteDataContext.getDialogTitle());
 
         DialogConfirmDeleteBinding binding = DialogConfirmDeleteBinding.inflate(activity.getLayoutInflater());
-        binding.dialogMsg.setText(resources.getText(deleteDataContext.getDialogMsgId()));
+        binding.dialogMsg.setText(deleteDataContext.getDialogMsg());
         builder.setView(binding.getRoot());
 
         builder.setPositiveButton(resources.getText(R.string.dialog_confirm), (dialog, which) -> {
@@ -53,12 +59,18 @@ public class DeleteDatabaseItemListener implements View.OnClickListener{
         builder.show();
     }
 
+    /**
+     * Exécute la requête de supression
+     */
     private void deleteItem() {
         contentResolver
                 .delete(deleteDataContext.getDatabaseUri(),
                         MessageFormat.format("{0} = {1}", BaseColumns._ID, itemId), null);
     }
 
+    /**
+     * Action après suppression de l'élément dans la base de données
+     */
     protected void afterItemDeleted() {
         activity.getSupportFragmentManager().popBackStackImmediate();
     }

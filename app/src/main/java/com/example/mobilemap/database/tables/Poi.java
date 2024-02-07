@@ -123,6 +123,12 @@ public class Poi extends DatabaseItem {
         return contentValues;
     }
 
+    /**
+     * Convertie le cursor en liste de sites
+     *
+     * @param cursor
+     * @return une liste de catégorie
+     */
     public static List<Poi> mapFromList(Cursor cursor) {
         List<Poi> result = new ArrayList<>();
 

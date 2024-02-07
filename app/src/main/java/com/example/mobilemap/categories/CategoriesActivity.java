@@ -2,6 +2,7 @@ package com.example.mobilemap.categories;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 
 import com.example.mobilemap.R;
@@ -30,9 +31,15 @@ public class CategoriesActivity extends AppCompatActivity {
                 .commit();
     }
 
+    /**
+     * Retourne le contexte pour supprimer une catégorie
+     * @return informations pour supprimer la catégorie
+     */
     public DeleteItemContext getDeleteContext() {
+        Resources resources = this.getResources();
+
         return new DeleteItemContext(DatabaseContract.Category.CONTENT_URI,
-                R.string.dialog_delete_category_title,
-                R.string.confirm_delete_category_msg);
+                resources.getString(R.string.dialog_delete_category_title),
+                resources.getString(R.string.confirm_delete_category_msg));
     }
 }

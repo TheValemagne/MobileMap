@@ -57,6 +57,12 @@ public class Category extends DatabaseItem {
         return contentValue;
     }
 
+    /**
+     * Convertie le cursor en liste de catégories
+     *
+     * @param cursor
+     * @return une liste de catégorie
+     */
     public static List<Category> mapFromList(Cursor cursor) {
         List<Category> result = new ArrayList<>();
 

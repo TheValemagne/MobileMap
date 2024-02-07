@@ -10,6 +10,12 @@ import com.example.mobilemap.database.tables.PoiDetail;
 import java.util.List;
 
 public class ContentResolverHelper {
+    /**
+     * Retourne la liste des catégories
+     *
+     * @param contentResolver
+     * @return liste des caégories
+     */
     public static List<Category> getCategories(ContentResolver contentResolver) {
         Cursor cursor = contentResolver
                 .query(DatabaseContract.Category.CONTENT_URI, DatabaseContract.Category.COLUMNS,
@@ -19,6 +25,12 @@ public class ContentResolverHelper {
         return Category.mapFromList(cursor);
     }
 
+    /**
+     * Retourne la liste des sites
+     *
+     * @param contentResolver
+     * @return liste des sites
+     */
     public static List<PoiDetail> getPoisDetail(ContentResolver contentResolver) {
         Cursor cursor = contentResolver
                 .query(DatabaseContract.PoiDetail.CONTENT_URI, DatabaseContract.PoiDetail.COLUMNS,
@@ -28,6 +40,12 @@ public class ContentResolverHelper {
         return PoiDetail.mapFromList(cursor);
     }
 
+    /**
+     * Retourne la liste des sites détaillés
+     *
+     * @param contentResolver
+     * @return liste des sites détaillés
+     */
     public static List<Poi> getPois(ContentResolver contentResolver) {
         Cursor cursor = contentResolver
                 .query(DatabaseContract.Poi.CONTENT_URI, DatabaseContract.Poi.COLUMNS,

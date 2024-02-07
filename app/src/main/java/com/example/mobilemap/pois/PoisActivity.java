@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 
 import com.example.mobilemap.R;
@@ -54,9 +55,10 @@ public class PoisActivity extends AppCompatActivity {
     }
 
     public DeleteItemContext getDeleteContext() {
+        Resources resources = this.getResources();
         return new DeleteItemContext(DatabaseContract.Poi.CONTENT_URI,
-                R.string.dialog_delete_poi_title,
-                R.string.confirm_delete_poi_msg);
+                resources.getString(R.string.dialog_delete_poi_title),
+                resources.getString(R.string.confirm_delete_poi_msg));
     }
 
     public static Intent createIntent(Activity activity, double latitude, double longitude) {

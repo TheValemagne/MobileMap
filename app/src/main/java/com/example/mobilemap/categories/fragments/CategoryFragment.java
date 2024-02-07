@@ -24,9 +24,11 @@ import com.example.mobilemap.listeners.DeleteDatabaseItemListener;
 import com.example.mobilemap.listeners.SaveDatabaseItemListener;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
+ * Fragment permettant la gestion d'une catégorie
  * A simple {@link Fragment} subclass.
  * Use the {@link CategoryFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -69,7 +71,7 @@ public class CategoryFragment extends Fragment implements ItemView<Category> {
         activity = (CategoriesActivity) requireActivity();
         categoryNames = ContentResolverHelper.getCategories(activity.getContentResolver())
                 .stream().map(Category::getName)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()); // récupérer la lsite des noms uniques des catégories existantes
     }
 
     @Override
@@ -77,12 +79,16 @@ public class CategoryFragment extends Fragment implements ItemView<Category> {
                              Bundle savedInstanceState) {
         binding = FragmentCategoryBinding.inflate(inflater, container, false);
 
-        if (itemId == -1) {
+        if (itemId == -1) { // mode ajout d'une catégorie
             binding.categoryDeleteBtn.setVisibility(View.GONE);
             binding.deleteBtnSpace.setVisibility(View.GONE);
-        } else {
-            category = findCategory(itemId);
-            binding.categoryName.setText(category.getName());
+        } else { // mode modification d'une catégorie
+            Optional<Category> foundCategory = findCategory(itemId);
+
+            if (foundCategory.isPresent()) {
+                category = foundCategory.get();
+                binding.categoryName.setText(category.getName());
+            }
         }
 
         bindActionButtons();
@@ -90,6 +96,9 @@ public class CategoryFragment extends Fragment implements ItemView<Category> {
         return binding.getRoot();
     }
 
+    /**
+     * Initialisation des écouteurs des boutons d'actions : annuler, supprimer, enregistrer
+     */
     private void bindActionButtons() {
         binding.categorySaveBtn.setOnClickListener(new SaveDatabaseItemListener<>(activity, this, DatabaseContract.Category.CONTENT_URI));
         binding.categoryCancelBtn.setOnClickListener(new CancelAction(activity, false));
@@ -98,16 +107,29 @@ public class CategoryFragment extends Fragment implements ItemView<Category> {
         }
     }
 
-    private Category findCategory(long id) {
+    /**
+     * Retourne la catégorie avec l'identifiant indiqué
+     * @param id indentifiant de la catégorie à chercher
+     * @return la catégorie recherchée
+     */
+    private Optional<Category> findCategory(long id) {
         Cursor cursor = requireActivity().getContentResolver()
                 .query(DatabaseContract.Category.CONTENT_URI, DatabaseContract.Category.COLUMNS, DatabaseContract.Category._ID + " = " + id,
                         null, null);
-        assert cursor != null;
+
+        if (cursor == null) {
+            return Optional.empty();
+        }
         cursor.moveToFirst();
 
-        return Category.fromCursor(cursor);
+        return Optional.of(Category.fromCursor(cursor));
     }
 
+    /**
+     * Vérifie que toutes les données entrées sont valides.
+     *
+     * @return vrai si les données sont valides
+     */
     public boolean check() {
         TextView categoryName = binding.categoryName;
 
@@ -125,6 +147,11 @@ public class CategoryFragment extends Fragment implements ItemView<Category> {
         return name.length() != 0 && !categoryNames.contains(name);
     }
 
+    /**
+     * Récupère la catégorie en fonction des données entrées
+     *
+     * @return la catégorie avec le contenu entré dans la page
+     */
     public Category getValues() {
         String name = binding.categoryName.getText().toString();
 

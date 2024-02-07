@@ -12,6 +12,13 @@ import java.util.List;
 public class DeleteDatabaseListListener<T extends RecyclerView.ViewHolder, U extends HasId> extends DeleteDatabaseItemListener {
     private final BaseAdapter<T, U> adapter;
 
+    /**
+     *
+     * @param itemId identifiant de l'élément à supprimer
+     * @param activity activité mère
+     * @param deleteCategoryContext contexte pour la supression de l'élément
+     * @param adapter adapteur de la liste
+     */
     public DeleteDatabaseListListener(long itemId, AppCompatActivity activity, DeleteItemContext deleteCategoryContext,
                                        BaseAdapter<T, U> adapter) {
         super(itemId, activity, deleteCategoryContext);

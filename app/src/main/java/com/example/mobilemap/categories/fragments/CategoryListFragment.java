@@ -21,6 +21,7 @@ import com.example.mobilemap.categories.ShowCategoryListener;
 import java.util.List;
 
 /**
+ * Fragment permettant la gestion de lal iste des catégories
  * A simple {@link Fragment} subclass.
  */
 public class CategoryListFragment extends Fragment {
@@ -42,6 +43,12 @@ public class CategoryListFragment extends Fragment {
         return binding.getRoot();
     }
 
+    /**
+     * Initialisation de la liste des catégories
+     *
+     * @param binding classe contennat les éléments du fragments
+     * @param activity activité à l'origine du fragment
+     */
     private void initRecyclerView(FragmentCategoriesListBinding binding, AppCompatActivity activity) {
         List<Category> categories = ContentResolverHelper.getCategories(activity.getContentResolver());
 

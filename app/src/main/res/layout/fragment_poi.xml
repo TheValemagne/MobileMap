@@ -67,7 +67,7 @@
                     android:layout_height="wrap_content"
                     android:autofillHints=""
                     android:ems="10"
-                    android:inputType="numberDecimal"
+                    android:inputType="number|numberDecimal|numberSigned"
                     android:textSize="@dimen/contentTextSize" />
 
             </LinearLayout>
@@ -89,7 +89,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
-                    android:inputType="numberDecimal"
+                    android:inputType="number|numberDecimal|numberSigned"
                     android:textSize="@dimen/contentTextSize" />
 
             </LinearLayout>
