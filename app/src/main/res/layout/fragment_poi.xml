@@ -23,6 +23,7 @@
                 android:id="@+id/title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:text="@string/hello_blank_fragment"
                 android:textSize="@dimen/titleTextSize" />
 
@@ -35,7 +36,6 @@
                     android:id="@+id/nameLabel"
                     android:layout_width="@dimen/textViewWidth"
                     android:layout_height="wrap_content"
-                    android:inputType="textCapSentences"
                     android:text="@string/category_name"
                     android:textSize="@dimen/contentTextSize" />
 
@@ -105,7 +105,6 @@
                     android:id="@+id/textView2"
                     android:layout_width="@dimen/textViewWidth"
                     android:layout_height="wrap_content"
-                    android:inputType="textCapSentences"
                     android:text="@string/postal_adress"
                     android:textSize="@dimen/contentTextSize" />
 
@@ -114,7 +113,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
-                    android:inputType="textPostalAddress"
+                    android:inputType="textPostalAddress|textCapSentences"
                     android:textSize="@dimen/contentTextSize" />
 
             </LinearLayout>

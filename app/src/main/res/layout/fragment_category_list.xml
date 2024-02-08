@@ -17,6 +17,7 @@
             android:id="@+id/categoriesTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:text="@string/category_list"
             android:textSize="@dimen/titleTextSize" />
 

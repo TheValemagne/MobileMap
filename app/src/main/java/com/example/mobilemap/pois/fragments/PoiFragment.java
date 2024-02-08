@@ -315,12 +315,12 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
 
     @Override
     public Poi getValues() {
-        String name = binding.poiName.getText().toString();
-        double latitude = Double.parseDouble(binding.poiLatitude.getText().toString());
-        double longitude = Double.parseDouble(binding.poiLongitude.getText().toString());
-        String postalAddress = binding.poiPostalAddress.getText().toString();
+        String name = binding.poiName.getText().toString().trim();
+        double latitude = Double.parseDouble(binding.poiLatitude.getText().toString().trim());
+        double longitude = Double.parseDouble(binding.poiLongitude.getText().toString().trim());
+        String postalAddress = binding.poiPostalAddress.getText().toString().trim();
         long categoryId = getSelectedValue(binding.categoryDropDown);
-        String resume = binding.poiResume.getText().toString();
+        String resume = binding.poiResume.getText().toString().trim();
 
         if (poi == null) {
             return new Poi(name, latitude, longitude, postalAddress, categoryId, resume);

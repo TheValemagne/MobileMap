@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 import com.example.mobilemap.categories.CategoryListRecyclerViewAdapter;
 import com.example.mobilemap.database.ContentResolverHelper;
 import com.example.mobilemap.database.tables.Category;
-import com.example.mobilemap.databinding.FragmentCategoriesListBinding;
+import com.example.mobilemap.databinding.FragmentCategoryListBinding;
 import com.example.mobilemap.categories.ShowCategoryListener;
 
 import java.util.List;
@@ -33,7 +33,7 @@ public class CategoryListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        FragmentCategoriesListBinding binding = FragmentCategoriesListBinding.inflate(inflater, container, false);
+        FragmentCategoryListBinding binding = FragmentCategoryListBinding.inflate(inflater, container, false);
 
         AppCompatActivity activity = (AppCompatActivity) requireActivity();
         binding.addCategoryButton.setOnClickListener(new ShowCategoryListener(activity));
@@ -49,7 +49,7 @@ public class CategoryListFragment extends Fragment {
      * @param binding classe contennat les éléments du fragments
      * @param activity activité à l'origine du fragment
      */
-    private void initRecyclerView(FragmentCategoriesListBinding binding, AppCompatActivity activity) {
+    private void initRecyclerView(FragmentCategoryListBinding binding, AppCompatActivity activity) {
         List<Category> categories = ContentResolverHelper.getCategories(activity.getContentResolver());
 
         if (!categories.isEmpty()) {
