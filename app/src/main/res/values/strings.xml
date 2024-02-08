@@ -42,4 +42,5 @@
     <string name="edit_category">Edit the category</string>
     <string name="add_poi">Add a new POI</string>
     <string name="edit_poi">Edit POI</string>
+    <string name="coordinate_out_of_bound">Value should be between {0} and {1}</string>
 </resources>

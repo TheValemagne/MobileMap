@@ -8,6 +8,7 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.mobilemap.database.DatabaseContract;
 import com.example.mobilemap.database.tables.DatabaseItem;
 import com.example.mobilemap.database.interfaces.ItemView;
 
@@ -19,7 +20,6 @@ public class SaveDatabaseItemListener<T extends DatabaseItem> implements View.On
     private final ContentResolver contentResolver;
     private final Uri databaseUri;
     private final boolean launchedForResult;
-    private static final int NOT_EXISTING_ID = -1;
 
     /**
      * Ecouteur pour enregistrer un élément dans la base de données
@@ -45,7 +45,7 @@ public class SaveDatabaseItemListener<T extends DatabaseItem> implements View.On
 
         saveItem();
 
-        if (launchedForResult) {
+        if (launchedForResult) { // activité lancée pour un résultat
             activity.setResult(Activity.RESULT_OK);
             activity.finish();
             return;
@@ -54,10 +54,13 @@ public class SaveDatabaseItemListener<T extends DatabaseItem> implements View.On
         activity.getSupportFragmentManager().popBackStackImmediate();
     }
 
+    /**
+     * enregistre l'élément dans la base de données en créant ou modifiant l'élément
+     */
     private void saveItem() {
         T databaseItem = fragment.getValues();
 
-        if (databaseItem.getId() == NOT_EXISTING_ID) {
+        if (databaseItem.getId() == DatabaseContract.NOT_EXISTING_ID) {
             contentResolver.insert(databaseUri, databaseItem.toContentValues());
             return;
         }

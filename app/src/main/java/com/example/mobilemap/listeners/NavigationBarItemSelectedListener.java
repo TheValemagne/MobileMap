@@ -34,7 +34,7 @@ public class NavigationBarItemSelectedListener implements NavigationBarView.OnIt
                 new NavigationHandler(R.id.navigation_pois, new Intent(activity, PoisActivity.class), activity, currentActivityId)
         ));
 
-        for (int index = 0; index < handlers.size() - 1; index++) {
+        for (int index = 0; index < handlers.size() - 1; index++) { // lier les maillons de la chaîne
             handlers.get(index).setNextNavigationHandler(handlers.get(index + 1));
         }
     }

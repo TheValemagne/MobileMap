@@ -33,7 +33,7 @@ public class MyLocationOverlay extends MyLocationNewOverlay {
 
     @Override
     public void onLocationChanged(Location location, IMyLocationProvider source) {
-        super.onLocationChanged(location, source); // utilisation de hanlder.postAtTime dans le code soruce pour actualiser la position
+        super.onLocationChanged(location, source); // utilisation de hanlder.postAtTime dans le code source pour actualiser la position
 
         activity.shouldShowLocationBtn(location != null);
 

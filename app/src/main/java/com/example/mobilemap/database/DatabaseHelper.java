@@ -7,6 +7,10 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     public DatabaseHelper(@Nullable Context context) {
@@ -58,9 +62,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     private void migrateDatabase(SQLiteDatabase db) {
-        db.execSQL("DROP TABLE IF EXISTS " + DatabaseContract.Poi.TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + DatabaseContract.Category.TABLE_NAME);
-        db.execSQL("DROP VIEW IF EXISTS " + DatabaseContract.PoiDetail.TABLE_NAME);
+        List<String> tables = new ArrayList<>(Arrays.asList(
+                DatabaseContract.Category.TABLE_NAME,
+                DatabaseContract.Poi.TABLE_NAME,
+                DatabaseContract.PoiDetail.TABLE_NAME
+        ));
+
+        tables.forEach(table -> db.execSQL("DROP TABLE IF EXISTS " + table));
 
         onCreate(db);
     }

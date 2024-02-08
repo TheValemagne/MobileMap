@@ -10,10 +10,18 @@ public class DeleteItemContext {
         return databaseUri;
     }
 
+    /**
+     * Retourne le titre du dialogue de suppression
+     * @return titre du dialogue de suppression
+     */
     public String getDialogTitle() {
         return dialogTitle;
     }
 
+    /**
+     * Retourne le message du dialogue de suppression
+     * @return message du dialogue de suppression
+     */
     public String getDialogMsg() {
         return dialogMsg;
     }

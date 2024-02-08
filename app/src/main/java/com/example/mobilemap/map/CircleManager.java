@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 
-import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 
 import org.osmdroid.api.IGeoPoint;
@@ -20,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Gestion des circles de filtrage de la carte
@@ -33,11 +33,10 @@ public class CircleManager {
     private final Map<String, InfoWindow> itemInfoWindowMap;
 
     /**
-     *
-     * @param mapView vue de la map
-     * @param activity activité mère
-     * @param mapManager
-     * @param itemInfoWindowMap
+     * @param mapView           vue de la map
+     * @param activity          activité mère
+     * @param mapManager        gestionnaire de la carte
+     * @param itemInfoWindowMap map des infoWindow
      */
     public CircleManager(MapView mapView, Activity activity, MapManager mapManager, Map<String, InfoWindow> itemInfoWindowMap) {
         this.mapView = mapView;
@@ -58,9 +57,9 @@ public class CircleManager {
     /**
      * Dessine un cercle par rapport à un marqueur de la carte
      *
-     * @param centerItem
-     * @param radiusInMeters
-     * @param categoryFilter
+     * @param centerItem     élément central du cercle
+     * @param radiusInMeters rayon du cercle en mètre
+     * @param categoryFilter identifiant de la catégorie à afficher
      */
     public void drawCircle(OverlayItem centerItem, double radiusInMeters, long categoryFilter) {
         if (circle != null) {
@@ -73,88 +72,82 @@ public class CircleManager {
         circle = createCircle(center, radiusInMeters);
         mapView.getOverlayManager().add(circle);
 
+        // Récuperation des sites avec de la catégorie voulue
         List<OverlayItem> filteredItems = mapManager.getOverlayItems(categoryFilter);
         filteredItems.forEach(item -> System.out.println(item.getTitle()));
 
-        updateCenterPointMarker(centerItem, center, filteredItems); // affiche toujours le point centrale du cercle
-
-        showOnlyPoisInsideCircle(filteredItems, center, radiusInMeters);
+        updateCenterPointMarker(centerItem, filteredItems); // affiche toujours le point centrale du cercle
+        showOnlyPoisInsideCircle(filteredItems, center, radiusInMeters); // affichage des sites à l'intérieur du cercle
 
         // Sauvegarde les données du circle pour retracer le cercle si l'application est mise en pause
-        saveCircleValues(radiusInMeters, categoryFilter, center);
+        saveCircleValues(center, radiusInMeters, categoryFilter);
     }
 
     /**
      * Actualise le marqueur du centre du cercle
      *
-     * @param centerItem
-     * @param center
-     * @param filteredItems
+     * @param centerItem élément centrale du cercle
+     * @param items      liste de sites à afficher
      */
-    private void updateCenterPointMarker(OverlayItem centerItem, IGeoPoint center, List<OverlayItem> filteredItems) {
-        centerItem.setMarker(getCenterMarker());
+    private void updateCenterPointMarker(OverlayItem centerItem, List<OverlayItem> items) {
+        Optional<OverlayItem> item = findOverlayItem(items, centerItem.getPoint());
 
-        if (filteredItems.stream().noneMatch(item -> item.getPoint().equals(centerItem.getPoint()))) {
-            filteredItems.add(centerItem);
-            return;
-        }
+        item.ifPresent(items::remove); // supprimer le marqueur avec l'image classique s'il est de la catégorie voulue
 
-        int index = findOverlayItemIndex(filteredItems, center);
-        if (index != -1) {
-            filteredItems.remove(index);
-            filteredItems.add(centerItem);
-        }
+        OverlayItem circleCenter = item.orElse(centerItem);
+        circleCenter.setMarker(getCenterMarker()); // modifier le marqueur au centre du cercle
+        items.add(circleCenter);
     }
 
     /**
-     * Retourne l'index d'un OverlayItem
+     * Retourne l'OverlayItem avec la localisation voulue
      *
-     * @param overlayItems
-     * @param point
-     * @return
+     * @param items liste des marqueurs connus
+     * @param point localisation voulue
+     * @return position de l'overlayItem dans la liste
      */
-    private int findOverlayItemIndex(List<OverlayItem> overlayItems, IGeoPoint point) {
-        for (int index = 0; index < overlayItems.size(); index++) {
-            IGeoPoint itemPoint = overlayItems.get(index).getPoint();
+    private Optional<OverlayItem> findOverlayItem(List<OverlayItem> items, IGeoPoint point) {
+        for (int index = 0; index < items.size(); index++) {
+            IGeoPoint itemPoint = items.get(index).getPoint();
 
             if (itemPoint.getLatitude() == point.getLatitude() && itemPoint.getLongitude() == point.getLongitude()) {
-                return index;
+                return Optional.ofNullable(items.get(index));
             }
         }
 
-        return -1;
+        return Optional.empty();
     }
 
     /**
      * Dessine un cercle autour de la position actuelle
      *
-     * @param myLocation
-     * @param radiusInMeters
-     * @param categoryFilter
+     * @param userLocation   localisation de l'utilisateur
+     * @param radiusInMeters rayon du cercle en mètre
+     * @param categoryFilter identifiant de la catégorie à afficher
      */
-    public void drawCircleAroundMe(IGeoPoint myLocation, double radiusInMeters, long categoryFilter) {
+    public void drawCircleAroundMe(IGeoPoint userLocation, double radiusInMeters, long categoryFilter) {
         if (circle != null) {
             removeCircle();
         }
 
         // Ajoutez le cercle à la carte
-        circle = createCircle(myLocation, radiusInMeters);
+        circle = createCircle(userLocation, radiusInMeters);
         mapView.getOverlayManager().add(circle);
 
         List<OverlayItem> filteredItems = mapManager.getOverlayItems(categoryFilter);
 
-        showOnlyPoisInsideCircle(filteredItems, myLocation, radiusInMeters);
+        showOnlyPoisInsideCircle(filteredItems, userLocation, radiusInMeters);
 
         // Sauvegarde les données du circle pour retracer le cercle si l'application est mise en pause
-        saveCircleAroundMeValues(radiusInMeters, categoryFilter, myLocation);
+        saveCircleAroundMeValues(userLocation, radiusInMeters, categoryFilter);
     }
 
     /**
      * Création du cercle avec le centre et le diamètre voulu
      *
-     * @param center
-     * @param radiusInMeters
-     * @return
+     * @param center point central du cercle
+     * @param radiusInMeters rayon du cercle en mètre
+     * @return le cercle créé
      */
     private Polygon createCircle(IGeoPoint center, double radiusInMeters) {
         Polygon circle = new Polygon();
@@ -175,9 +168,9 @@ public class CircleManager {
     /**
      * Génération des points sur le périmètre du cercle
      *
-     * @param center
-     * @param radiusInMeters
-     * @return
+     * @param center point centrale du cercle
+     * @param radiusInMeters rayon du cercle en mètre
+     * @return liste des points pour tracer le périmètre
      */
     private List<GeoPoint> generateCirclePerimeterPoints(IGeoPoint center, double radiusInMeters) {
         List<GeoPoint> points = new ArrayList<>();
@@ -198,9 +191,9 @@ public class CircleManager {
     /**
      * Filtre les sites affichés pour afficher uniquement ceux à l'intérrieur du cercle
      *
-     * @param items
-     * @param center
-     * @param radiusInMeters
+     * @param items liste de marqueurs
+     * @param center point centrale du cercle
+     * @param radiusInMeters rayon du cercle en mètre
      */
     private void showOnlyPoisInsideCircle(List<OverlayItem> items, IGeoPoint center, double radiusInMeters) {
         mapManager.getOverlayItemItemizedOverlay().removeAllItems(); // supprime tous les marqueurs de sites affichés
@@ -228,10 +221,10 @@ public class CircleManager {
     /**
      * Vérifie si un point est à l'intérieur du cercle
      *
-     * @param item
-     * @param centerLocation
-     * @param radiusInMeters
-     * @return
+     * @param item élément à vérifier
+     * @param centerLocation localisation de centre du cercle
+     * @param radiusInMeters rayon du cercle en mètre
+     * @return vrai si le point est à l'intérieur du cercle
      */
     private boolean isInsideCircle(OverlayItem item, Location centerLocation, double radiusInMeters) {
         GeoPoint markerPosition = (GeoPoint) item.getPoint();
@@ -248,7 +241,7 @@ public class CircleManager {
     /**
      * Vérifie s'il y a un cercle sauvegardé
      *
-     * @return
+     * @return vrai s'il y a un cercle sauvegardé dans les préférences
      */
     public boolean hasSavedCircle() {
         String circleRadius = mapManager.getSharedPreferences()
@@ -260,13 +253,13 @@ public class CircleManager {
     /**
      * Enregistrement des données du cercle autour de la position actuelle
      *
-     * @param radiusInMeters
-     * @param categoryFilter
-     * @param center
+     * @param center point central du cercle
+     * @param radiusInMeters rayon du cercle en mètre
+     * @param categoryFilter identifiant de la catégorie à afficher
      */
-    private void saveCircleAroundMeValues(double radiusInMeters, long categoryFilter, IGeoPoint center) {
-        saveCircleValues(radiusInMeters, categoryFilter, center);
-        final SharedPreferences.Editor edit = mapManager.getSharedPreferences().edit();
+    private void saveCircleAroundMeValues(IGeoPoint center, double radiusInMeters, long categoryFilter) {
+        saveCircleValues(center, radiusInMeters, categoryFilter);
+        SharedPreferences.Editor edit = mapManager.getSharedPreferences().edit();
         edit.putBoolean(SharedPreferencesConstant.CIRCLE_IS_AROUND_ME, true);
         edit.apply();
 
@@ -275,12 +268,12 @@ public class CircleManager {
     /**
      * Enregistrement des données du cercle autour d'un marqueur
      *
-     * @param radiusInMeters
-     * @param categoryFilter
-     * @param center
+     * @param center point central du cercle
+     * @param radiusInMeters rayon du cercle en mètre
+     * @param categoryFilter identifiant de la catégorie à afficher
      */
-    private void saveCircleValues(double radiusInMeters, long categoryFilter, IGeoPoint center) {
-        final SharedPreferences.Editor edit = mapManager.getSharedPreferences().edit();
+    private void saveCircleValues(IGeoPoint center, double radiusInMeters, long categoryFilter) {
+        SharedPreferences.Editor edit = mapManager.getSharedPreferences().edit();
         edit.putString(SharedPreferencesConstant.CIRCLE_LATITUDE_STRING, String.valueOf(center.getLatitude()));
         edit.putString(SharedPreferencesConstant.CIRCLE_LONGITUDE_STRING, String.valueOf(center.getLongitude()));
         edit.putString(SharedPreferencesConstant.CIRCLE_RADIUS_STRING, String.valueOf(radiusInMeters));
@@ -307,7 +300,7 @@ public class CircleManager {
      * Supprimer les données sauvegardées du cercle
      */
     private void deleteSavedSettings() {
-        final SharedPreferences.Editor edit = mapManager.getSharedPreferences().edit();
+        SharedPreferences.Editor edit = mapManager.getSharedPreferences().edit();
         edit.putString(SharedPreferencesConstant.CIRCLE_LATITUDE_STRING, SharedPreferencesConstant.EMPTY_STRING);
         edit.putString(SharedPreferencesConstant.CIRCLE_LONGITUDE_STRING, SharedPreferencesConstant.EMPTY_STRING);
         edit.putString(SharedPreferencesConstant.CIRCLE_RADIUS_STRING, SharedPreferencesConstant.EMPTY_STRING);
@@ -358,10 +351,10 @@ public class CircleManager {
     }
 
     /**
-     * Retourne l'overlayItem
+     * Retourne l'overlayItem avec la localisation voulue
      *
-     * @param center
-     * @return
+     * @param center point central du cercle
+     * @return overlayItem avec la localisation voulue
      */
     private OverlayItem findItem(IGeoPoint center) {
         return mapManager.getOverlayItems().stream()

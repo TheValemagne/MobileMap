@@ -32,7 +32,7 @@ public class PoisListRecyclerViewAdapter extends BaseAdapter<PoisListRecyclerVie
     public void onBindViewHolder(@NonNull PoisListRecyclerViewAdapter.ViewHolder holder, int position) {
         PoiDetail poiDetail = values.get(position);
 
-        holder.contentView.setText(poiDetail.getName());
+        holder.contentView.setText(poiDetail.getSiteName());
         holder.categoryName.setText(poiDetail.getCategoryName());
         holder.editBtn.setOnClickListener(new ShowPoiListener(poiDetail.getId(), activity));
         holder.deleteBtn.setOnClickListener(new DeleteDatabaseListListener<>(poiDetail.getId(), activity,

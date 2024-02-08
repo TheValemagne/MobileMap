@@ -9,6 +9,7 @@ import android.widget.Spinner;
 
 import com.example.mobilemap.R;
 import com.example.mobilemap.database.ContentResolverHelper;
+import com.example.mobilemap.database.DatabaseContract;
 import com.example.mobilemap.database.tables.Category;
 import com.example.mobilemap.databinding.DialogAskCircleRadiusBinding;
 
@@ -25,10 +26,11 @@ public class AddCircleAroundPoiDialogBuilder extends AlertDialog.Builder {
     private List<Category> categories;
 
     /**
-     * Dialogue de demmande de données pour afficer un cercle
-     * @param activity
-     * @param mapManager
-     * @param item
+     * Dialogue de demmande de données pour afficher un cercle
+     *
+     * @param activity activité mère
+     * @param mapManager gestionnaire de la carte
+     * @param item élément reptrésentant le centre du futur cercle
      */
     public AddCircleAroundPoiDialogBuilder(Activity activity, MapManager mapManager, OverlayItem item) {
         super(activity);
@@ -41,27 +43,29 @@ public class AddCircleAroundPoiDialogBuilder extends AlertDialog.Builder {
         this.setView(binding.getRoot());
 
         final EditText editCircleRadius = binding.editCircleRadius;
-        final Spinner categoryFilter = binding.categoryFilter;
-        initSpinner(categoryFilter, activity);
+        final Spinner categoryFilterSpinner = binding.categoryFilter;
+        initSpinner(categoryFilterSpinner, activity);
 
-        this.setPositiveButton(resources.getString(R.string.dialog_show), (dialog, which) -> {
-            String textRadius = editCircleRadius.getText().toString();
-
-            if (textRadius.isEmpty()) {
-                return;
-            }
-
-            double circleRadius = Double.parseDouble(textRadius);
-            long categoryFilterValue = getSelectedCategoryId(categoryFilter);
-
-            if (item != null){
-                this.mapManager.drawCircle(item, circleRadius, categoryFilterValue);
-            } else {
-                this.mapManager.drawCircleAroundMe(circleRadius, categoryFilterValue);
-            }
-
-        });
+        this.setPositiveButton(resources.getString(R.string.dialog_show), (dialog, which) -> showCircle(editCircleRadius, categoryFilterSpinner, item));
         this.setNegativeButton(resources.getString(R.string.dialog_cancel), (dialog, which) -> dialog.cancel());
+    }
+
+    private void showCircle(EditText editCircleRadius, Spinner categoryFilterSpinner, OverlayItem item) {
+        String textRadius = editCircleRadius.getText().toString();
+
+        if (textRadius.isEmpty()) {
+            return;
+        }
+
+        double circleRadius = Double.parseDouble(textRadius);
+        long categoryFilterValue = getSelectedCategoryId(categoryFilterSpinner);
+
+        if (item != null){
+            this.mapManager.drawCircle(item, circleRadius, categoryFilterValue);
+        } else {
+            this.mapManager.drawCircleAroundMe(circleRadius, categoryFilterValue);
+        }
+
     }
 
     /**
@@ -85,7 +89,7 @@ public class AddCircleAroundPoiDialogBuilder extends AlertDialog.Builder {
         String categoryName = (String) spinner.getSelectedItem();
         Category selectedCategory = categories.stream().filter(category -> category.getName().equals(categoryName)).findFirst().orElse(null);
 
-        return selectedCategory != null ? selectedCategory.getId() : -1;
+        return selectedCategory != null ? selectedCategory.getId() : DatabaseContract.NOT_EXISTING_ID;
     }
 
 }

@@ -45,23 +45,28 @@ public class CustomInfoWindow extends InfoWindow {
         bubble_description.setText(overlayItem.getSnippet());
 
         if(circleManager.hasSavedCircle()) {
-            IGeoPoint center = circleManager.getCircleCenter();
-            Location centerLocation = new Location("Center");
-            centerLocation.setLatitude(center.getLatitude());
-            centerLocation.setLongitude(center.getLongitude());
-
-            Location actualPoint = new Location("Marker");
-            actualPoint.setLatitude(point.getLatitude());
-            actualPoint.setLongitude(point.getLongitude());
-
             TextView subDescription = mView.findViewById(org.osmdroid.library.R.id.bubble_subdescription);
             subDescription.setVisibility(View.VISIBLE);
+
             Locale locale = LocaleList.getDefault().get(0);
-            subDescription.setText(MessageFormat.format(resources.getString(R.string.distanceLabel), String.format(locale, "%.2f", centerLocation.distanceTo(actualPoint))));
+            subDescription.setText(MessageFormat.format(resources.getString(R.string.distanceLabel),
+                    String.format(locale, "%.2f", getDistanceToCircleCenter())));
         }
 
     }
 
+    private float getDistanceToCircleCenter() {
+        IGeoPoint center = circleManager.getCircleCenter();
+        Location centerLocation = new Location("Center");
+        centerLocation.setLatitude(center.getLatitude());
+        centerLocation.setLongitude(center.getLongitude());
+
+        Location actualPoint = new Location("Marker");
+        actualPoint.setLatitude(point.getLatitude());
+        actualPoint.setLongitude(point.getLongitude());
+
+        return centerLocation.distanceTo(actualPoint);
+    }
     @Override
     public void onClose() {
         // vide

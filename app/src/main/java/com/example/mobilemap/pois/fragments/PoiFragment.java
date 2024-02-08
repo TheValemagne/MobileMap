@@ -17,6 +17,9 @@ import android.widget.TextView;
 import com.example.mobilemap.R;
 import com.example.mobilemap.database.interfaces.ItemView;
 import com.example.mobilemap.map.SharedPreferencesConstant;
+import com.example.mobilemap.validators.DoubleRangeValidator;
+import com.example.mobilemap.validators.FieldValidator;
+import com.example.mobilemap.validators.IsFieldEmpty;
 import com.example.mobilemap.pois.PoiTextWatcher;
 import com.example.mobilemap.pois.PoisActivity;
 import com.example.mobilemap.database.ContentResolverHelper;
@@ -52,7 +55,7 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
     private static final String ARG_ITEM_ID = "itemId";
     public static final String ARG_LATITUDE = "latitude";
     public static final String ARG_LONGITUDE = "longitude";
-    private long itemId = -1;
+    private long itemId = DatabaseContract.NOT_EXISTING_ID;
     private Poi poi = null;
     private FragmentPoiBinding binding;
     private List<Category> categories;
@@ -239,7 +242,7 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
     private void setSelectedValue(Spinner spinner, long id) {
         for (int index = 0; index < categories.size(); index++) {
             if (categories.get(index).getId() == id) {
-                spinner.setSelection(index);
+                spinner.setSelection(index, true);
                 return;
             }
         }
@@ -252,27 +255,39 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
         return selectedCategory != null ? selectedCategory.getId() : -1;
     }
 
-
     @Override
     public boolean check() {
-        List<TextView> textViews = new ArrayList<>(Arrays.asList(
-                binding.poiName,
-                binding.poiLatitude,
-                binding.poiLongitude,
-                binding.poiResume,
-                binding.poiPostalAddress
+        Resources resources = requireActivity().getResources();
+
+        List<FieldValidator> textValidators = new ArrayList<>(Arrays.asList(
+                new IsFieldEmpty(binding.poiName, resources),
+                new IsFieldEmpty(binding.poiPostalAddress, resources),
+                new IsFieldEmpty(binding.poiResume, resources)
         ));
 
-        return textViews.stream().noneMatch(textView -> textView.getText().toString().isEmpty());
+        List<FieldValidator> latitudeValidators = new ArrayList<>(Arrays.asList(
+                new IsFieldEmpty(binding.poiLatitude, resources),
+                new DoubleRangeValidator(binding.poiLatitude, resources, -90, 90)
+        ));
+
+        List<FieldValidator> longitudeValidators = new ArrayList<>(Arrays.asList(
+                new IsFieldEmpty(binding.poiLongitude, resources),
+                new DoubleRangeValidator(binding.poiLongitude, resources, -180, 180)
+        ));
+
+        boolean checkEmptyFields = textValidators.stream().map(FieldValidator::check)
+                .reduce(true, (aBoolean, aBoolean2) -> aBoolean && aBoolean2);
+        boolean checkLatitude = latitudeValidators.stream().allMatch(FieldValidator::check);
+        boolean checkLongitude = longitudeValidators.stream().allMatch(FieldValidator::check);
+
+        return checkEmptyFields && checkLatitude && checkLongitude;
     }
-
-
 
     @Override
     public Poi getValues() {
         String name = binding.poiName.getText().toString();
-        float latitude = Float.parseFloat(binding.poiLatitude.getText().toString());
-        float longitude = Float.parseFloat(binding.poiLongitude.getText().toString());
+        double latitude = Double.parseDouble(binding.poiLatitude.getText().toString());
+        double longitude = Double.parseDouble(binding.poiLongitude.getText().toString());
         String postalAddress = binding.poiPostalAddress.getText().toString();
         long categoryId = getSelectedValue(binding.categoryDropDown);
         String resume = binding.poiResume.getText().toString();

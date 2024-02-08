@@ -22,5 +22,10 @@ public abstract class DatabaseItem implements HasId {
         this.id = _ID;
     }
 
+    /**
+     * Convertie les données dans le format ContentValues
+     *
+     * @return ContentValues avec toutes les données de la classe
+     */
     public abstract ContentValues toContentValues();
 }

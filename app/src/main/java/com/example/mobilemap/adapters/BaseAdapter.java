@@ -27,7 +27,7 @@ public abstract class BaseAdapter<T extends RecyclerView.ViewHolder, U extends H
     /**
      *
      * @param values liste initiale de la liste
-     * @param contentResolver
+     * @param contentResolver gestionnaire de la base de données
      * @param activity activité à l'origine du fragment
      */
     public BaseAdapter(List<U> values, ContentResolver contentResolver, AppCompatActivity activity) {

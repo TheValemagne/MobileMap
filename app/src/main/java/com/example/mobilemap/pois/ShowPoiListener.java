@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.example.mobilemap.R;
+import com.example.mobilemap.database.DatabaseContract;
 import com.example.mobilemap.pois.fragments.PoiFragment;
 
 public class ShowPoiListener implements View.OnClickListener {
@@ -23,7 +24,7 @@ public class ShowPoiListener implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        Fragment fragment = itemId > -1 ? PoiFragment.newInstance(itemId) : new PoiFragment();
+        Fragment fragment = itemId > DatabaseContract.NOT_EXISTING_ID ? PoiFragment.newInstance(itemId) : new PoiFragment();
 
         activity.getSupportFragmentManager().beginTransaction()
                 .replace(R.id.poisFragmentContainer, fragment)

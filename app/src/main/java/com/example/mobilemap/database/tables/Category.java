@@ -35,6 +35,12 @@ public class Category extends DatabaseItem {
         this(-1, name);
     }
 
+    /**
+     * Convertie un cursor en catégorie
+     *
+     * @param cursor résultat de la requête à convertir
+     * @return la catégorie requêtée
+     */
     @SuppressLint("Range")
     public static Category fromCursor(Cursor cursor) {
         return new Category(
@@ -58,10 +64,10 @@ public class Category extends DatabaseItem {
     }
 
     /**
-     * Convertie le cursor en liste de catégories
+     * Convertie un cursor en liste de catégories
      *
-     * @param cursor
-     * @return une liste de catégorie
+     * @param cursor résultat de la requête à convertir
+     * @return une liste de catégories
      */
     public static List<Category> mapFromList(Cursor cursor) {
         List<Category> result = new ArrayList<>();

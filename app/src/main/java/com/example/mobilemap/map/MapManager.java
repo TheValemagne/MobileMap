@@ -82,6 +82,9 @@ public final class MapManager {
         markerGestureListener = new MarkerGestureListener(mapView, this, itemInfoWindowMap, activity.getResources());
     }
 
+    /**
+     * Initialisation de la carte
+     */
     public void initMap() {
         Configuration.getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context));
 
@@ -89,9 +92,11 @@ public final class MapManager {
         mapView.getZoomController()
                 .setVisibility(CustomZoomButtonsController.Visibility.NEVER);
         mapView.setMultiTouchControls(true);
+        mapView.setScrollableAreaLimitLatitude(MapView.getTileSystem().getMaxLatitude(),
+                MapView.getTileSystem().getMinLatitude(),0);
 
-        mapView.setHorizontalMapRepetitionEnabled(false);
         mapView.setVerticalMapRepetitionEnabled(false);
+        mapView.setMinZoomLevel(3.0);
 
         IMapController mapController = mapView.getController();
         mapController.setZoom(SharedPreferencesConstant.DEFAULT_ZOOM);
@@ -99,6 +104,9 @@ public final class MapManager {
         initMapOverlays();
     }
 
+    /**
+     * Initialisation des couches de la carte
+     */
     private void initMapOverlays() {
         myLocationNewOverlay = new MyLocationOverlay(new GpsMyLocationProvider(context), mapView, activity, this);
         myLocationNewOverlay.enableMyLocation();

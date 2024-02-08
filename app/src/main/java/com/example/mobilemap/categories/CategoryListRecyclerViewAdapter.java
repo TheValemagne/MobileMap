@@ -18,7 +18,7 @@ import com.example.mobilemap.listeners.DeleteDatabaseListListener;
 import java.util.List;
 
 /**
- *
+ * Adapteur pour la liste de catégorie
  */
 public class CategoryListRecyclerViewAdapter extends BaseAdapter<CategoryListRecyclerViewAdapter.ViewHolder, Category> {
 

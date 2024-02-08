@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.mobilemap.R;
 import com.example.mobilemap.categories.fragments.CategoryFragment;
+import com.example.mobilemap.database.DatabaseContract;
 
 public class ShowCategoryListener implements View.OnClickListener {
     private final long itemId;
@@ -24,7 +25,7 @@ public class ShowCategoryListener implements View.OnClickListener {
     }
 
     /**
-     * Création de l'écouteur pour afficher une nouvelle catéogorie
+     * Création de l'écouteur pour afficher une nouvelle catégorie
      *
      * @param activity activité à l'origine du fragment
      */
@@ -34,7 +35,7 @@ public class ShowCategoryListener implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        Fragment fragment = itemId > -1 ? CategoryFragment.newInstance(itemId) : new CategoryFragment();
+        Fragment fragment = itemId > DatabaseContract.NOT_EXISTING_ID ? CategoryFragment.newInstance(itemId) : new CategoryFragment();
 
         activity.getSupportFragmentManager().beginTransaction()
                 .replace(R.id.categoriesFragmentContainer, fragment)

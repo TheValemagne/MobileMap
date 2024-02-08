@@ -13,7 +13,7 @@ public class ContentResolverHelper {
     /**
      * Retourne la liste des catégories
      *
-     * @param contentResolver
+     * @param contentResolver gestionnaire de la base de données
      * @return liste des caégories
      */
     public static List<Category> getCategories(ContentResolver contentResolver) {
@@ -28,7 +28,7 @@ public class ContentResolverHelper {
     /**
      * Retourne la liste des sites
      *
-     * @param contentResolver
+     * @param contentResolver gestionnaire de la base de données
      * @return liste des sites
      */
     public static List<PoiDetail> getPoisDetail(ContentResolver contentResolver) {
@@ -43,7 +43,7 @@ public class ContentResolverHelper {
     /**
      * Retourne la liste des sites détaillés
      *
-     * @param contentResolver
+     * @param contentResolver gestionnaire de la base de données
      * @return liste des sites détaillés
      */
     public static List<Poi> getPois(ContentResolver contentResolver) {

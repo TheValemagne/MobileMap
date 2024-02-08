@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import androidx.annotation.FloatRange;
 import androidx.annotation.NonNull;
 
 import com.example.mobilemap.database.DatabaseContract;
@@ -32,7 +33,7 @@ public class Poi extends DatabaseItem {
         return latitude;
     }
 
-    public void setLatitude(double latitude) {
+    public void setLatitude(@FloatRange(from = -90.0, to = 90.0) double latitude) {
         this.latitude = latitude;
     }
 
@@ -42,7 +43,7 @@ public class Poi extends DatabaseItem {
         return longitude;
     }
 
-    public void setLongitude(double longitude) {
+    public void setLongitude(@FloatRange(from = -180.0, to = 180.0) double longitude) {
         this.longitude = longitude;
     }
 
@@ -90,6 +91,12 @@ public class Poi extends DatabaseItem {
         this(-1, name, latitude, longitude, postalAddress, categoryId, resume);
     }
 
+    /**
+     * Convertie un cursor en site
+     *
+     * @param cursor résultat de la requête à convertir
+     * @return le site  requêté
+     */
     @SuppressLint("Range")
     public static Poi fromCursor(Cursor cursor) {
         return new Poi(
@@ -126,8 +133,8 @@ public class Poi extends DatabaseItem {
     /**
      * Convertie le cursor en liste de sites
      *
-     * @param cursor
-     * @return une liste de catégorie
+     * @param cursor résultat de la requête à convertir
+     * @return une liste de catégories
      */
     public static List<Poi> mapFromList(Cursor cursor) {
         List<Poi> result = new ArrayList<>();

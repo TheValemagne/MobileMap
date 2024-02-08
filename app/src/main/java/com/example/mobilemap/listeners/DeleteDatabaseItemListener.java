@@ -41,9 +41,9 @@ public class DeleteDatabaseItemListener implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
-        // affichage du dialogue de confirmation
         Resources resources = activity.getResources();
 
+        // création du dialogue de confirmation
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle(deleteDataContext.getDialogTitle());
 
@@ -53,11 +53,11 @@ public class DeleteDatabaseItemListener implements View.OnClickListener{
 
         builder.setPositiveButton(resources.getText(R.string.dialog_confirm), (dialog, which) -> {
             deleteItem();
-            afterItemDeleted();
+            afterDeleteItem();
         });
         builder.setNegativeButton(resources.getText(R.string.dialog_cancel), (dialog, which) -> dialog.cancel());
 
-        builder.show();
+        builder.show(); // affichage du dialogue de confirmation
     }
 
     /**
@@ -72,7 +72,7 @@ public class DeleteDatabaseItemListener implements View.OnClickListener{
     /**
      * Action après suppression de l'élément dans la base de données
      */
-    protected void afterItemDeleted() {
+    protected void afterDeleteItem() {
         activity.getSupportFragmentManager().popBackStackImmediate();
     }
 }

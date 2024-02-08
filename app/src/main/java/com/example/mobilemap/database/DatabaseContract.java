@@ -7,6 +7,7 @@ import android.provider.BaseColumns;
  * Contract de la base de données
  */
 public final class DatabaseContract {
+    public static final int NOT_EXISTING_ID = -1;
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "metzMap";
 

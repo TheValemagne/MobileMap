@@ -3,6 +3,7 @@ package com.example.mobilemap.listeners;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.mobilemap.database.DatabaseContract;
 import com.example.mobilemap.database.DeleteItemContext;
 import com.example.mobilemap.adapters.BaseAdapter;
 import com.example.mobilemap.database.interfaces.HasId;
@@ -27,7 +28,7 @@ public class DeleteDatabaseListListener<T extends RecyclerView.ViewHolder, U ext
     }
 
     @Override
-    protected void afterItemDeleted() {
+    protected void afterDeleteItem() {
         int position = getItemPosition(getItemId());
 
         if (position != -1) {
@@ -35,6 +36,12 @@ public class DeleteDatabaseListListener<T extends RecyclerView.ViewHolder, U ext
         }
     }
 
+    /**
+     * Retourne la position de l'élément dans la liste
+     *
+     * @param itemId identifiant de l'élément
+     * @return position de l'élément dans la liste
+     */
     private int getItemPosition(long itemId) {
         List<U> items = adapter.getValues();
 
@@ -44,6 +51,6 @@ public class DeleteDatabaseListListener<T extends RecyclerView.ViewHolder, U ext
             }
         }
 
-        return -1;
+        return DatabaseContract.NOT_EXISTING_ID; // élément non trouvé
     }
 }

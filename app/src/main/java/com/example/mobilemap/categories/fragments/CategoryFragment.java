@@ -10,10 +10,8 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.example.mobilemap.categories.CategoriesActivity;
-import com.example.mobilemap.R;
 import com.example.mobilemap.database.ContentResolverHelper;
 import com.example.mobilemap.database.DatabaseContract;
 import com.example.mobilemap.database.tables.Category;
@@ -22,8 +20,13 @@ import com.example.mobilemap.database.interfaces.ItemView;
 import com.example.mobilemap.listeners.CancelAction;
 import com.example.mobilemap.listeners.DeleteDatabaseItemListener;
 import com.example.mobilemap.listeners.SaveDatabaseItemListener;
+import com.example.mobilemap.validators.FieldValidator;
+import com.example.mobilemap.validators.IsFieldEmpty;
+import com.example.mobilemap.validators.IsUniqueCategoryValidator;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -36,7 +39,7 @@ import java.util.stream.Collectors;
  */
 public class CategoryFragment extends Fragment implements ItemView<Category> {
     private static final String ARG_ITEM_ID = "itemId";
-    private long itemId = -1;
+    private long itemId = DatabaseContract.NOT_EXISTING_ID;
     private Category category = null;
     private FragmentCategoryBinding binding;
     private List<String> categoryNames;
@@ -51,7 +54,7 @@ public class CategoryFragment extends Fragment implements ItemView<Category> {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param itemId Parameter 1.
+     * @param itemId identifiant de la catégorie à afficher.
      * @return A new instance of fragment CategoryFragment.
      */
     public static CategoryFragment newInstance(long itemId) {
@@ -80,10 +83,10 @@ public class CategoryFragment extends Fragment implements ItemView<Category> {
                              Bundle savedInstanceState) {
         binding = FragmentCategoryBinding.inflate(inflater, container, false);
 
-        if (itemId == -1) { // mode ajout d'une catégorie
+        if (itemId == -1) { // ajout d'une nouvelle catégorie
             binding.categoryDeleteBtn.setVisibility(View.GONE);
             binding.deleteBtnSpace.setVisibility(View.GONE);
-        } else { // mode modification d'une catégorie
+        } else { // modification d'une catégorie
             Optional<Category> foundCategory = findCategory(itemId);
 
             if (foundCategory.isPresent()) {
@@ -110,6 +113,7 @@ public class CategoryFragment extends Fragment implements ItemView<Category> {
 
     /**
      * Retourne la catégorie avec l'identifiant indiqué
+     *
      * @param id indentifiant de la catégorie à chercher
      * @return la catégorie recherchée
      */
@@ -132,20 +136,14 @@ public class CategoryFragment extends Fragment implements ItemView<Category> {
      * @return vrai si les données sont valides
      */
     public boolean check() {
-        TextView categoryName = binding.categoryName;
-
-        String name = categoryName.getText().toString().trim();
         Resources resources = requireActivity().getResources();
 
-        if(name.length() == 0) {
-            categoryName.setError(resources.getString(R.string.error_field_is_empty));
-        }
+        List<FieldValidator> fieldValidators = new ArrayList<>(Arrays.asList(
+                new IsFieldEmpty(binding.categoryName, resources),
+                new IsUniqueCategoryValidator(binding.categoryName, resources, categoryNames)
+        ));
 
-        if(categoryNames.contains(name)) {
-            categoryName.setError(resources.getString(R.string.error_category_not_unique));
-        }
-
-        return name.length() != 0 && !categoryNames.contains(name);
+        return fieldValidators.stream().allMatch(FieldValidator::check);
     }
 
     /**

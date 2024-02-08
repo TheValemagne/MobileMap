@@ -42,4 +42,5 @@
     <string name="edit_category">Modifier la catégorie</string>
     <string name="add_poi">Ajouter un nouveau site</string>
     <string name="edit_poi">Modifier le site</string>
+    <string name="coordinate_out_of_bound">La valeur doit être entre {0} et {1}</string>
 </resources>

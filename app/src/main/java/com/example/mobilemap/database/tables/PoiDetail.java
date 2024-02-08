@@ -10,18 +10,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Classe représentant la jointure entre la table Poi et le nom de la catégorie
+ * Classe représentant la jointure entre la le nom d'un site et le nom de la catégorie
  */
 public class PoiDetail implements HasId {
     private final long id;
-    private final String name;
+    private final String siteName;
 
     public long getId() {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public String getSiteName() {
+        return siteName;
     }
 
     public String getCategoryName() {
@@ -32,7 +32,7 @@ public class PoiDetail implements HasId {
 
     public PoiDetail(long id, String name, String categoryName) {
         this.id = id;
-        this.name = name;
+        this.siteName = name;
         this.categoryName = categoryName;
     }
 
@@ -48,7 +48,7 @@ public class PoiDetail implements HasId {
     /**
      * Convertie le cursor en liste de sites détaillées
      *
-     * @param cursor
+     * @param cursor résultat de la requête à convertir
      * @return une liste de sites détaillées
      */
     public static List<PoiDetail> mapFromList(Cursor cursor) {
