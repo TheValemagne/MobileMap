@@ -2,6 +2,8 @@ package com.example.mobilemap.pois.fragments;
 
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -39,10 +41,12 @@ import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 /**
@@ -105,13 +109,38 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
             return;
         }
 
-        if (bundle.containsKey(ARG_LATITUDE)) {
-            binding.poiLatitude.setText(String.valueOf(bundle.getDouble(ARG_LATITUDE)));
+        if (bundle.containsKey(ARG_LATITUDE) && bundle.containsKey(ARG_LONGITUDE)) {
+            double latitude = bundle.getDouble(ARG_LATITUDE);
+            binding.poiLatitude.setText(String.valueOf(latitude));
+
+            double longitude = bundle.getDouble(ARG_LONGITUDE);
+            binding.poiLongitude.setText(String.valueOf(longitude));
+
+            binding.poiPostalAddress.setText(getAddressFromCoordinates(new GeoPoint(latitude, longitude)));
+        }
+    }
+
+    /**
+     * Retourne l'adresse postale accossiée aux coorconnées
+     *
+     * @param point coordonnées de l'adresse recherchée
+     * @return l'adresse contenenant la rue, la ville et le pays
+     */
+    private String getAddressFromCoordinates(GeoPoint point) {
+        Geocoder geocoder = new Geocoder(this.requireContext(), Locale.getDefault());
+        List<Address> addresses;
+
+        try {
+            addresses = geocoder.getFromLocation(point.getLatitude(), point.getLongitude(), 1);
+        } catch (IOException e) {
+            return "";
         }
 
-        if (bundle.containsKey(ARG_LONGITUDE)) {
-            binding.poiLongitude.setText(String.valueOf(bundle.getDouble(ARG_LONGITUDE)));
+        if (addresses == null || addresses.isEmpty()) {
+            return "";
         }
+
+        return addresses.get(0).getAddressLine(0);
     }
 
     @Override
@@ -191,6 +220,7 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
 
         Poi modifiedPoi = getValues();
         GeoPoint point = new GeoPoint(modifiedPoi.getLatitude(), modifiedPoi.getLongitude());
+
         miniMapView.setScrollableAreaLimitDouble(new BoundingBox(modifiedPoi.getLatitude(), modifiedPoi.getLongitude(),
                 modifiedPoi.getLatitude(), modifiedPoi.getLongitude()));
         miniMapView.setExpectedCenter(point);

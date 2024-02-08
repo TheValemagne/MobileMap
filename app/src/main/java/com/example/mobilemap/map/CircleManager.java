@@ -341,6 +341,11 @@ public class CircleManager {
         drawCircle(item, circleRadius, categoryFilter);
     }
 
+    /**
+     * Retourne le centre du cercle
+     *
+     * @return point central du cercle
+     */
     public IGeoPoint getCircleCenter() {
         SharedPreferences sharedPreferences = mapManager.getSharedPreferences();
 

@@ -26,7 +26,7 @@
     <string name="poi_name_hint">Name of POI</string>
     <string name="category">Category</string>
     <string name="resume">Resume:</string>
-    <string name="postal_adress">Postal address:</string>
+    <string name="postal_adress">Address:</string>
     <string name="center_to_my_location">Center the map to my current location</string>
     <string name="add_marker_to_my_location">Add a new marker on my current location</string>
     <string name="radius_in_meters">Circles radius in meters</string>
@@ -38,9 +38,9 @@
     <string name="map">Map</string>
     <string name="categories">Categories</string>
     <string name="pois">POIs</string>
-    <string name="add_category">Add a new category</string>
+    <string name="add_category">Add a category</string>
     <string name="edit_category">Edit the category</string>
-    <string name="add_poi">Add a new POI</string>
-    <string name="edit_poi">Edit POI</string>
+    <string name="add_poi">Add a POI</string>
+    <string name="edit_poi">Edit the POI</string>
     <string name="coordinate_out_of_bound">Value should be between {0} and {1}</string>
 </resources>

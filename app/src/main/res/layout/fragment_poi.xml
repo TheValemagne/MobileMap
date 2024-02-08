@@ -116,6 +116,7 @@
                     android:ems="10"
                     android:inputType="textPostalAddress"
                     android:textSize="@dimen/contentTextSize" />
+
             </LinearLayout>
 
             <LinearLayout
