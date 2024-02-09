@@ -29,7 +29,6 @@ public class CircleManager {
     private final Activity activity;
     private final MapManager mapManager;
     private Polygon circle;
-    private final static int MAX_ANGLE_IN_DEGREE = 360;
     private final Map<String, InfoWindow> itemInfoWindowMap;
 
     /**
@@ -66,7 +65,7 @@ public class CircleManager {
             removeCircle();
         }
 
-        IGeoPoint center = centerItem.getPoint();
+        GeoPoint center = (GeoPoint) centerItem.getPoint();
 
         // Ajoutez le cercle à la carte
         circle = createCircle(center, radiusInMeters);
@@ -125,7 +124,7 @@ public class CircleManager {
      * @param radiusInMeters rayon du cercle en mètre
      * @param categoryFilter identifiant de la catégorie à afficher
      */
-    public void drawCircleAroundMe(IGeoPoint userLocation, double radiusInMeters, long categoryFilter) {
+    public void drawCircleAroundMe(GeoPoint userLocation, double radiusInMeters, long categoryFilter) {
         if (circle != null) {
             removeCircle();
         }
@@ -149,7 +148,7 @@ public class CircleManager {
      * @param radiusInMeters rayon du cercle en mètre
      * @return le cercle créé
      */
-    private Polygon createCircle(IGeoPoint center, double radiusInMeters) {
+    private Polygon createCircle(GeoPoint center, double radiusInMeters) {
         Polygon circle = new Polygon();
         circle.setOnClickListener((polygon, mapView1, eventPos) -> false); // le cercle doit transmetre les événements "click" aux autres couches
         // intérieur du cercle
@@ -159,33 +158,9 @@ public class CircleManager {
         circle.getOutlinePaint().setStrokeWidth(2f);
 
         // Générez les points du périmètre du cercle
-        List<GeoPoint> circlePoints = generateCirclePerimeterPoints(center, radiusInMeters);
-        circle.setPoints(circlePoints);
+        circle.setPoints(Polygon.pointsAsCircle(center, radiusInMeters));
 
         return circle;
-    }
-
-    /**
-     * Génération des points sur le périmètre du cercle
-     *
-     * @param center point centrale du cercle
-     * @param radiusInMeters rayon du cercle en mètre
-     * @return liste des points pour tracer le périmètre
-     */
-    private List<GeoPoint> generateCirclePerimeterPoints(IGeoPoint center, double radiusInMeters) {
-        List<GeoPoint> points = new ArrayList<>();
-
-        for (int angleInDegree = 0; angleInDegree < MAX_ANGLE_IN_DEGREE; angleInDegree += 5) {
-            double angleInRadians = Math.toRadians(angleInDegree);
-
-            double latitude = center.getLatitude()
-                    + (radiusInMeters / 111300) * Math.sin(angleInRadians);
-            double longitude = center.getLongitude()
-                    + (radiusInMeters / (111300 * Math.cos(Math.toRadians(center.getLatitude())))) * Math.cos(angleInRadians);
-
-            points.add(new GeoPoint(latitude, longitude)); // point au périmètre du cercle
-        }
-        return points;
     }
 
     /**
@@ -227,7 +202,7 @@ public class CircleManager {
      * @return vrai si le point est à l'intérieur du cercle
      */
     private boolean isInsideCircle(OverlayItem item, Location centerLocation, double radiusInMeters) {
-        GeoPoint markerPosition = (GeoPoint) item.getPoint();
+        IGeoPoint markerPosition = item.getPoint();
 
         Location markerLocation = new Location("Marker");
         markerLocation.setLatitude(markerPosition.getLatitude());
@@ -319,14 +294,14 @@ public class CircleManager {
         SharedPreferences sharedPreferences = mapManager.getSharedPreferences();
 
         // récupérer le centre du cercle
-        IGeoPoint center = getCircleCenter();
+        GeoPoint center = getCircleCenter();
 
         String circleRadiusString = sharedPreferences.getString(SharedPreferencesConstant.CIRCLE_RADIUS_STRING, SharedPreferencesConstant.EMPTY_STRING);
         double circleRadius = Double.parseDouble(circleRadiusString);
 
         long categoryFilter = sharedPreferences.getLong(SharedPreferencesConstant.CIRCLE_CATEGORY_FILTER, SharedPreferencesConstant.NOT_FOUND_ID);
 
-        if (mapManager.isCircleAroundMe()) {
+        if (mapManager.isCircleAroundMe()) { // restaurer le cercle autour de l'utilisateur
             drawCircleAroundMe(center, circleRadius, categoryFilter);
             return;
         }
@@ -338,7 +313,7 @@ public class CircleManager {
         }
 
         mapManager.getMarkerGestureListener().setLastCircleCenterItemUid(center);
-        drawCircle(item, circleRadius, categoryFilter);
+        drawCircle(item, circleRadius, categoryFilter); // restaurer le cercle autour d'un site
     }
 
     /**
@@ -346,7 +321,7 @@ public class CircleManager {
      *
      * @return point central du cercle
      */
-    public IGeoPoint getCircleCenter() {
+    public GeoPoint getCircleCenter() {
         SharedPreferences sharedPreferences = mapManager.getSharedPreferences();
 
         String circleLatitude = sharedPreferences.getString(SharedPreferencesConstant.CIRCLE_LATITUDE_STRING, SharedPreferencesConstant.DEFAULT_POSITION_STRING);

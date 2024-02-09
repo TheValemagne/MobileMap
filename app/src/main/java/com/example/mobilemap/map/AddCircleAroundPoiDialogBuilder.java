@@ -24,6 +24,10 @@ import java.util.stream.Collectors;
 public class AddCircleAroundPoiDialogBuilder extends AlertDialog.Builder {
     private final MapManager mapManager;
     private List<Category> categories;
+    private final OverlayItem item;
+    private final Resources resources;
+    private final EditText editCircleRadius;
+    private final Spinner categoryFilterSpinner;
 
     /**
      * Dialogue de demmande de données pour afficher un cercle
@@ -35,25 +39,36 @@ public class AddCircleAroundPoiDialogBuilder extends AlertDialog.Builder {
     public AddCircleAroundPoiDialogBuilder(Activity activity, MapManager mapManager, OverlayItem item) {
         super(activity);
         this.mapManager = mapManager;
+        this.item = item;
 
-        Resources resources = activity.getResources();
+        resources = activity.getResources();
         this.setTitle(resources.getString(R.string.ask_circle_perimeter_title));
+        this.setIcon(org.osmdroid.library.R.drawable.marker_default);
 
         DialogAskCircleRadiusBinding binding = DialogAskCircleRadiusBinding.inflate(activity.getLayoutInflater());
         this.setView(binding.getRoot());
 
-        final EditText editCircleRadius = binding.editCircleRadius;
-        final Spinner categoryFilterSpinner = binding.categoryFilter;
+        editCircleRadius = binding.editCircleRadius;
+        categoryFilterSpinner = binding.categoryFilter;
         initSpinner(categoryFilterSpinner, activity);
 
-        this.setPositiveButton(resources.getString(R.string.dialog_show), (dialog, which) -> showCircle(editCircleRadius, categoryFilterSpinner, item));
+        this.setPositiveButton(resources.getString(R.string.dialog_show), null);
         this.setNegativeButton(resources.getString(R.string.dialog_cancel), (dialog, which) -> dialog.cancel());
     }
 
-    private void showCircle(EditText editCircleRadius, Spinner categoryFilterSpinner, OverlayItem item) {
+    @Override
+    public AlertDialog show() {
+        AlertDialog dialog = super.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> showCircle(dialog, editCircleRadius, categoryFilterSpinner, item));
+
+        return dialog;
+    }
+
+    private void showCircle(AlertDialog dialog, EditText editCircleRadius, Spinner categoryFilterSpinner, OverlayItem item) {
         String textRadius = editCircleRadius.getText().toString();
 
         if (textRadius.isEmpty()) {
+            editCircleRadius.setError(resources.getString(R.string.error_field_is_empty));
             return;
         }
 
@@ -66,6 +81,7 @@ public class AddCircleAroundPoiDialogBuilder extends AlertDialog.Builder {
             this.mapManager.drawCircleAroundMe(circleRadius, categoryFilterValue);
         }
 
+        dialog.dismiss();
     }
 
     /**
@@ -75,6 +91,7 @@ public class AddCircleAroundPoiDialogBuilder extends AlertDialog.Builder {
      */
     private void initSpinner(Spinner spinner, Activity activity) {
         categories = ContentResolverHelper.getCategories(activity.getContentResolver());
+
         List<String> categoryNames = categories.stream().map(Category::getName).collect(Collectors.toList());
         spinner.setAdapter(new ArrayAdapter<>(this.getContext(), android.R.layout.simple_spinner_dropdown_item, categoryNames));
     }

@@ -18,7 +18,7 @@ public class MarkerGestureListener implements ItemizedIconOverlay.OnItemGestureL
     private final MapManager mapManager;
     private final MapView mapView;
     private final Map<String, InfoWindow> itemInfoWindowMap;
-    private Resources resources;
+    private final Resources resources;
 
     private String lastCircleCenterItemUid;
 

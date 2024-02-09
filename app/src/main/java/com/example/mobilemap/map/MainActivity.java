@@ -64,6 +64,10 @@ public class MainActivity extends AppCompatActivity {
 
         initBottomNavigationView(binding);
 
+        mapView = binding.mapView;
+        mapManager = new MapManager(mapView, this, context);
+        mapManager.initMap();
+
         floatingButtonsLayout = binding.floatingButtonsLayout;
         floatingButtonsLayout.setVisibility(View.GONE);
 
@@ -82,10 +86,6 @@ public class MainActivity extends AppCompatActivity {
         requestPermissionsIfNecessary(Collections.singletonList(
                 Manifest.permission.ACCESS_FINE_LOCATION
         ));
-
-        mapView = binding.mapView;
-        mapManager = new MapManager(mapView, this, context);
-        mapManager.initMap();
     }
 
     private void initBottomNavigationView(ActivityMainBinding binding) {

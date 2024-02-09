@@ -127,6 +127,10 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
      * @return l'adresse contenenant la rue, la ville et le pays
      */
     private String getAddressFromCoordinates(GeoPoint point) {
+        if (!Geocoder.isPresent()) {
+            return "";
+        }
+        
         Geocoder geocoder = new Geocoder(this.requireContext(), Locale.getDefault());
         List<Address> addresses;
 

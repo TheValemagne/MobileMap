@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.example.mobilemap.R;
 
 import org.osmdroid.api.IGeoPoint;
+import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.OverlayWithIW;
 import org.osmdroid.views.overlay.infowindow.InfoWindow;
@@ -44,7 +45,7 @@ public class CustomInfoWindow extends InfoWindow {
         TextView bubble_description = mView.findViewById(org.osmdroid.library.R.id.bubble_description);
         bubble_description.setText(overlayItem.getSnippet());
 
-        if(circleManager.hasSavedCircle()) {
+        if (circleManager.hasSavedCircle()) {
             TextView subDescription = mView.findViewById(org.osmdroid.library.R.id.bubble_subdescription);
             subDescription.setVisibility(View.VISIBLE);
 
@@ -56,7 +57,7 @@ public class CustomInfoWindow extends InfoWindow {
     }
 
     private float getDistanceToCircleCenter() {
-        IGeoPoint center = circleManager.getCircleCenter();
+        GeoPoint center = circleManager.getCircleCenter();
         Location centerLocation = new Location("Center");
         centerLocation.setLatitude(center.getLatitude());
         centerLocation.setLongitude(center.getLongitude());
@@ -67,6 +68,7 @@ public class CustomInfoWindow extends InfoWindow {
 
         return centerLocation.distanceTo(actualPoint);
     }
+
     @Override
     public void onClose() {
         // vide
