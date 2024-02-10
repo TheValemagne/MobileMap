@@ -213,12 +213,16 @@ public final class MapManager {
         edit.putString(SharedPreferencesConstant.PREFS_LONGITUDE_STRING, String.valueOf(mapView.getMapCenter().getLongitude()));
         edit.putFloat(SharedPreferencesConstant.PREFS_ZOOM_LEVEL_DOUBLE, (float) mapView.getZoomLevelDouble());
         edit.apply();
+
+        mapView.onPause();
     }
 
     /**
      * Restauration de la carte avec les paramètres sauvegardés
      */
-    public void restoreMap() {
+    public void onResume() {
+        mapView.onResume();
+
         if(sharedPreferences == null){
             return;
         }
@@ -238,6 +242,10 @@ public final class MapManager {
         if (isAroundMe) {
             activity.updateFilterAction(true);
         }
+    }
+
+    public void onDetach() {
+        mapView.onDetach();
     }
 
     public void addMarkerToCurrentLocation() {

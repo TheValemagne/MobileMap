@@ -14,8 +14,6 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import org.osmdroid.views.MapView;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -39,7 +37,6 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
 
-    private MapView mapView;
     private MapManager mapManager;
     private BottomNavigationView bottomNavigationMenuView;
     private LinearLayout floatingButtonsLayout;
@@ -64,8 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
         initBottomNavigationView(binding);
 
-        mapView = binding.mapView;
-        mapManager = new MapManager(mapView, this, context);
+        mapManager = new MapManager(binding.mapView, this, context);
         mapManager.initMap();
 
         floatingButtonsLayout = binding.floatingButtonsLayout;
@@ -132,7 +128,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         mapManager.onPause();
-        mapView.onPause();
     }
 
     @Override
@@ -144,14 +139,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        mapView.onResume();
-        mapManager.restoreMap();
+        mapManager.onResume();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mapView.onDetach();
+        mapManager.onDetach();
     }
 
     @Override
