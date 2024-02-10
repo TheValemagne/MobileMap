@@ -19,8 +19,6 @@ import com.example.mobilemap.listeners.NavigationBarItemSelectedListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class PoisActivity extends AppCompatActivity {
-    private static final String ARG_LATITUDE = "latitude";
-    private static final String ARG_LONGITUDE = "longitude";
     private BottomNavigationView bottomNavigationMenuView;
     private static final int currentPageId = R.id.navigation_pois;
 
@@ -44,8 +42,7 @@ public class PoisActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Fragment fragment;
         if(shouldShowPoiFragment(intent)) {
-            fragment = PoiFragment.newInstance(intent.getDoubleExtra(PoiFragment.ARG_LATITUDE, 0.0),
-                    intent.getDoubleExtra(PoiFragment.ARG_LONGITUDE, 0.0));
+            fragment = getPoiFragmentInstance(intent);
         } else {
             fragment = new PoiListFragment();
         }
@@ -55,10 +52,22 @@ public class PoisActivity extends AppCompatActivity {
                 .commit();
     }
 
+    private Fragment getPoiFragmentInstance(Intent intent) {
+        long itemId = intent.getLongExtra(PoiFragment.ARG_ITEM_ID, DatabaseContract.NOT_EXISTING_ID);
+
+        if (itemId == DatabaseContract.NOT_EXISTING_ID) {
+            return PoiFragment.newInstance(intent.getDoubleExtra(PoiFragment.ARG_LATITUDE, 0.0),
+                    intent.getDoubleExtra(PoiFragment.ARG_LONGITUDE, 0.0), true);
+        }
+
+        return PoiFragment.newInstance(itemId, true);
+    }
+
     private boolean shouldShowPoiFragment(Intent intent) {
-        return intent.hasExtra(PoiFragment.ARG_LATITUDE)
+        return (intent.hasExtra(PoiFragment.ARG_LATITUDE)
                 && intent.hasExtra(PoiFragment.ARG_LONGITUDE)
-                && !ContentResolverHelper.getCategories(getContentResolver()).isEmpty();
+                && !ContentResolverHelper.getCategories(getContentResolver()).isEmpty())
+                || intent.hasExtra(PoiFragment.ARG_ITEM_ID);
     }
 
     public DeleteItemContext getDeleteContext() {
@@ -70,8 +79,15 @@ public class PoisActivity extends AppCompatActivity {
 
     public static Intent createIntent(Activity activity, double latitude, double longitude) {
         Intent intent = new Intent(activity.getApplicationContext(), PoisActivity.class);
-        intent.putExtra(ARG_LATITUDE, latitude);
-        intent.putExtra(ARG_LONGITUDE, longitude);
+        intent.putExtra(PoiFragment.ARG_LATITUDE, latitude);
+        intent.putExtra(PoiFragment.ARG_LONGITUDE, longitude);
+
+        return intent;
+    }
+
+    public static Intent createIntent(Activity activity, long itemId) {
+        Intent intent = new Intent(activity.getApplicationContext(), PoisActivity.class);
+        intent.putExtra(PoiFragment.ARG_ITEM_ID, itemId);
 
         return intent;
     }

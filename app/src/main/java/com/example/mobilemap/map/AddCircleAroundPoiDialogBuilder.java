@@ -12,6 +12,7 @@ import com.example.mobilemap.database.ContentResolverHelper;
 import com.example.mobilemap.database.DatabaseContract;
 import com.example.mobilemap.database.tables.Category;
 import com.example.mobilemap.databinding.DialogAskCircleRadiusBinding;
+import com.example.mobilemap.map.listeners.AddCircleDialogListener;
 
 import org.osmdroid.views.overlay.OverlayItem;
 
@@ -59,20 +60,29 @@ public class AddCircleAroundPoiDialogBuilder extends AlertDialog.Builder {
     @Override
     public AlertDialog show() {
         AlertDialog dialog = super.show();
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> showCircle(dialog, editCircleRadius, categoryFilterSpinner, item));
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                .setOnClickListener(new AddCircleDialogListener(dialog, this));
 
         return dialog;
     }
 
-    private void showCircle(AlertDialog dialog, EditText editCircleRadius, Spinner categoryFilterSpinner, OverlayItem item) {
+    public boolean check() {
         String textRadius = editCircleRadius.getText().toString();
 
         if (textRadius.isEmpty()) {
             editCircleRadius.setError(resources.getString(R.string.error_field_is_empty));
-            return;
+            return false;
         }
 
-        double circleRadius = Double.parseDouble(textRadius);
+        return true;
+    }
+
+    /**
+     * Génération du cercle sur la carte
+     * @param dialog
+     */
+    public void showCircle(AlertDialog dialog) {
+        double circleRadius = Double.parseDouble(editCircleRadius.getText().toString());
         long categoryFilterValue = getSelectedCategoryId(categoryFilterSpinner);
 
         if (item != null){

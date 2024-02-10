@@ -9,12 +9,8 @@ import org.osmdroid.views.overlay.OverlayWithIW;
 public class CustomOverlayWithIW extends OverlayWithIW {
     public CustomOverlayWithIW(OverlayItem item) {
         super();
+        setId(item.getUid());
         setTitle(item.getTitle());
         setSnippet(item.getSnippet());
-    }
-
-    @Override
-    public void closeInfoWindow() {
-        super.closeInfoWindow();
     }
 }

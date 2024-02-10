@@ -7,6 +7,7 @@ import android.util.DisplayMetrics;
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
+import com.example.mobilemap.map.listeners.MarkerGestureListener;
 import com.example.mobilemap.map.overlays.AddMarkerOverlay;
 import com.example.mobilemap.map.overlays.MapNorthCompassOverlay;
 import com.example.mobilemap.map.overlays.MyLocationOverlay;
@@ -79,7 +80,7 @@ public final class MapManager {
         sharedPreferences = context.getSharedPreferences(SharedPreferencesConstant.PREFS_NAME, Context.MODE_PRIVATE);
         itemInfoWindowMap = new HashMap<>();
         circleManager = new CircleManager(mapView, activity, this, itemInfoWindowMap);
-        markerGestureListener = new MarkerGestureListener(mapView, this, itemInfoWindowMap, activity.getResources());
+        markerGestureListener = new MarkerGestureListener(mapView, this, itemInfoWindowMap, activity);
     }
 
     /**
@@ -157,12 +158,18 @@ public final class MapManager {
             overlayItemItemizedOverlay.addItems(getOverlayItems());
         }
 
+        itemInfoWindowMap.forEach((s, infoWindow) -> {
+            if(infoWindow.isOpen()) {
+                infoWindow.close();
+            }
+        });
+
         mapView.invalidate();
     }
 
     @NonNull
     private OverlayItem mapPoiToOverlayItem(Poi poi) {
-        return new OverlayItem(poi.getName(), poi.getResume(), new GeoPoint(poi.getLatitude(), poi.getLongitude()));
+        return new OverlayItem(String.valueOf(poi.getId()), poi.getName(), poi.getResume(), new GeoPoint(poi.getLatitude(), poi.getLongitude()));
     }
 
     @NonNull
@@ -239,7 +246,7 @@ public final class MapManager {
         }
 
         GeoPoint point = myLocationNewOverlay.getMyLocation();
-        activity.poiActivityLauncher.launch(PoisActivity.createIntent(activity, point.getLatitude(), point.getLongitude()));
+        activity.getPoiActivityLauncher().launch(PoisActivity.createIntent(activity, point.getLatitude(), point.getLongitude()));
     }
 
     public void centerToUserLocation() {
@@ -272,7 +279,10 @@ public final class MapManager {
 
     public void removeCircle() {
         circleManager.removeCircle();
-        activity.updateFilterAction(false);
+
+        if (isCircleAroundMe()) {
+            activity.updateFilterAction(false);
+        }
     }
 
     public boolean isCircleAroundMe() {

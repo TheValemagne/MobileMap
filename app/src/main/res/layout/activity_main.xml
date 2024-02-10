@@ -86,7 +86,8 @@
                         android:layout_margin="1dp"
                         android:clickable="true"
                         android:src="@android:drawable/ic_menu_search"
-                        app:elevation="2dp" />
+                        app:elevation="2dp"
+                        android:contentDescription="@string/show_circle_aroud_me" />
 
                     <com.google.android.material.floatingactionbutton.FloatingActionButton
                         android:id="@+id/removeCircleAroundMe"
@@ -96,7 +97,8 @@
                         android:clickable="true"
                         android:src="@android:drawable/ic_menu_close_clear_cancel"
                         android:visibility="gone"
-                        app:elevation="2dp" />
+                        app:elevation="2dp"
+                        android:contentDescription="@string/remove_circle_around_me" />
                 </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>

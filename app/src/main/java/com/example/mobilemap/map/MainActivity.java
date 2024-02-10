@@ -184,7 +184,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public ActivityResultLauncher<Intent> poiActivityLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+    public ActivityResultLauncher<Intent> getPoiActivityLauncher() {
+        return poiActivityLauncher;
+    }
+
+    private final ActivityResultLauncher<Intent> poiActivityLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
                     mapManager.updateMarkers();

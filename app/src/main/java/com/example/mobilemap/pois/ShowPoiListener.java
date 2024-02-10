@@ -24,7 +24,7 @@ public class ShowPoiListener implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        Fragment fragment = itemId > DatabaseContract.NOT_EXISTING_ID ? PoiFragment.newInstance(itemId) : new PoiFragment();
+        Fragment fragment = itemId > DatabaseContract.NOT_EXISTING_ID ? PoiFragment.newInstance(itemId, false) : new PoiFragment();
 
         activity.getSupportFragmentManager().beginTransaction()
                 .replace(R.id.poisFragmentContainer, fragment)

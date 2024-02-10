@@ -1,12 +1,13 @@
 package com.example.mobilemap.map;
 
-import android.content.res.Resources;
 import android.location.Location;
 import android.os.LocaleList;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.mobilemap.R;
+import com.example.mobilemap.map.listeners.PoiMoreInfoLinstener;
 
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.util.GeoPoint;
@@ -24,33 +25,36 @@ public class CustomInfoWindow extends InfoWindow {
     public static final int OFFSET_X = 0;
     public static final int OFFSET_Y = -50;
     private final CircleManager circleManager;
-    private final Resources resources;
     private final IGeoPoint point;
+    private final MainActivity activity;
 
-    public CustomInfoWindow(int layoutResId, IGeoPoint point, MapView mapView, CircleManager circleManager, Resources resources) {
+    public CustomInfoWindow(int layoutResId, IGeoPoint point, MapView mapView, CircleManager circleManager, MainActivity activity) {
         super(layoutResId, mapView);
 
         this.point = point;
         this.circleManager = circleManager;
-        this.resources = resources;
+        this.activity = activity;
     }
 
     @Override
     public void onOpen(Object item) {
         OverlayWithIW overlayItem = (OverlayWithIW) item;
 
-        TextView bubble_title = mView.findViewById(org.osmdroid.library.R.id.bubble_title);
+        TextView bubble_title = mView.findViewById(R.id.bubble_title);
         bubble_title.setText(overlayItem.getTitle());
 
-        TextView bubble_description = mView.findViewById(org.osmdroid.library.R.id.bubble_description);
+        TextView bubble_description = mView.findViewById(R.id.bubble_description);
         bubble_description.setText(overlayItem.getSnippet());
 
+        ImageButton bubbleInfo = mView.findViewById(R.id.bubble_moreinfo);
+        bubbleInfo.setOnClickListener(new PoiMoreInfoLinstener(activity, overlayItem));
+
         if (circleManager.hasSavedCircle()) {
-            TextView subDescription = mView.findViewById(org.osmdroid.library.R.id.bubble_subdescription);
+            TextView subDescription = mView.findViewById(R.id.bubble_subdescription);
             subDescription.setVisibility(View.VISIBLE);
 
             Locale locale = LocaleList.getDefault().get(0);
-            subDescription.setText(MessageFormat.format(resources.getString(R.string.distanceLabel),
+            subDescription.setText(MessageFormat.format(activity.getResources().getString(R.string.distanceLabel),
                     String.format(locale, "%.2f", getDistanceToCircleCenter())));
         }
 

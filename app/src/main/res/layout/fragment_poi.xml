@@ -70,6 +70,7 @@
                     android:autofillHints=""
                     android:ems="10"
                     android:inputType="number|numberDecimal|numberSigned"
+                    android:hint="@string/poi_latitude"
                     android:textSize="@dimen/contentTextSize" />
 
             </LinearLayout>
@@ -92,7 +93,9 @@
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:inputType="number|numberDecimal|numberSigned"
-                    android:textSize="@dimen/contentTextSize" />
+                    android:textSize="@dimen/contentTextSize"
+                    android:hint="@string/poi_longitude"
+                    android:autofillHints="" />
 
             </LinearLayout>
 
@@ -114,7 +117,9 @@
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:inputType="textPostalAddress|textCapSentences"
-                    android:textSize="@dimen/contentTextSize" />
+                    android:textSize="@dimen/contentTextSize"
+                    android:hint="@string/poi_postal_address"
+                    android:autofillHints="" />
 
             </LinearLayout>
 
@@ -154,6 +159,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:autofillHints=""
+                    android:hint="@string/poi_resume"
                     android:ems="10"
                     android:gravity="start|top"
                     android:inputType="text|textCapSentences|textMultiLine"

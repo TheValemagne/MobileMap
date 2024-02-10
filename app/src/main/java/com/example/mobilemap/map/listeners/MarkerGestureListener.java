@@ -1,7 +1,9 @@
-package com.example.mobilemap.map;
+package com.example.mobilemap.map.listeners;
 
-import android.content.res.Resources;
-
+import com.example.mobilemap.R;
+import com.example.mobilemap.map.CustomInfoWindow;
+import com.example.mobilemap.map.MainActivity;
+import com.example.mobilemap.map.MapManager;
 import com.example.mobilemap.map.overlays.CustomOverlayWithIW;
 
 import org.osmdroid.api.IGeoPoint;
@@ -18,7 +20,7 @@ public class MarkerGestureListener implements ItemizedIconOverlay.OnItemGestureL
     private final MapManager mapManager;
     private final MapView mapView;
     private final Map<String, InfoWindow> itemInfoWindowMap;
-    private final Resources resources;
+    private final MainActivity activity;
 
     private String lastCircleCenterItemUid;
 
@@ -26,11 +28,11 @@ public class MarkerGestureListener implements ItemizedIconOverlay.OnItemGestureL
         this.lastCircleCenterItemUid = MapManager.getItemUid(point);
     }
 
-    public MarkerGestureListener(MapView mapView, MapManager mapManager, Map<String, InfoWindow> itemInfoWindowMap, Resources resources) {
+    public MarkerGestureListener(MapView mapView, MapManager mapManager, Map<String, InfoWindow> itemInfoWindowMap, MainActivity activity) {
         this.mapView = mapView;
         this.mapManager = mapManager;
         this.itemInfoWindowMap = itemInfoWindowMap;
-        this.resources = resources;
+        this.activity = activity;
 
         lastCircleCenterItemUid = "";
     }
@@ -39,7 +41,7 @@ public class MarkerGestureListener implements ItemizedIconOverlay.OnItemGestureL
     public boolean onItemSingleTapUp(int index, OverlayItem item) {
         String uid = MapManager.getItemUid(item.getPoint());
         if (!itemInfoWindowMap.containsKey(uid)) {
-            itemInfoWindowMap.put(uid, new CustomInfoWindow(org.osmdroid.library.R.layout.bonuspack_bubble, item.getPoint(), mapView, mapManager.getCircleManager(), resources));
+            itemInfoWindowMap.put(uid, new CustomInfoWindow(R.layout.poi_info_window, item.getPoint(), mapView, mapManager.getCircleManager(), activity));
         }
 
         InfoWindow infoWindow = itemInfoWindowMap.get(uid);

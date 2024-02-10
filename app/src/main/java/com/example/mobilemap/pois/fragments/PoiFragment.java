@@ -56,10 +56,12 @@ import java.util.stream.Collectors;
  */
 public class PoiFragment extends Fragment implements ItemView<Poi> {
 
-    private static final String ARG_ITEM_ID = "itemId";
+    public static final String ARG_ITEM_ID = "itemId";
     public static final String ARG_LATITUDE = "latitude";
     public static final String ARG_LONGITUDE = "longitude";
+    public static final String ARG_LAUNCHED_FOR_RESULT = "launchedForResult";
     private long itemId = DatabaseContract.NOT_EXISTING_ID;
+    private boolean launchedForResult = false;
     private Poi poi = null;
     private FragmentPoiBinding binding;
     private List<Category> categories;
@@ -74,21 +76,31 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
      * this fragment using the provided parameters.
      *
      * @param itemId Parameter 1.
+     * @param launchedForResult
      * @return A new instance of fragment PoiFragment.
      */
-    public static PoiFragment newInstance(long itemId) {
+    public static PoiFragment newInstance(long itemId, boolean launchedForResult) {
         PoiFragment fragment = new PoiFragment();
         Bundle args = new Bundle();
         args.putLong(ARG_ITEM_ID, itemId);
+        args.putBoolean(ARG_LAUNCHED_FOR_RESULT, launchedForResult);
         fragment.setArguments(args);
         return fragment;
     }
 
-    public static PoiFragment newInstance(double latitude, double longitude) {
+    /**
+     *
+     * @param latitude
+     * @param longitude
+     * @param launchedForResult
+     * @return
+     */
+    public static PoiFragment newInstance(double latitude, double longitude, boolean launchedForResult) {
         PoiFragment fragment = new PoiFragment();
         Bundle args = new Bundle();
         args.putDouble(ARG_LATITUDE, latitude);
         args.putDouble(ARG_LONGITUDE, longitude);
+        args.putBoolean(ARG_LAUNCHED_FOR_RESULT, launchedForResult);
         fragment.setArguments(args);
         return fragment;
     }
@@ -96,27 +108,24 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null && getArguments().containsKey(ARG_ITEM_ID)) {
-            itemId = getArguments().getLong(ARG_ITEM_ID);
-        }
 
+        initFromArguments();
         activity = (PoisActivity) requireActivity();
     }
 
-    private void updateFromArguments() {
+    private void initFromArguments() {
         Bundle bundle = getArguments();
-        if (bundle == null) {
+
+        if(bundle == null) {
             return;
         }
 
-        if (bundle.containsKey(ARG_LATITUDE) && bundle.containsKey(ARG_LONGITUDE)) {
-            double latitude = bundle.getDouble(ARG_LATITUDE);
-            binding.poiLatitude.setText(String.valueOf(latitude));
+        if (bundle.containsKey(ARG_ITEM_ID)) {
+            itemId = bundle.getLong(ARG_ITEM_ID);
+        }
 
-            double longitude = bundle.getDouble(ARG_LONGITUDE);
-            binding.poiLongitude.setText(String.valueOf(longitude));
-
-            binding.poiPostalAddress.setText(getAddressFromCoordinates(new GeoPoint(latitude, longitude)));
+        if (bundle.containsKey(ARG_LAUNCHED_FOR_RESULT)) {
+            launchedForResult = bundle.getBoolean(ARG_LAUNCHED_FOR_RESULT, false);
         }
     }
 
@@ -153,15 +162,15 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
         binding = FragmentPoiBinding.inflate(inflater, container, false);
 
         Resources resources = requireActivity().getResources();
-        binding.title.setText(resources.getText(itemId == -1 ? R.string.add_poi : R.string.edit_poi));
+        binding.title.setText(resources.getText(itemId == DatabaseContract.NOT_EXISTING_ID ? R.string.add_poi : R.string.edit_poi));
 
         categories = ContentResolverHelper.getCategories(requireActivity().getContentResolver());
         initCategoryDropDown();
 
-        if (itemId == -1) {
+        if (itemId == DatabaseContract.NOT_EXISTING_ID) {
             binding.poiDeleteBtn.setVisibility(View.GONE);
             binding.poiBtnSpace.setVisibility(View.GONE);
-            updateFromArguments();
+            updateFieldsFromArguments();
         } else {
             poi = findPoi(itemId);
             updateFields(binding);
@@ -178,6 +187,23 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
         bindActionButtons(binding);
 
         return binding.getRoot();
+    }
+
+    private void updateFieldsFromArguments() {
+        Bundle bundle = getArguments();
+        if (bundle == null) {
+            return;
+        }
+
+        if (bundle.containsKey(ARG_LATITUDE) && bundle.containsKey(ARG_LONGITUDE)) {
+            double latitude = bundle.getDouble(ARG_LATITUDE);
+            binding.poiLatitude.setText(String.valueOf(latitude));
+
+            double longitude = bundle.getDouble(ARG_LONGITUDE);
+            binding.poiLongitude.setText(String.valueOf(longitude));
+
+            binding.poiPostalAddress.setText(getAddressFromCoordinates(new GeoPoint(latitude, longitude)));
+        }
     }
 
     private void updateFields(FragmentPoiBinding binding) {
@@ -264,13 +290,7 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
     }
 
     private boolean isLaunchedForResult() {
-        Bundle bundle = getArguments();
-
-        if (bundle == null) {
-            return false;
-        }
-
-        return bundle.containsKey(ARG_LATITUDE) && bundle.containsKey(ARG_LONGITUDE);
+       return launchedForResult;
     }
 
     private void setSelectedValue(Spinner spinner, long id) {

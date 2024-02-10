@@ -43,4 +43,11 @@
     <string name="add_poi">Add a POI</string>
     <string name="edit_poi">Edit the POI</string>
     <string name="coordinate_out_of_bound">Value should be between {0} and {1}</string>
+    <string name="show_circle_aroud_me">show circle around my position</string>
+    <string name="remove_circle_around_me">remove circle around my position</string>
+    <string name="poi_latitude">POI latitude</string>
+    <string name="poi_longitude">POI longitude</string>
+    <string name="poi_postal_address">POI postal address</string>
+    <string name="poi_resume">Resume of the POI</string>
+    <string name="show_pois_detail">Show POIs detail</string>
 </resources>

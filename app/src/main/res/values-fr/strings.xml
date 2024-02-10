@@ -43,4 +43,11 @@
     <string name="add_poi">Ajouter un site</string>
     <string name="edit_poi">Modifier le site</string>
     <string name="coordinate_out_of_bound">La valeur doit être entre {0} et {1}</string>
+    <string name="show_circle_aroud_me">afficher le cercle autour de votre position</string>
+    <string name="remove_circle_around_me">supprimer le cercle autour de votre position</string>
+    <string name="poi_latitude">Latitude du site</string>
+    <string name="poi_longitude">Longitude du site</string>
+    <string name="poi_postal_address">Adresse du site</string>
+    <string name="poi_resume">Résumé du site</string>
+    <string name="show_pois_detail">Afficher le détail du site</string>
 </resources>

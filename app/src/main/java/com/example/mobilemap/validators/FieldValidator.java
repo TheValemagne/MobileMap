@@ -3,8 +3,8 @@ package com.example.mobilemap.validators;
 import android.widget.EditText;
 
 public abstract class FieldValidator {
-    protected EditText field;
-    protected String errorMsg;
+    protected final EditText field;
+    protected final String errorMsg;
 
     public FieldValidator(EditText field, String errorMsg) {
         this.field = field;
