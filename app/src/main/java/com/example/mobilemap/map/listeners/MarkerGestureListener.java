@@ -6,7 +6,6 @@ import com.example.mobilemap.map.MainActivity;
 import com.example.mobilemap.map.MapManager;
 import com.example.mobilemap.map.overlays.CustomOverlayWithIW;
 
-import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
@@ -24,8 +23,8 @@ public class MarkerGestureListener implements ItemizedIconOverlay.OnItemGestureL
 
     private String lastCircleCenterItemUid;
 
-    public void setLastCircleCenterItemUid(IGeoPoint point) {
-        this.lastCircleCenterItemUid = MapManager.getItemUid(point);
+    public void setLastCircleCenterItemUid(String uid) {
+        this.lastCircleCenterItemUid = uid;
     }
 
     public MarkerGestureListener(MapView mapView, MapManager mapManager, Map<String, InfoWindow> itemInfoWindowMap, MainActivity activity) {
@@ -39,7 +38,7 @@ public class MarkerGestureListener implements ItemizedIconOverlay.OnItemGestureL
 
     @Override
     public boolean onItemSingleTapUp(int index, OverlayItem item) {
-        String uid = MapManager.getItemUid(item.getPoint());
+        String uid = item.getUid();
         if (!itemInfoWindowMap.containsKey(uid)) {
             itemInfoWindowMap.put(uid, new CustomInfoWindow(R.layout.poi_info_window, item.getPoint(), mapView, mapManager.getCircleManager(), activity));
         }
@@ -68,9 +67,7 @@ public class MarkerGestureListener implements ItemizedIconOverlay.OnItemGestureL
 
     @Override
     public boolean onItemLongPress(int index, OverlayItem item) {
-        IGeoPoint point = item.getPoint();
-
-        if (lastCircleCenterItemUid.equals(MapManager.getItemUid(point))) {
+        if (lastCircleCenterItemUid.equals(item.getUid())) {
             mapManager.removeCircle();
             lastCircleCenterItemUid = "";
             return true;

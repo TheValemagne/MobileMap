@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.DisplayMetrics;
 
-import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
 import com.example.mobilemap.map.listeners.MarkerGestureListener;
@@ -15,7 +14,6 @@ import com.example.mobilemap.pois.PoisActivity;
 import com.example.mobilemap.database.ContentResolverHelper;
 import com.example.mobilemap.database.tables.Poi;
 
-import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -32,8 +30,6 @@ import org.osmdroid.views.overlay.infowindow.InfoWindow;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
-import java.text.MessageFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -67,6 +63,7 @@ public final class MapManager {
     public MarkerGestureListener getMarkerGestureListener() {
         return markerGestureListener;
     }
+
     private final Map<String, InfoWindow> itemInfoWindowMap;
 
     private final MarkerGestureListener markerGestureListener;
@@ -94,7 +91,7 @@ public final class MapManager {
                 .setVisibility(CustomZoomButtonsController.Visibility.NEVER);
         mapView.setMultiTouchControls(true);
         mapView.setScrollableAreaLimitLatitude(MapView.getTileSystem().getMaxLatitude(),
-                MapView.getTileSystem().getMinLatitude(),0);
+                MapView.getTileSystem().getMinLatitude(), 0);
 
         mapView.setVerticalMapRepetitionEnabled(false);
         mapView.setMinZoomLevel(3.0);
@@ -151,7 +148,7 @@ public final class MapManager {
     }
 
     public void updateMarkers() {
-        if(hasSavedCircle()) { // actualise le cercle avec les sites dedans
+        if (hasSavedCircle()) { // actualise le cercle avec les sites dedans
             circleManager.restorePreviousCircle();
         } else { // actualise tous les sites de la carte
             overlayItemItemizedOverlay.removeAllItems();
@@ -159,7 +156,7 @@ public final class MapManager {
         }
 
         itemInfoWindowMap.forEach((s, infoWindow) -> {
-            if(infoWindow.isOpen()) {
+            if (infoWindow.isOpen()) {
                 infoWindow.close();
             }
         });
@@ -167,12 +164,10 @@ public final class MapManager {
         mapView.invalidate();
     }
 
-    @NonNull
     private OverlayItem mapPoiToOverlayItem(Poi poi) {
         return new OverlayItem(String.valueOf(poi.getId()), poi.getName(), poi.getResume(), new GeoPoint(poi.getLatitude(), poi.getLongitude()));
     }
 
-    @NonNull
     public List<OverlayItem> getOverlayItems() {
         List<Poi> pois = ContentResolverHelper.getPois(activity.getContentResolver());
 
@@ -181,7 +176,6 @@ public final class MapManager {
                 .collect(Collectors.toList());
     }
 
-    @NonNull
     public List<OverlayItem> getOverlayItems(long categoryFilter) {
         List<Poi> pois = ContentResolverHelper.getPois(activity.getContentResolver());
         List<OverlayItem> overlayItems = new ArrayList<>();
@@ -192,7 +186,7 @@ public final class MapManager {
                 continue;
             }
 
-            String uid = getItemUid(new GeoPoint(poi.getLatitude(), poi.getLongitude()));
+            String uid = String.valueOf(poi.getId());
             if (itemInfoWindowMap.containsKey(uid)) {
                 Objects.requireNonNull(itemInfoWindowMap.get(uid)).close();
             }
@@ -206,13 +200,13 @@ public final class MapManager {
      */
     public void onPause() {
         // Sauvegarde des paramètres actuels de la carte
-        final SharedPreferences.Editor edit = sharedPreferences.edit();
-        edit.putString(SharedPreferencesConstant.PREFS_TILE_SOURCE, mapView.getTileProvider().getTileSource().name());
-        edit.putFloat(SharedPreferencesConstant.PREFS_ORIENTATION, mapView.getMapOrientation());
-        edit.putString(SharedPreferencesConstant.PREFS_LATITUDE_STRING, String.valueOf(mapView.getMapCenter().getLatitude()));
-        edit.putString(SharedPreferencesConstant.PREFS_LONGITUDE_STRING, String.valueOf(mapView.getMapCenter().getLongitude()));
-        edit.putFloat(SharedPreferencesConstant.PREFS_ZOOM_LEVEL_DOUBLE, (float) mapView.getZoomLevelDouble());
-        edit.apply();
+        sharedPreferences.edit()
+                .putString(SharedPreferencesConstant.PREFS_TILE_SOURCE, mapView.getTileProvider().getTileSource().name())
+                .putFloat(SharedPreferencesConstant.PREFS_ORIENTATION, mapView.getMapOrientation())
+                .putString(SharedPreferencesConstant.PREFS_LATITUDE_STRING, String.valueOf(mapView.getMapCenter().getLatitude()))
+                .putString(SharedPreferencesConstant.PREFS_LONGITUDE_STRING, String.valueOf(mapView.getMapCenter().getLongitude()))
+                .putFloat(SharedPreferencesConstant.PREFS_ZOOM_LEVEL_DOUBLE, (float) mapView.getZoomLevelDouble())
+                .apply();
 
         mapView.onPause();
     }
@@ -223,7 +217,7 @@ public final class MapManager {
     public void onResume() {
         mapView.onResume();
 
-        if(sharedPreferences == null){
+        if (sharedPreferences == null) {
             return;
         }
 
@@ -271,7 +265,7 @@ public final class MapManager {
         }
 
         circleManager.drawCircle(item, radiusInMeters, categoryFilter);
-        markerGestureListener.setLastCircleCenterItemUid(item.getPoint());
+        markerGestureListener.setLastCircleCenterItemUid(item.getUid());
         mapView.invalidate(); // demande le rafraichissement de la carte si le cercle a été ajouté
     }
 
@@ -295,12 +289,6 @@ public final class MapManager {
 
     public boolean isCircleAroundMe() {
         return sharedPreferences.getBoolean(SharedPreferencesConstant.CIRCLE_IS_AROUND_ME, false);
-    }
-
-    public static String getItemUid(IGeoPoint point) {
-        NumberFormat nf= NumberFormat.getInstance();
-        nf.setMaximumFractionDigits(15);
-        return MessageFormat.format("{0}:{1}", nf.format(point.getLatitude()), nf.format(point.getLongitude()));
     }
 
 }
