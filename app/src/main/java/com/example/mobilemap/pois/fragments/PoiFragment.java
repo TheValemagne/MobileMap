@@ -7,6 +7,7 @@ import android.location.Geocoder;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 
 import com.example.mobilemap.R;
 import com.example.mobilemap.database.interfaces.ItemView;
+import com.example.mobilemap.map.CustomInfoWindow;
 import com.example.mobilemap.map.SharedPreferencesConstant;
 import com.example.mobilemap.validators.DoubleRangeValidator;
 import com.example.mobilemap.validators.FieldValidator;
@@ -39,7 +41,6 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
-import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow;
 
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -47,6 +48,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -272,10 +274,11 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
         miniMapView.setExpectedCenter(point);
 
         Marker marker = new Marker(miniMapView);
+        marker.setIcon( Objects.requireNonNull(ResourcesCompat.getDrawable(activity.getResources(), R.drawable.small_marker, activity.getTheme())));
         marker.setTitle(modifiedPoi.getName());
         marker.setSnippet(modifiedPoi.getResume());
         marker.setPosition(point);
-        marker.setInfoWindow(new MarkerInfoWindow(R.layout.poi_info_window, miniMapView));
+        marker.setInfoWindow(new CustomInfoWindow(R.layout.poi_info_window, miniMapView));
         miniMapView.getOverlays().add(marker);
         marker.showInfoWindow();
     }

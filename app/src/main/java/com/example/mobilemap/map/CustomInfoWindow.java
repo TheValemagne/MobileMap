@@ -28,6 +28,10 @@ public class CustomInfoWindow extends InfoWindow {
     private final IGeoPoint point;
     private final MainActivity activity;
 
+    public CustomInfoWindow(int layoutResId, MapView mapView) {
+        this(layoutResId, null, mapView, null, null);
+    }
+
     public CustomInfoWindow(int layoutResId, IGeoPoint point, MapView mapView, CircleManager circleManager, MainActivity activity) {
         super(layoutResId, mapView);
 
@@ -47,9 +51,16 @@ public class CustomInfoWindow extends InfoWindow {
         bubble_description.setText(overlayItem.getSnippet());
 
         ImageButton bubbleInfo = mView.findViewById(R.id.bubble_moreinfo);
+
+        if (activity == null) { // Pour la page de détail du site uniquement
+            bubbleInfo.setEnabled(false);
+            mView.setOnTouchListener((v, event) -> mView.performClick());
+            return;
+        }
+
         bubbleInfo.setOnClickListener(new PoiMoreInfoListener(activity, overlayItem));
 
-        if (circleManager.hasSavedCircle()) {
+        if (circleManager != null && point != null && circleManager.hasSavedCircle()) {
             TextView subDescription = mView.findViewById(R.id.bubble_subdescription);
             subDescription.setVisibility(View.VISIBLE);
 

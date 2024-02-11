@@ -7,6 +7,7 @@ import android.util.DisplayMetrics;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.preference.PreferenceManager;
 
+import com.example.mobilemap.R;
 import com.example.mobilemap.map.listeners.MarkerGestureListener;
 import com.example.mobilemap.map.overlays.AddMarkerOverlay;
 import com.example.mobilemap.map.overlays.MapNorthCompassOverlay;
@@ -132,7 +133,7 @@ public final class MapManager {
         mapView.getOverlays().add(new AddMarkerOverlay(activity));
 
         overlayItemItemizedOverlay = new ItemizedIconOverlay<>(getOverlayItems(),
-                Objects.requireNonNull(ResourcesCompat.getDrawable(activity.getResources(), org.osmdroid.library.R.drawable.marker_default, activity.getTheme())),
+                Objects.requireNonNull(ResourcesCompat.getDrawable(activity.getResources(), R.drawable.small_marker, activity.getTheme())),
                 markerGestureListener, context);
         mapView.getOverlays().add(overlayItemItemizedOverlay);
     }
