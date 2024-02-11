@@ -252,7 +252,8 @@ public final class MapManager {
         }
 
         GeoPoint point = myLocationNewOverlay.getMyLocation();
-        activity.getPoiActivityLauncher().launch(PoisActivity.createIntent(activity, point.getLatitude(), point.getLongitude()));
+        activity.getPoiActivityLauncher()
+                .launch(PoisActivity.createIntent(activity, point.getLatitude(), point.getLongitude()));
     }
 
     public void centerToUserLocation() {
@@ -260,7 +261,7 @@ public final class MapManager {
             return;
         }
 
-        myLocationNewOverlay.enableFollowLocation(); // centrage de la carte sur la position actuelle
+        mapView.getController().animateTo(myLocationNewOverlay.getMyLocation()); // centrage de la carte sur la position actuelle
     }
 
     public void drawCircle(OverlayItem item, double radiusInMeters, long categoryFilter) {
@@ -280,7 +281,7 @@ public final class MapManager {
 
         circleManager.drawCircleAroundMe(myLocationNewOverlay.getMyLocation(), radiusInMeters, categoryFilter);
         mapView.invalidate(); // demande le rafraichissement de la carte si le cercle a été ajouté
-        centerToUserLocation();
+        myLocationNewOverlay.enableFollowLocation();
         activity.updateFilterAction(true);
     }
 

@@ -112,7 +112,12 @@ public class MainActivity extends AppCompatActivity {
      * @param hasCircleAroundMe si vrai affichage de l'option de la croix, sinon de la loupe de recherche
      */
     public void updateFilterAction(boolean hasCircleAroundMe) {
-        filterFloatingLayout.setVisibility(View.VISIBLE);
+        if (hasCircleAroundMe) {
+            filterFloatingLayout.setVisibility(View.VISIBLE);
+        }
+        if (floatingButtonsLayout.getVisibility() == View.GONE && !hasCircleAroundMe) {
+            filterFloatingLayout.setVisibility(View.GONE);
+        }
 
         int showCircleAroundMeVisibility = hasCircleAroundMe ? View.GONE : View.VISIBLE;
         int removeCircleAroundMeVisibility = hasCircleAroundMe ? View.VISIBLE : View.GONE;

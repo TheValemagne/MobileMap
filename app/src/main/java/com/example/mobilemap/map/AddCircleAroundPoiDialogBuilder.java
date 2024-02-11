@@ -3,7 +3,9 @@ package com.example.mobilemap.map;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.res.Resources;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
@@ -53,15 +55,17 @@ public class AddCircleAroundPoiDialogBuilder extends AlertDialog.Builder {
         categoryFilterSpinner = binding.categoryFilter;
         initSpinner(categoryFilterSpinner, activity);
 
-        this.setPositiveButton(resources.getString(R.string.dialog_show), null);
         this.setNegativeButton(resources.getString(R.string.dialog_cancel), (dialog, which) -> dialog.cancel());
     }
 
     @Override
     public AlertDialog show() {
         AlertDialog dialog = super.show();
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                .setOnClickListener(new AddCircleDialogListener(dialog, this));
+
+        Button buttonPositive = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        buttonPositive.setText(resources.getString(R.string.dialog_show));
+        buttonPositive.setVisibility(View.VISIBLE);
+        buttonPositive.setOnClickListener(new AddCircleDialogListener(dialog, this));
 
         return dialog;
     }
