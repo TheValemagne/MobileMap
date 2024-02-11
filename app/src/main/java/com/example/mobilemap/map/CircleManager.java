@@ -73,7 +73,6 @@ public class CircleManager {
 
         // Récuperation des sites avec de la catégorie voulue
         List<OverlayItem> filteredItems = mapManager.getOverlayItems(categoryFilter);
-        filteredItems.forEach(item -> System.out.println(item.getTitle()));
 
         updateCenterPointMarker(centerItem, filteredItems); // affiche toujours le point centrale du cercle
         showOnlyPoisInsideCircle(filteredItems, center, radiusInMeters); // affichage des sites à l'intérieur du cercle

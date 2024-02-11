@@ -47,6 +47,7 @@
                 android:clickable="true"
                 android:contentDescription="@string/add_new_category"
                 android:src="@android:drawable/ic_input_add"
+                app:tint="@color/white"
                 app:backgroundTint="#4CAF50" />
 
             <TextView

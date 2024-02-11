@@ -26,8 +26,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="visible">
+                android:layout_height="match_parent">
 
                 <LinearLayout
                     android:id="@+id/floatingButtonsLayout"
@@ -36,7 +35,6 @@
                     android:layout_marginEnd="10dp"
                     android:layout_marginBottom="10dp"
                     android:orientation="vertical"
-                    android:visibility="visible"
                     app:layout_constraintBottom_toTopOf="@+id/filterFloatingLayout"
                     app:layout_constraintEnd_toEndOf="parent">
 
@@ -48,8 +46,10 @@
                         android:clickable="true"
                         android:contentDescription="@string/center_to_my_location"
                         android:src="@drawable/ic_menu_mylocation"
-                        android:visibility="visible"
-                        app:elevation="2dp" />
+                        android:tint="@color/black"
+                        app:backgroundTint="@color/white"
+                        app:elevation="2dp"
+                        app:tint="@color/black" />
 
                     <Space
                         android:layout_width="match_parent"
@@ -65,7 +65,10 @@
                         android:clickable="true"
                         android:contentDescription="@string/add_marker_to_my_location"
                         android:src="@android:drawable/ic_menu_add"
-                        app:elevation="2dp" />
+                        android:tint="@color/black"
+                        app:backgroundTint="@color/white"
+                        app:elevation="2dp"
+                        app:tint="@color/black" />
 
                 </LinearLayout>
 
@@ -85,9 +88,12 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="1dp"
                         android:clickable="true"
+                        android:contentDescription="@string/show_circle_aroud_me"
                         android:src="@android:drawable/ic_menu_search"
+                        android:tint="@color/black"
+                        app:backgroundTint="@color/white"
                         app:elevation="2dp"
-                        android:contentDescription="@string/show_circle_aroud_me" />
+                        app:tint="@color/black" />
 
                     <com.google.android.material.floatingactionbutton.FloatingActionButton
                         android:id="@+id/removeCircleAroundMe"
@@ -95,10 +101,12 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="1dp"
                         android:clickable="true"
+                        android:contentDescription="@string/remove_circle_around_me"
                         android:src="@android:drawable/ic_menu_close_clear_cancel"
                         android:visibility="gone"
+                        app:backgroundTint="@color/white"
                         app:elevation="2dp"
-                        android:contentDescription="@string/remove_circle_around_me" />
+                        app:tint="@color/black" />
                 </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>

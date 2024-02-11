@@ -30,6 +30,11 @@ public class NavigationHandler {
         this.currentPageId = currentPageId;
     }
 
+    /**
+     * Gestion de la requête de changement d'activité
+     * @param menuId identifiant du bouton appuyé
+     * @return vrai pour faire apparaitre le bouton comme sélectionné, sinon faux
+     */
     public boolean handle(int menuId) {
         if (menuId != navigationButtonId) { // passer à au prochain élément du Cor
             if (nextNavigationHandler == null) {

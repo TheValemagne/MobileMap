@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.DisplayMetrics;
 
+import androidx.core.content.res.ResourcesCompat;
 import androidx.preference.PreferenceManager;
 
 import com.example.mobilemap.map.listeners.MarkerGestureListener;
@@ -130,7 +131,9 @@ public final class MapManager {
 
         mapView.getOverlays().add(new AddMarkerOverlay(activity));
 
-        overlayItemItemizedOverlay = new ItemizedIconOverlay<>(context, getOverlayItems(), markerGestureListener);
+        overlayItemItemizedOverlay = new ItemizedIconOverlay<>(getOverlayItems(),
+                Objects.requireNonNull(ResourcesCompat.getDrawable(activity.getResources(), org.osmdroid.library.R.drawable.marker_default, activity.getTheme())),
+                markerGestureListener, context);
         mapView.getOverlays().add(overlayItemItemizedOverlay);
     }
 
@@ -276,15 +279,16 @@ public final class MapManager {
 
         circleManager.drawCircleAroundMe(myLocationNewOverlay.getMyLocation(), radiusInMeters, categoryFilter);
         mapView.invalidate(); // demande le rafraichissement de la carte si le cercle a été ajouté
+        centerToUserLocation();
         activity.updateFilterAction(true);
     }
 
     public void removeCircle() {
-        circleManager.removeCircle();
-
         if (isCircleAroundMe()) {
             activity.updateFilterAction(false);
         }
+
+        circleManager.removeCircle();
     }
 
     public boolean isCircleAroundMe() {
