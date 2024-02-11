@@ -6,6 +6,9 @@ import android.widget.EditText;
 
 import com.example.mobilemap.R;
 
+/**
+ * Vérification d'un intervalle de valeur pour double
+ */
 public class DoubleRangeValidator extends FieldValidator {
     private final double minBound;
     private final double maxBound;

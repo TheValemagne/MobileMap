@@ -5,6 +5,9 @@ import android.widget.EditText;
 
 import com.example.mobilemap.R;
 
+/**
+ * Vérification de champ non vide
+ */
 public class IsFieldEmpty extends FieldValidator {
     public IsFieldEmpty(EditText field, Resources resources) {
         super(field, resources.getString(R.string.error_field_is_empty));

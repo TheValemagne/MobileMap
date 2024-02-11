@@ -7,6 +7,9 @@ import com.example.mobilemap.R;
 
 import java.util.List;
 
+/**
+ * Vérification de l'unicité du nom d'une catégorie
+ */
 public class IsUniqueCategoryValidator extends FieldValidator{
     private final List<String> notAvailableValues;
 

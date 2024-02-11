@@ -224,6 +224,7 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
 
     /**
      * Initialisation de la mini carte
+     *
      * @param miniMapView mini carte à initialiser
      */
     private void initMiniMap(MapView miniMapView) {
@@ -323,28 +324,40 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
     public boolean check() {
         Resources resources = requireActivity().getResources();
 
-        List<FieldValidator> textValidators = new ArrayList<>(Arrays.asList(
+        boolean AreTextFieldsSet = getTextFieldValidators(resources).stream()
+                .map(FieldValidator::check)
+                .reduce(true, (aBoolean, aBoolean2) -> aBoolean && aBoolean2);
+        boolean isLatitudeValid = getLatitudeValidators(resources).stream()
+                .allMatch(FieldValidator::check);
+        boolean isLongitudeValid = getLongitudeValidators(resources).stream()
+                .allMatch(FieldValidator::check);
+
+        return AreTextFieldsSet && isLatitudeValid && isLongitudeValid;
+    }
+
+    @NonNull
+    private ArrayList<FieldValidator> getTextFieldValidators(Resources resources) {
+        return new ArrayList<>(Arrays.asList(
                 new IsFieldEmpty(binding.poiName, resources),
                 new IsFieldEmpty(binding.poiPostalAddress, resources),
                 new IsFieldEmpty(binding.poiResume, resources)
         ));
+    }
 
-        List<FieldValidator> latitudeValidators = new ArrayList<>(Arrays.asList(
+    @NonNull
+    private ArrayList<FieldValidator> getLatitudeValidators(Resources resources) {
+        return new ArrayList<>(Arrays.asList(
                 new IsFieldEmpty(binding.poiLatitude, resources),
                 new DoubleRangeValidator(binding.poiLatitude, resources, -90, 90)
         ));
+    }
 
-        List<FieldValidator> longitudeValidators = new ArrayList<>(Arrays.asList(
+    @NonNull
+    private ArrayList<FieldValidator> getLongitudeValidators(Resources resources) {
+        return new ArrayList<>(Arrays.asList(
                 new IsFieldEmpty(binding.poiLongitude, resources),
                 new DoubleRangeValidator(binding.poiLongitude, resources, -180, 180)
         ));
-
-        boolean checkEmptyFields = textValidators.stream().map(FieldValidator::check)
-                .reduce(true, (aBoolean, aBoolean2) -> aBoolean && aBoolean2);
-        boolean checkLatitude = latitudeValidators.stream().allMatch(FieldValidator::check);
-        boolean checkLongitude = longitudeValidators.stream().allMatch(FieldValidator::check);
-
-        return checkEmptyFields && checkLatitude && checkLongitude;
     }
 
     @Override
