@@ -39,6 +39,7 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow;
 
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -274,6 +275,7 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
         marker.setTitle(modifiedPoi.getName());
         marker.setSnippet(modifiedPoi.getResume());
         marker.setPosition(point);
+        marker.setInfoWindow(new MarkerInfoWindow(R.layout.poi_info_window, miniMapView));
         miniMapView.getOverlays().add(marker);
         marker.showInfoWindow();
     }
