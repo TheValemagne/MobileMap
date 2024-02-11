@@ -12,6 +12,7 @@ public class DeleteItemContext {
 
     /**
      * Retourne le titre du dialogue de suppression
+     *
      * @return titre du dialogue de suppression
      */
     public String getDialogTitle() {
@@ -20,6 +21,7 @@ public class DeleteItemContext {
 
     /**
      * Retourne le message du dialogue de suppression
+     *
      * @return message du dialogue de suppression
      */
     public String getDialogMsg() {
@@ -31,10 +33,9 @@ public class DeleteItemContext {
     private final String dialogMsg;
 
     /**
-     *
      * @param databaseUri uri de la table
      * @param dialogTitle titre du dialogue de suppression
-     * @param dialogMsg message du dialogue de suppression
+     * @param dialogMsg   message du dialogue de suppression
      */
     public DeleteItemContext(Uri databaseUri, String dialogTitle, String dialogMsg) {
         this.databaseUri = databaseUri;

@@ -11,7 +11,7 @@ public class CancelAction implements View.OnClickListener {
     /**
      * Ecouteur pour annuler une action d'un fragment
      *
-     * @param activity activité mère
+     * @param activity         activité mère
      * @param lauchedForResult si l'activité mère a été lancé par une autre activité pour une tâche
      */
     public CancelAction(AppCompatActivity activity, boolean lauchedForResult) {

@@ -14,7 +14,7 @@ import com.example.mobilemap.databinding.DialogConfirmDeleteBinding;
 
 import java.text.MessageFormat;
 
-public class DeleteDatabaseItemListener implements View.OnClickListener{
+public class DeleteDatabaseItemListener implements View.OnClickListener {
     protected long getItemId() {
         return itemId;
     }
@@ -27,8 +27,8 @@ public class DeleteDatabaseItemListener implements View.OnClickListener{
     /**
      * Ecouteur pour supprimer un élément de la base de données
      *
-     * @param itemId identifiant de l'élément à supprimer
-     * @param activity activité mère
+     * @param itemId                identifiant de l'élément à supprimer
+     * @param activity              activité mère
      * @param deleteCategoryContext contexte pour la supression de l'élément
      */
     public DeleteDatabaseItemListener(long itemId, AppCompatActivity activity, DeleteItemContext deleteCategoryContext) {

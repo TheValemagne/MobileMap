@@ -30,7 +30,8 @@ public final class DatabaseContentProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
-        return databaseHelper.getReadableDatabase().query(getTable(uri), projection, selection, selectionArgs, null, null, sortOrder);
+        return databaseHelper.getReadableDatabase()
+                .query(getTable(uri), projection, selection, selectionArgs, null, null, sortOrder);
     }
 
     @Nullable
@@ -42,9 +43,10 @@ public final class DatabaseContentProvider extends ContentProvider {
 
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
-        long id = databaseHelper.getReadableDatabase().insert(getTable(uri), null, values);
+        long id = databaseHelper.getReadableDatabase()
+                .insert(getTable(uri), null, values);
 
-        if (id == -1) {
+        if (id == DatabaseContract.NOT_EXISTING_ID) {
             throw new RuntimeException("Failed to insert row into " + uri);
         }
 
@@ -55,11 +57,13 @@ public final class DatabaseContentProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return databaseHelper.getWritableDatabase().delete(getTable(uri), selection, selectionArgs);
+        return databaseHelper.getWritableDatabase()
+                .delete(getTable(uri), selection, selectionArgs);
     }
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return databaseHelper.getWritableDatabase().update(getTable(uri), values, selection, selectionArgs);
+        return databaseHelper.getWritableDatabase()
+                .update(getTable(uri), values, selection, selectionArgs);
     }
 }

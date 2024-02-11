@@ -46,7 +46,7 @@ public class CategoryListFragment extends Fragment {
     /**
      * Initialisation de la liste des catégories
      *
-     * @param binding classe contennat les éléments du fragments
+     * @param binding  classe contennat les éléments du fragments
      * @param activity activité à l'origine du fragment
      */
     private void initRecyclerView(FragmentCategoryListBinding binding, AppCompatActivity activity) {

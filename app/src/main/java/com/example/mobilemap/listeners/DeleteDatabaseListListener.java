@@ -16,13 +16,13 @@ public class DeleteDatabaseListListener<T extends RecyclerView.ViewHolder, U ext
     /**
      * Ecouteur pour supprimer un élément de la base de données depuis une liste
      *
-     * @param itemId identifiant de l'élément à supprimer
-     * @param activity activité mère
+     * @param itemId                identifiant de l'élément à supprimer
+     * @param activity              activité mère
      * @param deleteCategoryContext contexte pour la supression de l'élément
-     * @param adapter adapteur de la liste
+     * @param adapter               adapteur de la liste
      */
     public DeleteDatabaseListListener(long itemId, AppCompatActivity activity, DeleteItemContext deleteCategoryContext,
-                                       BaseAdapter<T, U> adapter) {
+                                      BaseAdapter<T, U> adapter) {
         super(itemId, activity, deleteCategoryContext);
         this.adapter = adapter;
     }
@@ -46,7 +46,7 @@ public class DeleteDatabaseListListener<T extends RecyclerView.ViewHolder, U ext
         List<U> items = adapter.getValues();
 
         for (int index = 0; index < items.size(); index++) {
-            if(items.get(index).getId() == itemId) {
+            if (items.get(index).getId() == itemId) {
                 return index;
             }
         }

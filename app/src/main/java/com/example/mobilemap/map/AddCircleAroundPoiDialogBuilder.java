@@ -33,9 +33,9 @@ public class AddCircleAroundPoiDialogBuilder extends AlertDialog.Builder {
     /**
      * Dialogue de demmande de données pour afficher un cercle
      *
-     * @param activity activité mère
+     * @param activity   activité mère
      * @param mapManager gestionnaire de la carte
-     * @param item élément reptrésentant le centre du futur cercle
+     * @param item       élément reptrésentant le centre du futur cercle
      */
     public AddCircleAroundPoiDialogBuilder(Activity activity, MapManager mapManager, OverlayItem item) {
         super(activity);
@@ -79,13 +79,14 @@ public class AddCircleAroundPoiDialogBuilder extends AlertDialog.Builder {
 
     /**
      * Génération du cercle sur la carte
-     * @param dialog
+     *
+     * @param dialog dialog d'interaction
      */
     public void showCircle(AlertDialog dialog) {
         double circleRadius = Double.parseDouble(editCircleRadius.getText().toString());
         long categoryFilterValue = getSelectedCategoryId(categoryFilterSpinner);
 
-        if (item != null){
+        if (item != null) {
             this.mapManager.drawCircle(item, circleRadius, categoryFilterValue);
         } else {
             this.mapManager.drawCircleAroundMe(circleRadius, categoryFilterValue);
@@ -96,7 +97,8 @@ public class AddCircleAroundPoiDialogBuilder extends AlertDialog.Builder {
 
     /**
      * Initialisation des options de la boîte de sélection
-     * @param spinner boîte de sélection
+     *
+     * @param spinner  boîte de sélection
      * @param activity activité mère
      */
     private void initSpinner(Spinner spinner, Activity activity) {

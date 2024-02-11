@@ -7,7 +7,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.mobilemap.R;
-import com.example.mobilemap.map.listeners.PoiMoreInfoLinstener;
+import com.example.mobilemap.map.listeners.PoiMoreInfoListener;
 
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.util.GeoPoint;
@@ -47,7 +47,7 @@ public class CustomInfoWindow extends InfoWindow {
         bubble_description.setText(overlayItem.getSnippet());
 
         ImageButton bubbleInfo = mView.findViewById(R.id.bubble_moreinfo);
-        bubbleInfo.setOnClickListener(new PoiMoreInfoLinstener(activity, overlayItem));
+        bubbleInfo.setOnClickListener(new PoiMoreInfoListener(activity, overlayItem));
 
         if (circleManager.hasSavedCircle()) {
             TextView subDescription = mView.findViewById(R.id.bubble_subdescription);
@@ -60,6 +60,11 @@ public class CustomInfoWindow extends InfoWindow {
 
     }
 
+    /**
+     * Retourne la distance du point par rapport au centre du cercle dessiné
+     *
+     * @return distance entre le point sélectionné et le centre du cercle dessiné
+     */
     private float getDistanceToCircleCenter() {
         GeoPoint center = circleManager.getCircleCenter();
         Location centerLocation = new Location("Center");

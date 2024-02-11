@@ -54,13 +54,13 @@ public class PoiDetail implements HasId {
     public static List<PoiDetail> mapFromList(Cursor cursor) {
         List<PoiDetail> result = new ArrayList<>();
 
-        if(!cursor.moveToFirst()) {
+        if (!cursor.moveToFirst()) {
             return result;
         }
 
-        do{
+        do {
             result.add(PoiDetail.fromCursor(cursor));
-        } while(cursor.moveToNext());
+        } while (cursor.moveToNext());
 
         return result;
     }

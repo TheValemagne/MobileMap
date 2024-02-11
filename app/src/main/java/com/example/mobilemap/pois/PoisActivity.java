@@ -41,7 +41,7 @@ public class PoisActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         Fragment fragment;
-        if(shouldShowPoiFragment(intent)) {
+        if (shouldShowPoiFragment(intent)) {
             fragment = getPoiFragmentInstance(intent);
         } else {
             fragment = new PoiListFragment();
@@ -78,18 +78,16 @@ public class PoisActivity extends AppCompatActivity {
     }
 
     public static Intent createIntent(Activity activity, double latitude, double longitude) {
-        Intent intent = new Intent(activity.getApplicationContext(), PoisActivity.class);
-        intent.putExtra(PoiFragment.ARG_LATITUDE, latitude);
-        intent.putExtra(PoiFragment.ARG_LONGITUDE, longitude);
 
-        return intent;
+        return new Intent(activity.getApplicationContext(), PoisActivity.class)
+                .putExtra(PoiFragment.ARG_LATITUDE, latitude)
+                .putExtra(PoiFragment.ARG_LONGITUDE, longitude);
     }
 
     public static Intent createIntent(Activity activity, long itemId) {
-        Intent intent = new Intent(activity.getApplicationContext(), PoisActivity.class);
-        intent.putExtra(PoiFragment.ARG_ITEM_ID, itemId);
 
-        return intent;
+        return new Intent(activity.getApplicationContext(), PoisActivity.class)
+                .putExtra(PoiFragment.ARG_ITEM_ID, itemId);
     }
 
     @Override

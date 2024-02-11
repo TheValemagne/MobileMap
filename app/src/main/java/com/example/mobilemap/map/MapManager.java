@@ -69,10 +69,10 @@ public final class MapManager {
     private final MarkerGestureListener markerGestureListener;
     private MyLocationNewOverlay myLocationNewOverlay;
 
-    public MapManager(MapView mapView, MainActivity activity, Context context) {
+    public MapManager(MapView mapView, MainActivity activity) {
         this.mapView = mapView;
         this.activity = activity;
-        this.context = context;
+        this.context = activity.getApplicationContext();
 
         sharedPreferences = context.getSharedPreferences(SharedPreferencesConstant.PREFS_NAME, Context.MODE_PRIVATE);
         itemInfoWindowMap = new HashMap<>();

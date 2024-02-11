@@ -72,13 +72,13 @@ public class Category extends DatabaseItem {
     public static List<Category> mapFromList(Cursor cursor) {
         List<Category> result = new ArrayList<>();
 
-        if(!cursor.moveToFirst()) {
+        if (!cursor.moveToFirst()) {
             return result;
         }
 
-        do{
+        do {
             result.add(Category.fromCursor(cursor));
-        } while(cursor.moveToNext());
+        } while (cursor.moveToNext());
 
         return result;
     }

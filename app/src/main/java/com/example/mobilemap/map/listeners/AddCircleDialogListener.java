@@ -16,7 +16,7 @@ public class AddCircleDialogListener implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        if(!dialogBuilder.check()) {
+        if (!dialogBuilder.check()) {
             return;
         }
 

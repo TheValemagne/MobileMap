@@ -7,11 +7,11 @@ import com.example.mobilemap.pois.PoisActivity;
 
 import org.osmdroid.views.overlay.OverlayWithIW;
 
-public class PoiMoreInfoLinstener implements View.OnClickListener {
+public class PoiMoreInfoListener implements View.OnClickListener {
     private final MainActivity activity;
     private final OverlayWithIW overlayItem;
 
-    public PoiMoreInfoLinstener(MainActivity activity, OverlayWithIW overlayItem) {
+    public PoiMoreInfoListener(MainActivity activity, OverlayWithIW overlayItem) {
         this.activity = activity;
         this.overlayItem = overlayItem;
     }

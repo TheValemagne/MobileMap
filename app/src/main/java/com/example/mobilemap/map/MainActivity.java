@@ -16,7 +16,6 @@ import androidx.core.view.WindowInsetsCompat;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -52,16 +51,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Context context = getApplicationContext();
         EdgeToEdge.enable(this); // permet d'étendre l'affichage de l'application à tout l'écran
 
         ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
-
         setContentView(binding.getRoot());
 
         initBottomNavigationView(binding);
 
-        mapManager = new MapManager(binding.mapView, this, context);
+        mapManager = new MapManager(binding.mapView, this);
         mapManager.initMap();
 
         floatingButtonsLayout = binding.floatingButtonsLayout;
@@ -98,6 +95,10 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationMenuView.setOnItemSelectedListener(new NavigationBarItemSelectedListener(this, currentPageId));
     }
 
+    /**
+     * Gestion de l'affichage des boutons en lien avec la localisation actuelle
+     * @param isVisible affiche les boutons si vrai, sinon les caches
+     */
     public void shouldShowLocationBtn(boolean isVisible) {
         int visibility = isVisible ? View.VISIBLE : View.GONE;
 
@@ -105,6 +106,11 @@ public class MainActivity extends AppCompatActivity {
         filterFloatingLayout.setVisibility(visibility);
     }
 
+    /**
+     * Mise à jour du bouton d'action pour le cercle autour de la position actuelle
+     *
+     * @param hasCircleAroundMe si vrai affichage de l'option de la croix, sinon de la loupe de recherche
+     */
     public void updateFilterAction(boolean hasCircleAroundMe) {
         filterFloatingLayout.setVisibility(View.VISIBLE);
 
@@ -119,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        if(mapManager != null) { // actualise les marques et le circle après navigation dans les autres pages
+        if (mapManager != null) { // actualise les marques et le circle après navigation dans les autres pages
             mapManager.updateMarkers();
         }
     }

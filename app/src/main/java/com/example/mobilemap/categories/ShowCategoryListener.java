@@ -16,7 +16,7 @@ public class ShowCategoryListener implements View.OnClickListener {
     /**
      * Création de l'écouteur pour afficher une catéogorie existante
      *
-     * @param itemId identifiant de la catégorie
+     * @param itemId   identifiant de la catégorie
      * @param activity activité à l'origine du fragment
      */
     public ShowCategoryListener(long itemId, AppCompatActivity activity) {
@@ -30,7 +30,7 @@ public class ShowCategoryListener implements View.OnClickListener {
      * @param activity activité à l'origine du fragment
      */
     public ShowCategoryListener(AppCompatActivity activity) {
-        this(-1,activity);
+        this(-1, activity);
     }
 
     @Override

@@ -40,7 +40,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 DatabaseContract.Category._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 DatabaseContract.Category.COLUMN_NAME + " text NOT NULL UNIQUE);");
 
-        db.execSQL("CREATE VIEW "+ DatabaseContract.PoiDetail.TABLE_NAME + " \n" +
+        db.execSQL("CREATE VIEW " + DatabaseContract.PoiDetail.TABLE_NAME + " \n" +
                 "AS SELECT S." + DatabaseContract.Poi._ID + " AS " + DatabaseContract.PoiDetail._ID +
                 ", S." + DatabaseContract.Poi.COLUMN_NAME + " AS " + DatabaseContract.PoiDetail.COLUMN_SITE_NAME + ", " +
                 "C." + DatabaseContract.Category.COLUMN_NAME + " AS " + DatabaseContract.PoiDetail.COLUMN_CATEGORY_NAME +

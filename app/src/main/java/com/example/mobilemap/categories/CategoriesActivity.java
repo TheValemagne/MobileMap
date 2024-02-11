@@ -39,6 +39,7 @@ public class CategoriesActivity extends AppCompatActivity {
 
     /**
      * Retourne le contexte pour supprimer une catégorie
+     *
      * @return informations pour supprimer la catégorie
      */
     public DeleteItemContext getDeleteContext() {

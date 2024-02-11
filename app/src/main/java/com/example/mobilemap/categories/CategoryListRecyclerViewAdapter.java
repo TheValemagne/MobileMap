@@ -38,8 +38,7 @@ public class CategoryListRecyclerViewAdapter extends BaseAdapter<CategoryListRec
 
         holder.contentView.setText(category.getName());
         holder.editBtn.setOnClickListener(new ShowCategoryListener(category.getId(), activity));
-        holder.deleteBtn.setOnClickListener(new DeleteDatabaseListListener<>(category.getId(), activity,
-                ((CategoriesActivity) activity).getDeleteContext(), this));
+        holder.deleteBtn.setOnClickListener(new DeleteDatabaseListListener<>(category.getId(), activity, ((CategoriesActivity) activity).getDeleteContext(), this));
     }
 
     @Override

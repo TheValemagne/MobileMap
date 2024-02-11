@@ -106,7 +106,7 @@ public class CategoryFragment extends Fragment implements ItemView<Category> {
     private void bindActionButtons() {
         binding.categorySaveBtn.setOnClickListener(new SaveDatabaseItemListener<>(activity, this, DatabaseContract.Category.CONTENT_URI, false));
         binding.categoryCancelBtn.setOnClickListener(new CancelAction(activity, false));
-        if(category != null) {
+        if (category != null) {
             binding.categoryDeleteBtn.setOnClickListener(new DeleteDatabaseItemListener(category.getId(), activity, activity.getDeleteContext()));
         }
     }

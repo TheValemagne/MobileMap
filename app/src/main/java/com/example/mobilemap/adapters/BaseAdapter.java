@@ -15,7 +15,7 @@ import java.util.List;
  * @param <T> le type du support de vue
  * @param <U> type de l'élément à afficher
  */
-public abstract class BaseAdapter<T extends RecyclerView.ViewHolder, U extends HasId> extends RecyclerView.Adapter<T>  {
+public abstract class BaseAdapter<T extends RecyclerView.ViewHolder, U extends HasId> extends RecyclerView.Adapter<T> {
     public List<U> getValues() {
         return values;
     }
@@ -25,10 +25,9 @@ public abstract class BaseAdapter<T extends RecyclerView.ViewHolder, U extends H
     protected final AppCompatActivity activity;
 
     /**
-     *
-     * @param values liste initiale de la liste
+     * @param values          liste initiale de la liste
      * @param contentResolver gestionnaire de la base de données
-     * @param activity activité à l'origine du fragment
+     * @param activity        activité à l'origine du fragment
      */
     public BaseAdapter(List<U> values, ContentResolver contentResolver, AppCompatActivity activity) {
         super();
