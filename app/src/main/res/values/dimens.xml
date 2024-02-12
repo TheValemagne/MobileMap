@@ -5,4 +5,5 @@
     <dimen name="contentTextSize">20sp</dimen>
     <dimen name="spaceWidth">15dp</dimen>
     <dimen name="contentMargin">10dp</dimen>
+    <dimen name="bubbleMaxWidth">200dp</dimen>
 </resources>

@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        initBottomNavigationView(binding);
+        initBottomNavigationView(binding.getRoot(), binding.mainNavigationBar);
 
         mapManager = new MapManager(binding.mapView, this);
         mapManager.initMap();
@@ -81,8 +81,7 @@ public class MainActivity extends AppCompatActivity {
         ));
     }
 
-    private void initBottomNavigationView(ActivityMainBinding binding) {
-        ConstraintLayout view = binding.getRoot();
+    private void initBottomNavigationView(ConstraintLayout view, BottomNavigationView mainNavigationBar) {
         // ajustement de la bar de navigation pour éviter tout dépassement ou superposition avec la bar aec les 3 boutons
         ViewCompat.setOnApplyWindowInsetsListener(view, (v, windowInsets) -> {
             Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemGestures());
@@ -90,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
             return WindowInsetsCompat.CONSUMED;
         });
 
-        bottomNavigationMenuView = binding.mainNavigationBar;
+        bottomNavigationMenuView = mainNavigationBar;
         bottomNavigationMenuView.setSelectedItemId(currentPageId);
         bottomNavigationMenuView.setOnItemSelectedListener(new NavigationBarItemSelectedListener(this, currentPageId));
     }

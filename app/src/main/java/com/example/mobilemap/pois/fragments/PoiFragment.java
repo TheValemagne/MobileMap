@@ -41,6 +41,7 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.infowindow.InfoWindow;
 
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -68,6 +69,7 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
     private FragmentPoiBinding binding;
     private List<Category> categories;
     private PoisActivity activity;
+    private InfoWindow infoWindow;
 
     public PoiFragment() {
         // Required empty public constructor
@@ -248,6 +250,8 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
         double zoomLevel = 18.5;
         IMapController mapController = miniMapView.getController();
         mapController.setZoom(zoomLevel);
+
+        infoWindow =  new CustomInfoWindow(R.layout.poi_info_window, miniMapView);
     }
 
     /**
@@ -278,9 +282,12 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
         marker.setTitle(modifiedPoi.getName());
         marker.setSnippet(modifiedPoi.getResume());
         marker.setPosition(point);
-        marker.setInfoWindow(new CustomInfoWindow(R.layout.poi_info_window, miniMapView));
+        marker.closeInfoWindow();
+        marker.setInfoWindow(infoWindow);
         miniMapView.getOverlays().add(marker);
         marker.showInfoWindow();
+
+        miniMapView.invalidate();
     }
 
     private void initCategoryDropDown() {
