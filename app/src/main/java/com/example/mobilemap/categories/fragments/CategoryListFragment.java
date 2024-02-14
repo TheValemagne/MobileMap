@@ -12,7 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.mobilemap.FragmentListView;
+import com.example.mobilemap.adapters.FragmentListView;
 import com.example.mobilemap.categories.CategoryListRecyclerViewAdapter;
 import com.example.mobilemap.database.ContentResolverHelper;
 import com.example.mobilemap.database.tables.Category;

@@ -5,7 +5,6 @@ import android.content.ContentResolver;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.mobilemap.FragmentListView;
 import com.example.mobilemap.database.interfaces.HasId;
 
 import java.util.List;

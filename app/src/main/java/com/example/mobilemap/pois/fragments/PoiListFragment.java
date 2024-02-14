@@ -12,7 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.mobilemap.FragmentListView;
+import com.example.mobilemap.adapters.FragmentListView;
 import com.example.mobilemap.R;
 import com.example.mobilemap.pois.PoisListRecyclerViewAdapter;
 import com.example.mobilemap.database.ContentResolverHelper;
