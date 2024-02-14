@@ -5,6 +5,7 @@ import android.content.ContentResolver;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.mobilemap.FragmentListView;
 import com.example.mobilemap.database.interfaces.HasId;
 
 import java.util.List;
@@ -23,18 +24,21 @@ public abstract class BaseAdapter<T extends RecyclerView.ViewHolder, U extends H
     protected final List<U> values;
     protected final ContentResolver contentResolver;
     protected final AppCompatActivity activity;
+    protected final FragmentListView fragmentListView;
 
     /**
-     * @param values          liste initiale de la liste
-     * @param contentResolver gestionnaire de la base de données
-     * @param activity        activité à l'origine du fragment
+     * @param values           liste initiale de la liste
+     * @param contentResolver  gestionnaire de la base de données
+     * @param activity         activité à l'origine du fragment
+     * @param fragmentListView framgent gérant la liste
      */
-    public BaseAdapter(List<U> values, ContentResolver contentResolver, AppCompatActivity activity) {
+    public BaseAdapter(List<U> values, ContentResolver contentResolver, AppCompatActivity activity, FragmentListView fragmentListView) {
         super();
 
         this.values = values;
         this.contentResolver = contentResolver;
         this.activity = activity;
+        this.fragmentListView = fragmentListView;
     }
 
     /**
@@ -45,5 +49,6 @@ public abstract class BaseAdapter<T extends RecyclerView.ViewHolder, U extends H
     public void removeItem(int position) {
         values.remove(position);
         this.notifyItemRemoved(position);
+        this.fragmentListView.updateView();
     }
 }

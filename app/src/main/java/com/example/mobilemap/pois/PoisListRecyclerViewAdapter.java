@@ -14,12 +14,13 @@ import com.example.mobilemap.adapters.BaseAdapter;
 import com.example.mobilemap.database.tables.PoiDetail;
 import com.example.mobilemap.databinding.PoiListItemBinding;
 import com.example.mobilemap.listeners.DeleteDatabaseListListener;
+import com.example.mobilemap.pois.fragments.PoiListFragment;
 
 import java.util.List;
 
 public class PoisListRecyclerViewAdapter extends BaseAdapter<PoisListRecyclerViewAdapter.ViewHolder, PoiDetail> {
-    public PoisListRecyclerViewAdapter(List<PoiDetail> values, ContentResolver contentResolver, AppCompatActivity activity) {
-        super(values, contentResolver, activity);
+    public PoisListRecyclerViewAdapter(List<PoiDetail> values, ContentResolver contentResolver, AppCompatActivity activity, PoiListFragment fragment) {
+        super(values, contentResolver, activity, fragment);
     }
 
     @NonNull

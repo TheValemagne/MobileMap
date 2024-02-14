@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.mobilemap.FragmentListView;
 import com.example.mobilemap.R;
 import com.example.mobilemap.pois.PoisListRecyclerViewAdapter;
 import com.example.mobilemap.database.ContentResolverHelper;
@@ -24,7 +25,8 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class PoiListFragment extends Fragment {
+public class PoiListFragment extends Fragment implements FragmentListView {
+    private FragmentPoiListBinding binding;
 
     public PoiListFragment() {
         // Required empty public constructor
@@ -34,10 +36,11 @@ public class PoiListFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        FragmentPoiListBinding binding = FragmentPoiListBinding.inflate(inflater, container, false);
+        binding = FragmentPoiListBinding.inflate(inflater, container, false);
 
-        initRecyclerView(binding, (AppCompatActivity) requireActivity());
-        binding.addPoiButton.setOnClickListener(new ShowPoiListener((AppCompatActivity) requireActivity()));
+        AppCompatActivity activity = (AppCompatActivity) requireActivity();
+        initRecyclerView(activity);
+        binding.addPoiButton.setOnClickListener(new ShowPoiListener(activity));
 
         return binding.getRoot();
     }
@@ -46,20 +49,28 @@ public class PoiListFragment extends Fragment {
         return !ContentResolverHelper.getCategories(requireActivity().getContentResolver()).isEmpty();
     }
 
-    private void initRecyclerView(FragmentPoiListBinding binding, AppCompatActivity activity) {
-        List<PoiDetail> poiDetails = ContentResolverHelper.getPoisDetail(activity.getContentResolver());
-
-        if (!poiDetails.isEmpty()) {
-            binding.informationLabel.setVisibility(View.INVISIBLE);
-        }
-
-        int informationMsgId = shouldEnableList() ? R.string.empty_list : R.string.require_category;
-        binding.informationLabel.setText(requireActivity().getResources().getText(informationMsgId));
-        binding.addPoiButton.setVisibility(shouldEnableList() ? View.VISIBLE : View.INVISIBLE);
+    private void initRecyclerView(AppCompatActivity activity) {
+        updateView();
 
         RecyclerView recyclerView = binding.poiList;
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
-        PoisListRecyclerViewAdapter adapter = new PoisListRecyclerViewAdapter(poiDetails, activity.getContentResolver(), activity);
+        PoisListRecyclerViewAdapter adapter = new PoisListRecyclerViewAdapter(ContentResolverHelper.getPoisDetail(activity.getContentResolver()),
+                activity.getContentResolver(), activity, this);
         recyclerView.setAdapter(adapter);
+    }
+
+    /**
+     * Actualisation de l'interface de la liste
+     */
+    @Override
+    public void updateView() {
+        boolean shouldEnableList = shouldEnableList();
+        List<PoiDetail> poiDetails = ContentResolverHelper.getPoisDetail(requireActivity().getContentResolver());
+
+        int informationMsgId = shouldEnableList ? R.string.empty_list : R.string.require_category;
+        binding.informationLabel.setText(requireActivity().getResources().getText(informationMsgId));
+
+        binding.informationLabel.setVisibility(poiDetails.isEmpty() ? View.VISIBLE : View.INVISIBLE);
+        binding.addPoiButton.setVisibility(shouldEnableList() ? View.VISIBLE : View.INVISIBLE);
     }
 }

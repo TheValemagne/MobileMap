@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mobilemap.adapters.BaseAdapter;
+import com.example.mobilemap.categories.fragments.CategoryListFragment;
 import com.example.mobilemap.database.tables.Category;
 import com.example.mobilemap.databinding.CategoryListItemBinding;
 import com.example.mobilemap.listeners.DeleteDatabaseListListener;
@@ -22,8 +23,8 @@ import java.util.List;
  */
 public class CategoryListRecyclerViewAdapter extends BaseAdapter<CategoryListRecyclerViewAdapter.ViewHolder, Category> {
 
-    public CategoryListRecyclerViewAdapter(List<Category> values, ContentResolver contentResolver, AppCompatActivity activity) {
-        super(values, contentResolver, activity);
+    public CategoryListRecyclerViewAdapter(List<Category> values, ContentResolver contentResolver, AppCompatActivity activity, CategoryListFragment fragment) {
+        super(values, contentResolver, activity, fragment);
     }
 
     @NonNull

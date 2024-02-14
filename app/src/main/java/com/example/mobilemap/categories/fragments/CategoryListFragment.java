@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.mobilemap.FragmentListView;
 import com.example.mobilemap.categories.CategoryListRecyclerViewAdapter;
 import com.example.mobilemap.database.ContentResolverHelper;
 import com.example.mobilemap.database.tables.Category;
@@ -24,7 +25,8 @@ import java.util.List;
  * Fragment permettant la gestion de lal iste des catégories
  * A simple {@link Fragment} subclass.
  */
-public class CategoryListFragment extends Fragment {
+public class CategoryListFragment extends Fragment implements FragmentListView {
+    private FragmentCategoryListBinding binding;
 
     public CategoryListFragment() {
         // Required empty public constructor
@@ -33,12 +35,12 @@ public class CategoryListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        FragmentCategoryListBinding binding = FragmentCategoryListBinding.inflate(inflater, container, false);
+        binding = FragmentCategoryListBinding.inflate(inflater, container, false);
 
         AppCompatActivity activity = (AppCompatActivity) requireActivity();
         binding.addCategoryButton.setOnClickListener(new ShowCategoryListener(activity));
 
-        initRecyclerView(binding, activity);
+        initRecyclerView(activity);
 
         return binding.getRoot();
     }
@@ -46,19 +48,24 @@ public class CategoryListFragment extends Fragment {
     /**
      * Initialisation de la liste des catégories
      *
-     * @param binding  classe contennat les éléments du fragments
      * @param activity activité à l'origine du fragment
      */
-    private void initRecyclerView(FragmentCategoryListBinding binding, AppCompatActivity activity) {
-        List<Category> categories = ContentResolverHelper.getCategories(activity.getContentResolver());
-
-        if (!categories.isEmpty()) {
-            binding.emptyLabel.setVisibility(View.INVISIBLE);
-        }
+    private void initRecyclerView(AppCompatActivity activity) {
+        updateView();
 
         RecyclerView recyclerView = binding.categoryList;
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
-        CategoryListRecyclerViewAdapter adapter = new CategoryListRecyclerViewAdapter(categories, activity.getContentResolver(), activity);
+        CategoryListRecyclerViewAdapter adapter = new CategoryListRecyclerViewAdapter(ContentResolverHelper.getCategories(activity.getContentResolver()),
+                activity.getContentResolver(), activity, this);
         recyclerView.setAdapter(adapter);
+    }
+
+    /**
+     * Actualisation de l'interface de la liste
+     */
+    public void updateView() {
+        List<Category> categories = ContentResolverHelper.getCategories(requireActivity().getContentResolver());
+
+        binding.emptyLabel.setVisibility(categories.isEmpty() ? View.VISIBLE : View.INVISIBLE);
     }
 }
