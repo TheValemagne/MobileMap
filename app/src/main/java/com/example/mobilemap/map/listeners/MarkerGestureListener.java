@@ -4,13 +4,11 @@ import com.example.mobilemap.R;
 import com.example.mobilemap.map.CustomInfoWindow;
 import com.example.mobilemap.map.MainActivity;
 import com.example.mobilemap.map.MapManager;
-import com.example.mobilemap.map.overlays.CustomOverlayWithIW;
 
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.OverlayItem;
-import org.osmdroid.views.overlay.OverlayWithIW;
 import org.osmdroid.views.overlay.infowindow.InfoWindow;
 
 import java.util.Map;
@@ -18,7 +16,7 @@ import java.util.Map;
 public class MarkerGestureListener implements ItemizedIconOverlay.OnItemGestureListener<OverlayItem> {
     private final MapManager mapManager;
     private final MapView mapView;
-    private final Map<String, InfoWindow> itemInfoWindowMap;
+    private final Map<String, CustomInfoWindow> itemInfoWindowMap;
     private final MainActivity activity;
 
     private String lastCircleCenterItemUid;
@@ -27,7 +25,7 @@ public class MarkerGestureListener implements ItemizedIconOverlay.OnItemGestureL
         this.lastCircleCenterItemUid = uid;
     }
 
-    public MarkerGestureListener(MapView mapView, MapManager mapManager, Map<String, InfoWindow> itemInfoWindowMap, MainActivity activity) {
+    public MarkerGestureListener(MapView mapView, MapManager mapManager, Map<String, CustomInfoWindow> itemInfoWindowMap, MainActivity activity) {
         this.mapView = mapView;
         this.mapManager = mapManager;
         this.itemInfoWindowMap = itemInfoWindowMap;
@@ -40,7 +38,7 @@ public class MarkerGestureListener implements ItemizedIconOverlay.OnItemGestureL
     public boolean onItemSingleTapUp(int index, OverlayItem item) {
         String uid = item.getUid();
         if (!itemInfoWindowMap.containsKey(uid)) {
-            itemInfoWindowMap.put(uid, new CustomInfoWindow(R.layout.poi_info_window, item.getPoint(), mapView, mapManager.getCircleManager(), activity));
+            itemInfoWindowMap.put(uid, new CustomInfoWindow(R.layout.poi_info_window, (GeoPoint) item.getPoint(), mapView, mapManager.getCircleManager(), activity));
         }
 
         InfoWindow infoWindow = itemInfoWindowMap.get(uid);
@@ -50,19 +48,9 @@ public class MarkerGestureListener implements ItemizedIconOverlay.OnItemGestureL
             return true;
         }
 
-        showInfoWindow(item, infoWindow);
+        mapView.getOverlays().add(mapManager.createOverlayWithIW(item, infoWindow));
 
         return true;
-    }
-
-    private void showInfoWindow(OverlayItem item, InfoWindow infoWindow) {
-        OverlayWithIW overlayWithIW = new CustomOverlayWithIW(item);
-
-        overlayWithIW.setInfoWindow(infoWindow);
-        overlayWithIW.getInfoWindow().open(overlayWithIW, (GeoPoint) item.getPoint(),
-                CustomInfoWindow.OFFSET_X, CustomInfoWindow.OFFSET_Y);
-
-        mapView.getOverlays().add(overlayWithIW);
     }
 
     @Override

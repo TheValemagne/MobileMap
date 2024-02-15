@@ -13,7 +13,6 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.Polygon;
-import org.osmdroid.views.overlay.infowindow.InfoWindow;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +28,7 @@ public class CircleManager {
     private final Activity activity;
     private final MapManager mapManager;
     private Polygon circle;
-    private final Map<String, InfoWindow> itemInfoWindowMap;
+    private final Map<String, CustomInfoWindow> itemInfoWindowMap;
 
     /**
      * @param mapView           vue de la map
@@ -37,7 +36,7 @@ public class CircleManager {
      * @param mapManager        gestionnaire de la carte
      * @param itemInfoWindowMap map des infoWindow
      */
-    public CircleManager(MapView mapView, Activity activity, MapManager mapManager, Map<String, InfoWindow> itemInfoWindowMap) {
+    public CircleManager(MapView mapView, Activity activity, MapManager mapManager, Map<String, CustomInfoWindow> itemInfoWindowMap) {
         this.mapView = mapView;
         this.activity = activity;
         this.mapManager = mapManager;
@@ -153,7 +152,7 @@ public class CircleManager {
      * @param radiusInMeters rayon du cercle en mètre
      */
     private void showOnlyPoisInsideCircle(List<OverlayItem> items, IGeoPoint center, double radiusInMeters) {
-        mapManager.getOverlayItemItemizedOverlay().removeAllItems(); // supprime tous les marqueurs de sites affichés
+        mapManager.getItemizedOverlay().removeAllItems(); // supprime tous les marqueurs de sites affichés
 
         Location centerLocation = new Location("Center");
         centerLocation.setLatitude(center.getLatitude());
@@ -171,7 +170,7 @@ public class CircleManager {
             }
         }
 
-        mapManager.getOverlayItemItemizedOverlay().addItems(itemsInsideCircle);
+        mapManager.getItemizedOverlay().addItems(itemsInsideCircle);
         mapView.invalidate();
     }
 
@@ -286,7 +285,7 @@ public class CircleManager {
             return;
         }
 
-        Optional<OverlayItem> item = findItem(center);
+        Optional<OverlayItem> item = mapManager.findItem(center);
 
         item.ifPresent(overlayItem -> {
             mapManager.getMarkerGestureListener().setLastCircleCenterItemUid(overlayItem.getUid());
@@ -307,17 +306,5 @@ public class CircleManager {
         String circleLongitude = sharedPreferences.getString(SharedPreferencesConstant.CIRCLE_LONGITUDE_STRING, SharedPreferencesConstant.DEFAULT_POSITION_STRING);
 
         return new GeoPoint(Double.parseDouble(circleLatitude), Double.parseDouble(circleLongitude));
-    }
-
-    /**
-     * Retourne l'overlayItem avec la localisation voulue
-     *
-     * @param center point central du cercle
-     * @return overlayItem avec la localisation voulue
-     */
-    private Optional<OverlayItem> findItem(IGeoPoint center) {
-        return mapManager.getOverlayItems().stream()
-                .filter(item -> item.getPoint().getLatitude() == center.getLatitude() && item.getPoint().getLongitude() == center.getLongitude())
-                .findFirst();
     }
 }

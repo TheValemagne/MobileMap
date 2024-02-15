@@ -16,9 +16,11 @@ import com.example.mobilemap.database.tables.Category;
 import com.example.mobilemap.databinding.DialogAskCircleRadiusBinding;
 import com.example.mobilemap.map.listeners.AddCircleDialogListener;
 
+import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.overlay.OverlayItem;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -93,8 +95,12 @@ public class AddCircleAroundPoiDialogBuilder extends AlertDialog.Builder {
         if (item != null) {
             this.mapManager.drawCircle(item, circleRadius, categoryFilterValue);
         } else {
-            this.mapManager.drawCircleAroundMe(circleRadius, categoryFilterValue);
+            Optional<GeoPoint> point = mapManager.getLocationPoint();
+
+            point.ifPresent(location -> this.mapManager.drawCircleAroundMe(location, circleRadius, categoryFilterValue));
         }
+
+        this.mapManager.centerToCircleCenter();
 
         dialog.dismiss();
     }

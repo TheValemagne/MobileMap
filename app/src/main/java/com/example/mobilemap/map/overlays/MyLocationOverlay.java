@@ -2,13 +2,12 @@ package com.example.mobilemap.map.overlays;
 
 import android.content.SharedPreferences;
 import android.location.Location;
-import android.os.Handler;
-import android.os.Looper;
 
 import com.example.mobilemap.map.MainActivity;
 import com.example.mobilemap.map.MapManager;
 import com.example.mobilemap.map.SharedPreferencesConstant;
 
+import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.IMyLocationProvider;
@@ -20,15 +19,11 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 public class MyLocationOverlay extends MyLocationNewOverlay {
     private final MainActivity activity;
     private final MapManager mapManager;
-    private final Handler handler;
-    private final Object handlerToken = new Object();
 
     public MyLocationOverlay(GpsMyLocationProvider gpsMyLocationProvider, MapView mapView, MainActivity activity, MapManager mapManager) {
         super(gpsMyLocationProvider, mapView);
         this.activity = activity;
         this.mapManager = mapManager;
-
-        handler = new Handler(Looper.getMainLooper());
     }
 
     @Override
@@ -38,17 +33,15 @@ public class MyLocationOverlay extends MyLocationNewOverlay {
         activity.shouldShowLocationBtn(location != null);
 
         if (location != null && mapManager.isCircleAroundMe()) { // mise à jour du circle avec le déplacement de l'utilisateur
-            // usage de hanlder.postAtTime pour une actualisation en direct avec la localisation (voir code source de MyLocationNewOverlay)
-            handler.postAtTime(() -> {
-                SharedPreferences sharedPreferences = mapManager.getSharedPreferences(); // récupération des données sauvegardées
+            SharedPreferences sharedPreferences = mapManager.getSharedPreferences(); // récupération des données sauvegardées
 
-                String circleRadiusString = sharedPreferences.getString(SharedPreferencesConstant.CIRCLE_RADIUS_STRING, SharedPreferencesConstant.EMPTY_STRING);
-                double circleRadius = Double.parseDouble(circleRadiusString);
+            String circleRadiusString = sharedPreferences.getString(SharedPreferencesConstant.CIRCLE_RADIUS_STRING, SharedPreferencesConstant.EMPTY_STRING);
+            double circleRadius = Double.parseDouble(circleRadiusString);
 
-                long categoryFilter = sharedPreferences.getLong(SharedPreferencesConstant.CIRCLE_CATEGORY_FILTER, SharedPreferencesConstant.NOT_FOUND_ID);
+            long categoryFilter = sharedPreferences.getLong(SharedPreferencesConstant.CIRCLE_CATEGORY_FILTER, SharedPreferencesConstant.NOT_FOUND_ID);
 
-                mapManager.drawCircleAroundMe(circleRadius, categoryFilter); // actualisation du cercle
-            }, handlerToken, 50);
+            GeoPoint point = new GeoPoint(location.getLatitude(), location.getLongitude());
+            mapManager.drawCircleAroundMe(point, circleRadius, categoryFilter); // actualisation du cercle
         }
     }
 }

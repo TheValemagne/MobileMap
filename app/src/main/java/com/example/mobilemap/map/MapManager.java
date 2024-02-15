@@ -10,12 +10,14 @@ import androidx.preference.PreferenceManager;
 import com.example.mobilemap.R;
 import com.example.mobilemap.map.listeners.MarkerGestureListener;
 import com.example.mobilemap.map.overlays.AddMarkerOverlay;
+import com.example.mobilemap.map.overlays.CustomOverlayWithIW;
 import com.example.mobilemap.map.overlays.MapNorthCompassOverlay;
 import com.example.mobilemap.map.overlays.MyLocationOverlay;
 import com.example.mobilemap.pois.PoisActivity;
 import com.example.mobilemap.database.ContentResolverHelper;
 import com.example.mobilemap.database.tables.Poi;
 
+import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -25,6 +27,7 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.CopyrightOverlay;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.OverlayItem;
+import org.osmdroid.views.overlay.OverlayWithIW;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
 import org.osmdroid.views.overlay.compass.CompassOverlay;
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay;
@@ -37,6 +40,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public final class MapManager {
@@ -56,17 +60,17 @@ public final class MapManager {
 
     private final CircleManager circleManager;
 
-    public ItemizedIconOverlay<OverlayItem> getOverlayItemItemizedOverlay() {
-        return overlayItemItemizedOverlay;
+    public ItemizedIconOverlay<OverlayItem> getItemizedOverlay() {
+        return itemizedOverlay;
     }
 
-    private ItemizedIconOverlay<OverlayItem> overlayItemItemizedOverlay;
+    private ItemizedIconOverlay<OverlayItem> itemizedOverlay;
 
     public MarkerGestureListener getMarkerGestureListener() {
         return markerGestureListener;
     }
 
-    private final Map<String, InfoWindow> itemInfoWindowMap;
+    private final Map<String, CustomInfoWindow> itemInfoWindowMap;
 
     private final MarkerGestureListener markerGestureListener;
     private MyLocationNewOverlay myLocationNewOverlay;
@@ -132,10 +136,10 @@ public final class MapManager {
 
         mapView.getOverlays().add(new AddMarkerOverlay(activity));
 
-        overlayItemItemizedOverlay = new ItemizedIconOverlay<>(getOverlayItems(),
+        itemizedOverlay = new ItemizedIconOverlay<>(getOverlayItems(),
                 Objects.requireNonNull(ResourcesCompat.getDrawable(activity.getResources(), R.drawable.small_marker, activity.getTheme())),
                 markerGestureListener, context);
-        mapView.getOverlays().add(overlayItemItemizedOverlay);
+        mapView.getOverlays().add(itemizedOverlay);
     }
 
     public void showAddCircleAroundPoiDialog(OverlayItem item) {
@@ -155,17 +159,53 @@ public final class MapManager {
         if (hasSavedCircle()) { // actualise le cercle avec les sites dedans
             circleManager.restorePreviousCircle();
         } else { // actualise tous les sites de la carte
-            overlayItemItemizedOverlay.removeAllItems();
-            overlayItemItemizedOverlay.addItems(getOverlayItems());
+            itemizedOverlay.removeAllItems();
+            itemizedOverlay.addItems(getOverlayItems());
         }
 
-        itemInfoWindowMap.forEach((s, infoWindow) -> {
-            if (infoWindow.isOpen()) {
-                infoWindow.close();
-            }
-        });
+        itemInfoWindowMap.values()
+                .stream().filter(InfoWindow::isOpen)
+                .forEach(this::updateInfoWindow);
 
         mapView.invalidate();
+    }
+
+    /**
+     * Actualisation du centenu affiché par l'infoWindow
+     * @param infoWindow infoWindows à actualiser
+     */
+    private void updateInfoWindow(CustomInfoWindow infoWindow) {
+        infoWindow.close();
+        Optional<OverlayItem> foundItem = findItem(infoWindow.getPoint());
+        foundItem.ifPresent(overlayItem -> createOverlayWithIW(overlayItem, infoWindow));
+    }
+
+    /**
+     * Retourne l'overlayItem avec la localisation voulue
+     *
+     * @param center point central du cercle
+     * @return overlayItem avec la localisation voulue
+     */
+    public Optional<OverlayItem> findItem(IGeoPoint center) {
+        return this.getOverlayItems().stream()
+                .filter(item -> item.getPoint().getLatitude() == center.getLatitude() && item.getPoint().getLongitude() == center.getLongitude())
+                .findFirst();
+    }
+
+    /**
+     * Création du contenu à afficher dans l'infoWindow
+     * @param item connu à afficher
+     * @param infoWindow infoWindow à initialiser
+     * @return contneu à afficher
+     */
+    public OverlayWithIW createOverlayWithIW(OverlayItem item, InfoWindow infoWindow) {
+        OverlayWithIW overlayWithIW = new CustomOverlayWithIW(item);
+
+        overlayWithIW.setInfoWindow(infoWindow);
+        overlayWithIW.getInfoWindow().open(overlayWithIW, (GeoPoint) item.getPoint(),
+                CustomInfoWindow.OFFSET_X, CustomInfoWindow.OFFSET_Y);
+
+        return overlayWithIW;
     }
 
     private OverlayItem mapPoiToOverlayItem(Poi poi) {
@@ -242,6 +282,10 @@ public final class MapManager {
         }
     }
 
+    public void centerToCircleCenter() {
+        mapView.setExpectedCenter(circleManager.getCircleCenter());
+    }
+
     public void onDetach() {
         mapView.onDetach();
     }
@@ -274,14 +318,13 @@ public final class MapManager {
         mapView.invalidate(); // demande le rafraichissement de la carte si le cercle a été ajouté
     }
 
-    public void drawCircleAroundMe(double radiusInMeters, long categoryFilter) {
+    public void drawCircleAroundMe(GeoPoint point, double radiusInMeters, long categoryFilter) {
         if (hasSavedCircle()) {
             removeCircle();
         }
 
-        circleManager.drawCircleAroundMe(myLocationNewOverlay.getMyLocation(), radiusInMeters, categoryFilter);
+        circleManager.drawCircleAroundMe(point, radiusInMeters, categoryFilter);
         mapView.invalidate(); // demande le rafraichissement de la carte si le cercle a été ajouté
-        myLocationNewOverlay.enableFollowLocation();
         activity.updateFilterAction(true);
     }
 
@@ -295,6 +338,13 @@ public final class MapManager {
 
     public boolean isCircleAroundMe() {
         return sharedPreferences.getBoolean(SharedPreferencesConstant.CIRCLE_IS_AROUND_ME, false);
+    }
+
+    public Optional<GeoPoint> getLocationPoint() {
+        if (myLocationNewOverlay == null) {
+            return Optional.empty();
+        }
+        return Optional.ofNullable(myLocationNewOverlay.getMyLocation());
     }
 
 }

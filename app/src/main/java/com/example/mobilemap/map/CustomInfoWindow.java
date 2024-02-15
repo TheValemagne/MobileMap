@@ -9,7 +9,6 @@ import android.widget.TextView;
 import com.example.mobilemap.R;
 import com.example.mobilemap.map.listeners.PoiMoreInfoListener;
 
-import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.OverlayWithIW;
@@ -25,14 +24,19 @@ public class CustomInfoWindow extends InfoWindow {
     public static final int OFFSET_X = 0;
     public static final int OFFSET_Y = -50;
     private final CircleManager circleManager;
-    private final IGeoPoint point;
+
+    public GeoPoint getPoint() {
+        return point;
+    }
+
+    private final GeoPoint point;
     private final MainActivity activity;
 
     public CustomInfoWindow(int layoutResId, MapView mapView) {
         this(layoutResId, null, mapView, null, null);
     }
 
-    public CustomInfoWindow(int layoutResId, IGeoPoint point, MapView mapView, CircleManager circleManager, MainActivity activity) {
+    public CustomInfoWindow(int layoutResId, GeoPoint point, MapView mapView, CircleManager circleManager, MainActivity activity) {
         super(layoutResId, mapView);
 
         this.point = point;
