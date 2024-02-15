@@ -4,6 +4,7 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -20,6 +21,7 @@ import com.example.mobilemap.R;
 import com.example.mobilemap.database.interfaces.ItemView;
 import com.example.mobilemap.map.CustomInfoWindow;
 import com.example.mobilemap.map.SharedPreferencesConstant;
+import com.example.mobilemap.pois.GeocodeAddressListener;
 import com.example.mobilemap.validators.DoubleRangeValidator;
 import com.example.mobilemap.validators.FieldValidator;
 import com.example.mobilemap.validators.IsFieldEmpty;
@@ -70,6 +72,7 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
     private List<Category> categories;
     private PoisActivity activity;
     private InfoWindow infoWindow;
+    private Geocoder geocoder;
 
     public PoiFragment() {
         // Required empty public constructor
@@ -115,6 +118,7 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
 
         initFromArguments();
         activity = (PoisActivity) requireActivity();
+        geocoder = new Geocoder(this.requireContext(), Locale.getDefault());
     }
 
     private void initFromArguments() {
@@ -209,7 +213,12 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
             double longitude = bundle.getDouble(ARG_LONGITUDE);
             binding.poiLongitude.setText(String.valueOf(longitude));
 
-            binding.poiPostalAddress.setText(getAddressFromCoordinates(new GeoPoint(latitude, longitude)));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                geocoder.getFromLocation(latitude, longitude, 1, new GeocodeAddressListener(binding.poiPostalAddress));
+            } else {
+                binding.poiPostalAddress.setText(getAddressFromCoordinates(new GeoPoint(latitude, longitude)));
+            }
+
         }
     }
 
@@ -251,7 +260,7 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
         IMapController mapController = miniMapView.getController();
         mapController.setZoom(zoomLevel);
 
-        infoWindow =  new CustomInfoWindow(R.layout.poi_info_window, miniMapView);
+        infoWindow = new CustomInfoWindow(R.layout.poi_info_window, miniMapView);
     }
 
     /**
@@ -278,7 +287,7 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
         miniMapView.setExpectedCenter(point);
 
         Marker marker = new Marker(miniMapView);
-        marker.setIcon( Objects.requireNonNull(ResourcesCompat.getDrawable(activity.getResources(), R.drawable.small_marker, activity.getTheme())));
+        marker.setIcon(Objects.requireNonNull(ResourcesCompat.getDrawable(activity.getResources(), R.drawable.small_marker, activity.getTheme())));
         marker.setTitle(modifiedPoi.getName());
         marker.setSnippet(modifiedPoi.getResume());
         marker.setPosition(point);
