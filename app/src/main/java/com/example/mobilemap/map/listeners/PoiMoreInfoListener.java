@@ -7,6 +7,9 @@ import com.example.mobilemap.pois.PoisActivity;
 
 import org.osmdroid.views.overlay.OverlayWithIW;
 
+/**
+ * @author J.Houdé
+ */
 public class PoiMoreInfoListener implements View.OnClickListener {
     private final MainActivity activity;
     private final OverlayWithIW overlayItem;

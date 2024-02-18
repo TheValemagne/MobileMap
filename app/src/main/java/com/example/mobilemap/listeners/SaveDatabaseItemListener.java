@@ -14,6 +14,12 @@ import com.example.mobilemap.database.interfaces.ItemView;
 
 import java.text.MessageFormat;
 
+/**
+ * Ecouteur pour enregistrer un élément dans la base de données
+ *
+ * @author J.Houdé
+ * @param <T> élément de la base de données qui étend DatabaseItem
+ */
 public class SaveDatabaseItemListener<T extends DatabaseItem> implements View.OnClickListener {
     private final AppCompatActivity activity;
     private final ItemView<T> fragment;

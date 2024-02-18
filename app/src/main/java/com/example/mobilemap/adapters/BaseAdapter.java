@@ -12,6 +12,7 @@ import java.util.List;
 /**
  * Classe abstraite d'une liste
  *
+ * @author J.Houdé
  * @param <T> le type du support de vue
  * @param <U> type de l'élément à afficher
  */

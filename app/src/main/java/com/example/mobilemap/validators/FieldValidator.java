@@ -4,6 +4,8 @@ import android.widget.EditText;
 
 /**
  * Classe abstraite pour la vérification d'une condition d'un champ de données
+ *
+ * @author J.Houdé
  */
 public abstract class FieldValidator {
     protected final EditText field;

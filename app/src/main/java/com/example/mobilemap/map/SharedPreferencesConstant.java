@@ -1,5 +1,10 @@
 package com.example.mobilemap.map;
 
+/**
+ * Classe avec constantes utilisiées pour les préférences de la carte
+ *
+ * @author J.Houdé
+ */
 public final class SharedPreferencesConstant {
     // préférence par défaut
     public final static float DEFAULT_ZOOM = 13.5F;

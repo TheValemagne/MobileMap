@@ -9,6 +9,11 @@ import com.example.mobilemap.database.tables.PoiDetail;
 
 import java.util.List;
 
+/**
+ * Classe d'aide pour ContentResolver
+ *
+ * @author J.Houdé
+ */
 public class ContentResolverHelper {
     /**
      * Retourne la liste des catégories

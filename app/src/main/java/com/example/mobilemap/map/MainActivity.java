@@ -33,6 +33,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Activité principale gérant la carte
+ *
+ * @author J.Houdé
+ */
 public class MainActivity extends AppCompatActivity {
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
 
@@ -56,10 +61,33 @@ public class MainActivity extends AppCompatActivity {
         ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        initBottomNavigationView(binding.getRoot(), binding.mainNavigationBar);
+        ConstraintLayout constraintLayout = binding.getRoot();
+        // ajustement de la bar de navigation pour éviter tout dépassement ou superposition avec la bar avec les 3 boutons
+        ViewCompat.setOnApplyWindowInsetsListener(constraintLayout, (v, windowInsets) -> {
+            Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemGestures());
+            constraintLayout.setPadding(0, 0, 0, insets.bottom);
+            return WindowInsetsCompat.CONSUMED;
+        });
 
         mapManager = new MapManager(binding.mapView, this);
         mapManager.initMap();
+
+        initButtons(binding);
+
+        requestPermissionsIfNecessary(Collections.singletonList(
+                Manifest.permission.ACCESS_FINE_LOCATION
+        ));
+    }
+
+    /**
+     * Initialisation des boutons de l'activité
+     *
+     * @param binding lien avec la vue graphique
+     */
+    private void initButtons(ActivityMainBinding binding) {
+        bottomNavigationMenuView = binding.mainNavigationBar;
+        bottomNavigationMenuView.setSelectedItemId(currentPageId);
+        bottomNavigationMenuView.setOnItemSelectedListener(new NavigationBarItemSelectedListener(this, currentPageId));
 
         floatingButtonsLayout = binding.floatingButtonsLayout;
         floatingButtonsLayout.setVisibility(View.GONE);
@@ -75,23 +103,6 @@ public class MainActivity extends AppCompatActivity {
 
         binding.locateMeBtn.setOnClickListener(v -> mapManager.centerToUserLocation());
         binding.addMarkerAtLocation.setOnClickListener(v -> mapManager.addMarkerToCurrentLocation());
-
-        requestPermissionsIfNecessary(Collections.singletonList(
-                Manifest.permission.ACCESS_FINE_LOCATION
-        ));
-    }
-
-    private void initBottomNavigationView(ConstraintLayout view, BottomNavigationView mainNavigationBar) {
-        // ajustement de la bar de navigation pour éviter tout dépassement ou superposition avec la bar aec les 3 boutons
-        ViewCompat.setOnApplyWindowInsetsListener(view, (v, windowInsets) -> {
-            Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemGestures());
-            view.setPadding(0, 0, 0, insets.bottom);
-            return WindowInsetsCompat.CONSUMED;
-        });
-
-        bottomNavigationMenuView = mainNavigationBar;
-        bottomNavigationMenuView.setSelectedItemId(currentPageId);
-        bottomNavigationMenuView.setOnItemSelectedListener(new NavigationBarItemSelectedListener(this, currentPageId));
     }
 
     /**
@@ -129,8 +140,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        if (mapManager != null) { // actualise les marques et le circle après navigation dans les autres pages
-            mapManager.updateMarkers();
+        if (mapManager != null) { // actualise la carte après navigation dans les autres pages
+            mapManager.updateMap();
         }
     }
 
@@ -195,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
     private final ActivityResultLauncher<Intent> poiActivityLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
-                    mapManager.updateMarkers();
+                    mapManager.updateMap();
                 }
             });
 }

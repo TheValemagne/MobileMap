@@ -14,6 +14,8 @@ import java.util.List;
 
 /**
  * Classe conteneur représentant la table SQL category
+ *
+ * @author J.Houdé
  */
 public class Category extends DatabaseItem {
     private String name;

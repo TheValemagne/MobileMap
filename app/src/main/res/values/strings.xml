@@ -18,7 +18,7 @@
     <string name="dialog_cancel">Cancel</string>
     <string name="error_field_is_empty">Please fill this field</string>
     <string name="error_category_not_unique">Category name should be unique</string>
-    <string name="add_new_category">add new category</string>
+    <string name="add_new_category">Add new category</string>
     <string name="poi_list">Your POIs</string>
     <string name="confirm_delete_poi_msg">Are you sure you want to delete this POI?</string>
     <string name="dialog_delete_poi_title">Confirm POI delete</string>
@@ -29,8 +29,8 @@
     <string name="postal_adress">Address:</string>
     <string name="center_to_my_location">Center the map to my current location</string>
     <string name="add_marker_to_my_location">Add a new marker on my current location</string>
-    <string name="radius_in_meters">Circles radius in meters</string>
-    <string name="input_circle_perimeter_label">"Please specify the circles radius in metres: "</string>
+    <string name="radius_in_meters">Circles radius in meter</string>
+    <string name="input_circle_perimeter_label">"Please specify the circles radius in meter: "</string>
     <string name="ask_circle_perimeter_title">Search for locations around this point</string>
     <string name="dialog_show">Show</string>
     <string name="select_category_filter">Please select the category to show:</string>
@@ -50,4 +50,5 @@
     <string name="poi_postal_address">POI postal address</string>
     <string name="poi_resume">Resume of the POI</string>
     <string name="show_pois_detail">Show POIs detail</string>
+    <string name="all_fields_are_mandatory">All fields are mandatory</string>
 </resources>

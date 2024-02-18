@@ -4,6 +4,8 @@ import android.net.Uri;
 
 /**
  * Contexte pour supprimer une entrée de la base de données
+ *
+ * @author J.Houdé
  */
 public class DeleteItemContext {
     public Uri getDatabaseUri() {

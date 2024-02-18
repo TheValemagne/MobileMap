@@ -13,6 +13,9 @@ import org.osmdroid.views.overlay.infowindow.InfoWindow;
 
 import java.util.Map;
 
+/**
+ * @author J.Houdé
+ */
 public class MarkerGestureListener implements ItemizedIconOverlay.OnItemGestureListener<OverlayItem> {
     private final MapManager mapManager;
     private final MapView mapView;

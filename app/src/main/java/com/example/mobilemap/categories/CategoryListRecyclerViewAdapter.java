@@ -20,6 +20,8 @@ import java.util.List;
 
 /**
  * Adapteur pour la liste de catégorie
+ *
+ * @author J.Houdé
  */
 public class CategoryListRecyclerViewAdapter extends BaseAdapter<CategoryListRecyclerViewAdapter.ViewHolder, Category> {
 

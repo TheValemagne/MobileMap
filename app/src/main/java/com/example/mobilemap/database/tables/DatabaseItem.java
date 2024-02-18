@@ -6,6 +6,8 @@ import com.example.mobilemap.database.interfaces.HasId;
 
 /**
  * Classe conteneur représentant une table SQL sous Android
+ *
+ * @author J.Houdé
  */
 public abstract class DatabaseItem implements HasId {
     public long getId() {

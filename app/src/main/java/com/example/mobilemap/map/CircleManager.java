@@ -22,6 +22,8 @@ import java.util.Optional;
 
 /**
  * Gestion des circles de filtrage de la carte
+ *
+ * @author J.Houdé
  */
 public class CircleManager {
     private final MapView mapView;
@@ -31,6 +33,8 @@ public class CircleManager {
     private final Map<String, CustomInfoWindow> itemInfoWindowMap;
 
     /**
+     * Gestion des circles de filtrage de la carte
+     *
      * @param mapView           vue de la map
      * @param activity          activité mère
      * @param mapManager        gestionnaire de la carte
@@ -195,7 +199,7 @@ public class CircleManager {
     }
 
     /**
-     * Vérifie s'il y a un cercle sauvegardé
+     * Vérifie si un cercle a été sauvegardé dans les préférences
      *
      * @return vrai s'il y a un cercle sauvegardé dans les préférences
      */
@@ -247,7 +251,7 @@ public class CircleManager {
         // Supprimer les données du cercle
         deleteSavedSettings();
 
-        mapManager.updateMarkers(); // afficher tous les cartes existants
+        mapManager.updateMap(); // afficher tous les cartes existants
     }
 
     /**

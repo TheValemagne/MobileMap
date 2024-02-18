@@ -12,6 +12,11 @@ import androidx.annotation.Nullable;
 
 import java.util.Objects;
 
+/**
+ * DatabaseContentProvider pour l'application
+ *
+ * @author J.Houdé
+ */
 public final class DatabaseContentProvider extends ContentProvider {
     private DatabaseHelper databaseHelper;
 

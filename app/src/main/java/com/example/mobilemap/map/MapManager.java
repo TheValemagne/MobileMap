@@ -43,6 +43,11 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Classe de gestion de la carte principale
+ *
+ * @author J.Houdé
+ */
 public final class MapManager {
     private final MapView mapView;
     private final MainActivity activity;
@@ -75,6 +80,12 @@ public final class MapManager {
     private final MarkerGestureListener markerGestureListener;
     private MyLocationNewOverlay myLocationNewOverlay;
 
+    /**
+     * Classe de gestion de la carte principale
+     *
+     * @param mapView  vue de la carte à gérer
+     * @param activity activité mère affichant la carte
+     */
     public MapManager(MapView mapView, MainActivity activity) {
         this.mapView = mapView;
         this.activity = activity;
@@ -142,20 +153,34 @@ public final class MapManager {
         mapView.getOverlays().add(itemizedOverlay);
     }
 
+    /**
+     * Affichage du dialogue de filtrage autour d'un marqueur choisi
+     */
     public void showAddCircleAroundPoiDialog(OverlayItem item) {
         AddCircleAroundPoiDialogBuilder builder = new AddCircleAroundPoiDialogBuilder(activity, this, item);
         builder.show();
     }
 
+    /**
+     * Affichage du dialogue de filtrage pour la position actuelle
+     */
     public void showAddCircleAroundMeDialog() {
         showAddCircleAroundPoiDialog(null);
     }
 
+    /**
+     * Vérifie si un cercle a été sauvegardé dans les préférences
+     *
+     * @return vrai s'il y a un cercle sauvegardé dans les préférences
+     */
     public boolean hasSavedCircle() {
         return circleManager.hasSavedCircle();
     }
 
-    public void updateMarkers() {
+    /**
+     * Actualisation des éléments affichés sur la carte
+     */
+    public void updateMap() {
         if (hasSavedCircle()) { // actualise le cercle avec les sites dedans
             circleManager.restorePreviousCircle();
         } else { // actualise tous les sites de la carte
@@ -172,6 +197,7 @@ public final class MapManager {
 
     /**
      * Actualisation du centenu affiché par l'infoWindow
+     *
      * @param infoWindow infoWindows à actualiser
      */
     private void updateInfoWindow(CustomInfoWindow infoWindow) {
@@ -194,7 +220,8 @@ public final class MapManager {
 
     /**
      * Création du contenu à afficher dans l'infoWindow
-     * @param item connu à afficher
+     *
+     * @param item       connu à afficher
      * @param infoWindow infoWindow à initialiser
      * @return contneu à afficher
      */
@@ -208,30 +235,47 @@ public final class MapManager {
         return overlayWithIW;
     }
 
-    private OverlayItem mapPoiToOverlayItem(Poi poi) {
+    /**
+     * Mappage d'un Poi en OverlayItem
+     *
+     * @param poi site à convertir
+     * @return OverlayItem correspondant au site
+     */
+    private OverlayItem poiToOverlayItemMapper(Poi poi) {
         return new OverlayItem(String.valueOf(poi.getId()), poi.getName(), poi.getResume(), new GeoPoint(poi.getLatitude(), poi.getLongitude()));
     }
 
+    /**
+     * Récupération de tous les marqueurs existants
+     *
+     * @return les marqueurs à afficher sur la carte
+     */
     public List<OverlayItem> getOverlayItems() {
         List<Poi> pois = ContentResolverHelper.getPois(activity.getContentResolver());
 
         return pois.stream()
-                .map(this::mapPoiToOverlayItem)
+                .map(this::poiToOverlayItemMapper)
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Récupération de tous les marqueurs existants de la catégorie voulue
+     *
+     * @param categoryFilter catégorie de filtrage
+     * @return les marqueurs à afficher sur la carte
+     */
     public List<OverlayItem> getOverlayItems(long categoryFilter) {
         List<Poi> pois = ContentResolverHelper.getPois(activity.getContentResolver());
         List<OverlayItem> overlayItems = new ArrayList<>();
 
         for (Poi poi : pois) {
             if (poi.getCategoryId() == categoryFilter) {
-                overlayItems.add(mapPoiToOverlayItem(poi));
+                overlayItems.add(poiToOverlayItemMapper(poi)); // garde les marqueurs de la catégorie voulue
                 continue;
             }
 
             String uid = String.valueOf(poi.getId());
-            if (itemInfoWindowMap.containsKey(uid)) {
+            if (itemInfoWindowMap.containsKey(uid)) { // ferme les infoWindow des marquers à retirer
                 Objects.requireNonNull(itemInfoWindowMap.get(uid)).close();
             }
         }
@@ -277,19 +321,28 @@ public final class MapManager {
 
         boolean isAroundMe = sharedPreferences.getBoolean(SharedPreferencesConstant.CIRCLE_IS_AROUND_ME, false);
 
-        if (isAroundMe) {
+        if (isAroundMe) { // affichage du bouton de suppression du cercle
             activity.updateFilterAction(true);
         }
     }
 
+    /**
+     * Récupération du centre du cercle de filtrage
+     */
     public void centerToCircleCenter() {
         mapView.setExpectedCenter(circleManager.getCircleCenter());
     }
 
+    /**
+     * Destruction de la carte
+     */
     public void onDetach() {
         mapView.onDetach();
     }
 
+    /**
+     * Ajout d'un nouveau marqueur à la position actuelle de l'utilisateur
+     */
     public void addMarkerToCurrentLocation() {
         if (myLocationNewOverlay == null || myLocationNewOverlay.getMyLocation() == null) {
             return;
@@ -300,6 +353,9 @@ public final class MapManager {
                 .launch(PoisActivity.createIntent(activity, point.getLatitude(), point.getLongitude()));
     }
 
+    /**
+     * Centrage de la carte sur la position actuelle de l'utilisateur
+     */
     public void centerToUserLocation() {
         if (myLocationNewOverlay == null || myLocationNewOverlay.getMyLocation() == null) {
             return;
@@ -308,16 +364,30 @@ public final class MapManager {
         mapView.getController().animateTo(myLocationNewOverlay.getMyLocation()); // centrage de la carte sur la position actuelle
     }
 
+    /**
+     * Affichgae d'un cercle de filtrage de marquer autour d'un point donné
+     *
+     * @param item           élément central du cercle
+     * @param radiusInMeters rayon du cercle en mètre
+     * @param categoryFilter catégorie de marqueurs à afficher
+     */
     public void drawCircle(OverlayItem item, double radiusInMeters, long categoryFilter) {
         if (hasSavedCircle()) {
             removeCircle();
         }
 
         circleManager.drawCircle(item, radiusInMeters, categoryFilter);
-        markerGestureListener.setLastCircleCenterItemUid(item.getUid());
+        markerGestureListener.setLastCircleCenterItemUid(item.getUid()); // enregistrement du centre du cercle pour permettre la supression avec la prochaine action "long tap"
         mapView.invalidate(); // demande le rafraichissement de la carte si le cercle a été ajouté
     }
 
+    /**
+     * Affichage du cercle autour de la postion actuelle de l'utilisateur
+     *
+     * @param point          élément central du cercle
+     * @param radiusInMeters rayon du cercle en mètre
+     * @param categoryFilter catégorie de marqueurs à afficher
+     */
     public void drawCircleAroundMe(GeoPoint point, double radiusInMeters, long categoryFilter) {
         if (hasSavedCircle()) {
             removeCircle();
@@ -328,6 +398,9 @@ public final class MapManager {
         activity.updateFilterAction(true);
     }
 
+    /**
+     * Effacement du cercle actuellement affiché
+     */
     public void removeCircle() {
         if (isCircleAroundMe()) {
             activity.updateFilterAction(false);
@@ -336,11 +409,21 @@ public final class MapManager {
         circleManager.removeCircle();
     }
 
+    /**
+     * Vérifie si le cercle a été tracé avec pour centre l'utilisateur et suit sa position
+     *
+     * @return vrai si le cercle suit l'utilisateur, sinon retourne faux si le cercle a pour centre un marqueur quelconque de la carte
+     */
     public boolean isCircleAroundMe() {
         return sharedPreferences.getBoolean(SharedPreferencesConstant.CIRCLE_IS_AROUND_ME, false);
     }
 
-    public Optional<GeoPoint> getLocationPoint() {
+    /**
+     * Retourne la localisation actuelle de l'utilisateur
+     *
+     * @return localisateur actuelle sous forme de GeoPoint
+     */
+    public Optional<GeoPoint> getMyLocationPoint() {
         if (myLocationNewOverlay == null) {
             return Optional.empty();
         }

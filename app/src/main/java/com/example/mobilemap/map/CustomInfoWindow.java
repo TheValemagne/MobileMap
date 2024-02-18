@@ -18,7 +18,9 @@ import java.text.MessageFormat;
 import java.util.Locale;
 
 /**
- * Dialogue d'information d'un marqueur de la carte
+ * Fenêtre d'information d'un marqueur de la carte
+ *
+ * @author J.Houdé
  */
 public class CustomInfoWindow extends InfoWindow {
     public static final int OFFSET_X = 0;
@@ -32,10 +34,25 @@ public class CustomInfoWindow extends InfoWindow {
     private final GeoPoint point;
     private final MainActivity activity;
 
+    /**
+     * Fenêtre d'information d'un marqueur d'illustration
+     *
+     * @param layoutResId identifiant de la ressource graphique
+     * @param mapView vue de la carte
+     */
     public CustomInfoWindow(int layoutResId, MapView mapView) {
         this(layoutResId, null, mapView, null, null);
     }
 
+    /**
+     * Fenêtre d'information d'un marqueur intéractif
+     *
+     * @param layoutResId identifiant de la ressource graphique
+     * @param point coordonnées du marquer associé
+     * @param mapView vue de la carte
+     * @param circleManager gestionnaire de cercles de filtrage
+     * @param activity activité mère
+     */
     public CustomInfoWindow(int layoutResId, GeoPoint point, MapView mapView, CircleManager circleManager, MainActivity activity) {
         super(layoutResId, mapView);
 

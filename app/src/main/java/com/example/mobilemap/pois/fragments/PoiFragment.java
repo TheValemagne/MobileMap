@@ -21,7 +21,7 @@ import com.example.mobilemap.R;
 import com.example.mobilemap.database.interfaces.ItemView;
 import com.example.mobilemap.map.CustomInfoWindow;
 import com.example.mobilemap.map.SharedPreferencesConstant;
-import com.example.mobilemap.pois.GeocodeAddressListener;
+import com.example.mobilemap.pois.listeners.GeocodeAddressListener;
 import com.example.mobilemap.validators.DoubleRangeValidator;
 import com.example.mobilemap.validators.FieldValidator;
 import com.example.mobilemap.validators.IsFieldEmpty;
@@ -58,6 +58,8 @@ import java.util.stream.Collectors;
  * A simple {@link Fragment} subclass.
  * Use the {@link PoiFragment#newInstance} factory method to
  * create an instance of this fragment.
+ *
+ * @author J.Houdé
  */
 public class PoiFragment extends Fragment implements ItemView<Poi> {
 

@@ -3,6 +3,11 @@ package com.example.mobilemap;
 import android.app.Activity;
 import android.content.Intent;
 
+/**
+ * Gestionnaire de navigation
+ *
+ * @author J.Houdé
+ */
 public class NavigationHandler {
     private final int navigationButtonId;
 

@@ -10,6 +10,13 @@ import com.example.mobilemap.database.interfaces.HasId;
 
 import java.util.List;
 
+/**
+ * Ecouteur pour supprimer un élément de la base de données depuis une liste
+ *
+ * @author J.Houdé
+ * @param <T> extend RecyclerView.ViewHolder
+ * @param <U> conntenu à afficher qui implémente HasId
+ */
 public class DeleteDatabaseListListener<T extends RecyclerView.ViewHolder, U extends HasId> extends DeleteDatabaseItemListener {
     private final BaseAdapter<T, U> adapter;
 

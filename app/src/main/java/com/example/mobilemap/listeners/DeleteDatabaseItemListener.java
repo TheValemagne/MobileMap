@@ -14,6 +14,11 @@ import com.example.mobilemap.databinding.DialogConfirmDeleteBinding;
 
 import java.text.MessageFormat;
 
+/**
+ * Ecouteur pour supprimer un élément de la base de données
+ *
+ * @author J.Houdé
+ */
 public class DeleteDatabaseItemListener implements View.OnClickListener {
     protected long getItemId() {
         return itemId;

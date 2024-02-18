@@ -11,6 +11,8 @@ import java.util.List;
 
 /**
  * Classe représentant la jointure entre la le nom d'un site et le nom de la catégorie
+ *
+ * @author J.Houdé
  */
 public class PoiDetail implements HasId {
     private final long id;
@@ -36,6 +38,12 @@ public class PoiDetail implements HasId {
         this.categoryName = categoryName;
     }
 
+    /**
+     * Convertie le cursor en site détaillée
+     *
+     * @param cursor résultat de la requête à convertir
+     * @return site détaillé
+     */
     @SuppressLint("Range")
     public static PoiDetail fromCursor(Cursor cursor) {
         return new PoiDetail(
@@ -46,10 +54,10 @@ public class PoiDetail implements HasId {
     }
 
     /**
-     * Convertie le cursor en liste de sites détaillées
+     * Convertie le cursor en liste de sites détaillés
      *
      * @param cursor résultat de la requête à convertir
-     * @return une liste de sites détaillées
+     * @return une liste de sites détaillés
      */
     public static List<PoiDetail> mapFromList(Cursor cursor) {
         List<PoiDetail> result = new ArrayList<>();

@@ -5,6 +5,8 @@ import android.provider.BaseColumns;
 
 /**
  * Contract de la base de données
+ *
+ * @author J.Houdé
  */
 public final class DatabaseContract {
     public static final int NOT_EXISTING_ID = -1;

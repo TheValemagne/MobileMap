@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.mobilemap.R;
 import com.example.mobilemap.categories.CategoriesActivity;
 import com.example.mobilemap.database.ContentResolverHelper;
 import com.example.mobilemap.database.DatabaseContract;
@@ -36,6 +37,8 @@ import java.util.stream.Collectors;
  * A simple {@link Fragment} subclass.
  * Use the {@link CategoryFragment#newInstance} factory method to
  * create an instance of this fragment.
+ *
+ * @author J.Houdé
  */
 public class CategoryFragment extends Fragment implements ItemView<Category> {
     private static final String ARG_ITEM_ID = "itemId";
@@ -82,6 +85,9 @@ public class CategoryFragment extends Fragment implements ItemView<Category> {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentCategoryBinding.inflate(inflater, container, false);
+
+        Resources resources = requireActivity().getResources();
+        binding.title.setText(resources.getText(itemId == DatabaseContract.NOT_EXISTING_ID ? R.string.add_category : R.string.edit_category));
 
         if (itemId == -1) { // ajout d'une nouvelle catégorie
             binding.categoryDeleteBtn.setVisibility(View.GONE);

@@ -15,6 +15,7 @@ import com.example.mobilemap.database.tables.PoiDetail;
 import com.example.mobilemap.databinding.PoiListItemBinding;
 import com.example.mobilemap.listeners.DeleteDatabaseListListener;
 import com.example.mobilemap.pois.fragments.PoiListFragment;
+import com.example.mobilemap.pois.listeners.ShowPoiListener;
 
 import java.util.List;
 

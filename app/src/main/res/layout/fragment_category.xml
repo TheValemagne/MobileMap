@@ -18,8 +18,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="@string/hello_blank_fragment"
+            android:text="@string/add_category"
             android:textSize="@dimen/titleTextSize" />
+
+        <TextView
+            android:id="@+id/fieldInformation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/all_fields_are_mandatory"
+            android:textSize="@dimen/contentTextSize" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/contentMargin" />
 
         <LinearLayout
             android:layout_width="match_parent"

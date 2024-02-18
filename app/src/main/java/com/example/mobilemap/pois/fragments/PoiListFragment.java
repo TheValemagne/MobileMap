@@ -18,12 +18,14 @@ import com.example.mobilemap.pois.PoisListRecyclerViewAdapter;
 import com.example.mobilemap.database.ContentResolverHelper;
 import com.example.mobilemap.database.tables.PoiDetail;
 import com.example.mobilemap.databinding.FragmentPoiListBinding;
-import com.example.mobilemap.pois.ShowPoiListener;
+import com.example.mobilemap.pois.listeners.ShowPoiListener;
 
 import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
+ *
+ * @author J.Houdé
  */
 public class PoiListFragment extends Fragment implements FragmentListView {
     private FragmentPoiListBinding binding;
@@ -59,9 +61,6 @@ public class PoiListFragment extends Fragment implements FragmentListView {
         recyclerView.setAdapter(adapter);
     }
 
-    /**
-     * Actualisation de l'interface de la liste
-     */
     @Override
     public void updateView() {
         boolean shouldEnableList = shouldEnableList();

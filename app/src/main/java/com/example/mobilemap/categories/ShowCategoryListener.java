@@ -9,6 +9,10 @@ import com.example.mobilemap.R;
 import com.example.mobilemap.categories.fragments.CategoryFragment;
 import com.example.mobilemap.database.DatabaseContract;
 
+/**
+ * Création de l'écouteur pour afficher une catéogorie
+ * @author J.Houdé
+ */
 public class ShowCategoryListener implements View.OnClickListener {
     private final long itemId;
     private final AppCompatActivity activity;

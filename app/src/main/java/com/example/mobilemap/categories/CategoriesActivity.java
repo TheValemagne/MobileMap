@@ -13,6 +13,11 @@ import com.example.mobilemap.categories.fragments.CategoryListFragment;
 import com.example.mobilemap.listeners.NavigationBarItemSelectedListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+/**
+ * Activité de gestion des catégories
+ *
+ * @author J.Houdé
+ */
 public class CategoriesActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationMenuView;
     private static final int currentPageId = R.id.navigation_categories;

@@ -4,6 +4,11 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+/**
+ * Ecouteur pour annuler une action d'un fragment
+ *
+ * @author J.Houdé
+ */
 public class CancelAction implements View.OnClickListener {
     private final AppCompatActivity activity;
     private final boolean lauchedForResult;

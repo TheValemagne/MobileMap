@@ -15,6 +15,8 @@ import java.util.List;
 
 /**
  * Classe conteneur représentant la table SQL Point of Interest (POI) ou point d'intérêt sur la carte
+ *
+ * @author J.Houdé
  */
 public class Poi extends DatabaseItem {
     private String name;

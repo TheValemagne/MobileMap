@@ -7,6 +7,8 @@ import com.example.mobilemap.R;
 
 /**
  * Vérification de champ non vide
+ *
+ * @author J.Houdé
  */
 public class IsFieldEmpty extends FieldValidator {
     public IsFieldEmpty(EditText field, Resources resources) {

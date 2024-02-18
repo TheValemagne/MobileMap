@@ -1,4 +1,4 @@
-package com.example.mobilemap.pois;
+package com.example.mobilemap.pois.listeners;
 
 import android.location.Address;
 import android.location.Geocoder;
@@ -10,6 +10,9 @@ import androidx.annotation.RequiresApi;
 
 import java.util.List;
 
+/**
+ * @author J.Houdé
+ */
 @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
 public class GeocodeAddressListener implements Geocoder.GeocodeListener {
     private final TextView addressField;

@@ -17,12 +17,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Ecouteur de la barre de navigation
+ *
+ * @author J.Houdé
+ */
 public class NavigationBarItemSelectedListener implements NavigationBarView.OnItemSelectedListener {
 
     private final List<NavigationHandler> handlers;
 
     /**
-     * Ecouteur de la bar de navigation
+     * Ecouteur de la barre de navigation
      *
      * @param activity          activité mère
      * @param currentActivityId identifiant de la page actuelle

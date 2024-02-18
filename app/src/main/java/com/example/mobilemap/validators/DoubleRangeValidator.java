@@ -8,6 +8,8 @@ import com.example.mobilemap.R;
 
 /**
  * Vérification d'un intervalle de valeur pour double
+ *
+ * @author J.Houdé
  */
 public class DoubleRangeValidator extends FieldValidator {
     private final double minBound;

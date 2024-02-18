@@ -11,7 +11,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/contentMargin"
         android:layout_marginEnd="@dimen/contentMargin"
-        android:layout_weight="1"
         android:orientation="vertical">
 
         <TextView
@@ -19,8 +18,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="@string/hello_blank_fragment"
+            android:text="@string/add_poi"
             android:textSize="@dimen/titleTextSize" />
+
+        <TextView
+            android:id="@+id/fieldInformation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/all_fields_are_mandatory"
+            android:textSize="@dimen/contentTextSize" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/contentMargin" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -151,9 +161,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autofillHints=""
-                android:hint="@string/poi_resume"
                 android:ems="10"
                 android:gravity="start|top"
+                android:hint="@string/poi_resume"
                 android:inputType="text|textCapSentences|textMultiLine"
                 android:textSize="@dimen/contentTextSize" />
         </LinearLayout>

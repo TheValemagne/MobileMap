@@ -9,6 +9,8 @@ import java.util.List;
 
 /**
  * Vérification de l'unicité du nom d'une catégorie
+ *
+ * @author J.Houdé
  */
 public class IsUniqueCategoryValidator extends FieldValidator{
     private final List<String> notAvailableValues;

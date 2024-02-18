@@ -24,6 +24,8 @@ import java.util.List;
 /**
  * Fragment permettant la gestion de lal iste des catégories
  * A simple {@link Fragment} subclass.
+ *
+ * @author J.Houdé
  */
 public class CategoryListFragment extends Fragment implements FragmentListView {
     private FragmentCategoryListBinding binding;
@@ -60,9 +62,7 @@ public class CategoryListFragment extends Fragment implements FragmentListView {
         recyclerView.setAdapter(adapter);
     }
 
-    /**
-     * Actualisation de l'interface de la liste
-     */
+    @Override
     public void updateView() {
         List<Category> categories = ContentResolverHelper.getCategories(requireActivity().getContentResolver());
 
