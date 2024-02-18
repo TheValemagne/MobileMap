@@ -24,7 +24,7 @@ import java.util.Locale;
  */
 public class CustomInfoWindow extends InfoWindow {
     public static final int OFFSET_X = 0;
-    public static final int OFFSET_Y = -50;
+    public static final int OFFSET_Y = -70;
     private final CircleManager circleManager;
 
     public GeoPoint getPoint() {
@@ -65,28 +65,28 @@ public class CustomInfoWindow extends InfoWindow {
     public void onOpen(Object item) {
         OverlayWithIW overlayItem = (OverlayWithIW) item;
 
-        TextView bubble_title = mView.findViewById(R.id.bubble_title);
-        bubble_title.setText(overlayItem.getTitle());
+        TextView bubbleTitle = mView.findViewById(R.id.bubbleTitle);
+        bubbleTitle.setText(overlayItem.getTitle());
 
-        TextView bubble_description = mView.findViewById(R.id.bubble_description);
-        bubble_description.setText(overlayItem.getSnippet());
+        TextView bubbleDescription = mView.findViewById(R.id.bubbleDescription);
+        bubbleDescription.setText(overlayItem.getSnippet());
 
-        ImageButton bubbleInfo = mView.findViewById(R.id.bubble_moreinfo);
+        ImageButton moreInfoButton = mView.findViewById(R.id.moreInfoButton);
 
         if (activity == null) { // Pour la page de détail du site uniquement
-            bubbleInfo.setEnabled(false);
+            moreInfoButton.setEnabled(false);
             mView.setOnTouchListener((v, event) -> mView.performClick());
             return;
         }
 
-        bubbleInfo.setOnClickListener(new PoiMoreInfoListener(activity, overlayItem));
+        moreInfoButton.setOnClickListener(new PoiMoreInfoListener(activity, overlayItem.getId()));
 
         if (circleManager != null && point != null && circleManager.hasSavedCircle()) {
-            TextView subDescription = mView.findViewById(R.id.bubble_subdescription);
-            subDescription.setVisibility(View.VISIBLE);
+            TextView bubbleSubDescription = mView.findViewById(R.id.bubbleSubdescription);
+            bubbleSubDescription.setVisibility(View.VISIBLE);
 
             Locale locale = LocaleList.getDefault().get(0);
-            subDescription.setText(MessageFormat.format(activity.getResources().getString(R.string.distanceLabel),
+            bubbleSubDescription.setText(MessageFormat.format(activity.getResources().getString(R.string.distanceLabel),
                     String.format(locale, "%.2f", getDistanceToCircleCenter())));
         }
 
@@ -112,6 +112,6 @@ public class CustomInfoWindow extends InfoWindow {
 
     @Override
     public void onClose() {
-        // vide
+        // hint vide
     }
 }

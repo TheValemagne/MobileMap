@@ -22,7 +22,7 @@ import com.example.mobilemap.listeners.CancelAction;
 import com.example.mobilemap.listeners.DeleteDatabaseItemListener;
 import com.example.mobilemap.listeners.SaveDatabaseItemListener;
 import com.example.mobilemap.validators.FieldValidator;
-import com.example.mobilemap.validators.IsFieldEmpty;
+import com.example.mobilemap.validators.IsFieldSet;
 import com.example.mobilemap.validators.IsUniqueCategoryValidator;
 
 import java.text.MessageFormat;
@@ -145,7 +145,7 @@ public class CategoryFragment extends Fragment implements ItemView<Category> {
         Resources resources = requireActivity().getResources();
 
         List<FieldValidator> fieldValidators = new ArrayList<>(Arrays.asList(
-                new IsFieldEmpty(binding.categoryName, resources),
+                new IsFieldSet(binding.categoryName, resources),
                 new IsUniqueCategoryValidator(binding.categoryName, resources, categoryNames)
         ));
 

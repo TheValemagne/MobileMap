@@ -11,6 +11,7 @@ import androidx.core.content.res.ResourcesCompat;
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.Polygon;
 
@@ -31,6 +32,7 @@ public class CircleManager {
     private final MapManager mapManager;
     private Polygon circle;
     private final Map<String, CustomInfoWindow> itemInfoWindowMap;
+    private final Marker lastUserLocation;
 
     /**
      * Gestion des circles de filtrage de la carte
@@ -45,6 +47,12 @@ public class CircleManager {
         this.activity = activity;
         this.mapManager = mapManager;
         this.itemInfoWindowMap = itemInfoWindowMap;
+
+        this.lastUserLocation = new Marker(mapView, activity);
+
+        lastUserLocation.setAnchor(.5f, .8125f);
+        lastUserLocation.setInfoWindow(null);
+        lastUserLocation.setIcon(ResourcesCompat.getDrawable(activity.getResources(), org.osmdroid.library.R.drawable.person, activity.getTheme()));
     }
 
     /**
@@ -99,6 +107,7 @@ public class CircleManager {
 
         OverlayItem circleCenter = item.orElse(centerItem);
         circleCenter.setMarker(getCenterMarker()); // modifier le marqueur au centre du cercle
+        circleCenter.setMarkerHotspot(OverlayItem.HotspotPlace.CENTER); // centrage du marqueur avec la position sur la carte
         items.add(circleCenter);
     }
 
@@ -243,15 +252,14 @@ public class CircleManager {
      * Supprimer le cercle affiché sur la carte
      */
     public void removeCircle() {
-        if (circle != null) {
-            mapView.getOverlayManager().remove(circle);
-            circle = null;
-        }
+        mapView.getOverlayManager().remove(circle); // supression du cercle affiché sur la carte
+        circle = null;
+        mapView.getOverlayManager().remove(lastUserLocation); // supression de la dernière position enregistrée si affichée
 
         // Supprimer les données du cercle
         deleteSavedSettings();
 
-        mapManager.updateMap(); // afficher tous les cartes existants
+        mapManager.updateMap(); // actualisation de la carte
     }
 
     /**
@@ -285,6 +293,10 @@ public class CircleManager {
         long categoryFilter = sharedPreferences.getLong(SharedPreferencesConstant.CIRCLE_CATEGORY_FILTER, SharedPreferencesConstant.NOT_FOUND_ID);
 
         if (mapManager.isCircleAroundMe()) { // restaurer le cercle autour de l'utilisateur
+            lastUserLocation.setPosition(center); // affichage de la dernière position enregistrée en lien avec le cercle tracé
+            int index = mapView.getOverlays().indexOf(mapManager.getItemizedOverlay());
+            mapView.getOverlays().add(index, lastUserLocation);
+
             drawCircleAroundMe(center, circleRadius, categoryFilter);
             return;
         }

@@ -6,12 +6,18 @@ import android.widget.EditText;
 import com.example.mobilemap.R;
 
 /**
- * Vérification de champ non vide
+ * Vérification de champ obligatoire
  *
  * @author J.Houdé
  */
-public class IsFieldEmpty extends FieldValidator {
-    public IsFieldEmpty(EditText field, Resources resources) {
+public class IsFieldSet extends FieldValidator {
+    /**
+     * Vérification de champ obligatoire
+     *
+     * @param field champ à vérifier
+     * @param resources gestionnaire de ressourses
+     */
+    public IsFieldSet(EditText field, Resources resources) {
         super(field, resources.getString(R.string.error_field_is_empty));
     }
 

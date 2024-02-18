@@ -14,6 +14,8 @@ import org.osmdroid.views.overlay.infowindow.InfoWindow;
 import java.util.Map;
 
 /**
+ * Ecouteur pour afficher plus de détails sur un site sélectionné
+ *
  * @author J.Houdé
  */
 public class MarkerGestureListener implements ItemizedIconOverlay.OnItemGestureListener<OverlayItem> {
@@ -28,6 +30,14 @@ public class MarkerGestureListener implements ItemizedIconOverlay.OnItemGestureL
         this.lastCircleCenterItemUid = uid;
     }
 
+    /**
+     * Ecouteur pour la gestion des gestes de la ItemizedIconOverlay
+     *
+     * @param mapView vue de la carte
+     * @param mapManager gestionnaire de la carte
+     * @param itemInfoWindowMap map d'infoWindows
+     * @param activity activité mère
+     */
     public MarkerGestureListener(MapView mapView, MapManager mapManager, Map<String, CustomInfoWindow> itemInfoWindowMap, MainActivity activity) {
         this.mapView = mapView;
         this.mapManager = mapManager;
@@ -46,7 +56,7 @@ public class MarkerGestureListener implements ItemizedIconOverlay.OnItemGestureL
 
         InfoWindow infoWindow = itemInfoWindowMap.get(uid);
 
-        if (infoWindow != null && infoWindow.isOpen()) {
+        if (infoWindow != null && infoWindow.isOpen()) { // fermeture de l'infoWindow si elel est déjà ouverte
             infoWindow.close();
             return true;
         }
@@ -58,7 +68,7 @@ public class MarkerGestureListener implements ItemizedIconOverlay.OnItemGestureL
 
     @Override
     public boolean onItemLongPress(int index, OverlayItem item) {
-        if (lastCircleCenterItemUid.equals(item.getUid())) {
+        if (lastCircleCenterItemUid.equals(item.getUid())) { // s'il y a déjà un cercle pour le site sélectionné
             mapManager.removeCircle();
             lastCircleCenterItemUid = "";
             return true;

@@ -31,6 +31,7 @@ public class DeleteDatabaseListListener<T extends RecyclerView.ViewHolder, U ext
     public DeleteDatabaseListListener(long itemId, AppCompatActivity activity, DeleteItemContext deleteCategoryContext,
                                       BaseAdapter<T, U> adapter) {
         super(itemId, activity, deleteCategoryContext);
+
         this.adapter = adapter;
     }
 
@@ -38,7 +39,7 @@ public class DeleteDatabaseListListener<T extends RecyclerView.ViewHolder, U ext
     protected void afterDeleteItem() {
         int position = getItemPosition(getItemId());
 
-        if (position != -1) {
+        if (position != DatabaseContract.NOT_EXISTING_ID) {
             adapter.removeItem(position);
         }
     }

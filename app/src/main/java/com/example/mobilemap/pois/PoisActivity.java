@@ -18,6 +18,11 @@ import com.example.mobilemap.pois.fragments.PoiListFragment;
 import com.example.mobilemap.listeners.NavigationBarItemSelectedListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+/**
+ * Activité pour la gestion des sites
+ *
+ * @author J.Houdé
+ */
 public class PoisActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationMenuView;
     private static final int currentPageId = R.id.navigation_pois;
@@ -40,12 +45,8 @@ public class PoisActivity extends AppCompatActivity {
         }
 
         Intent intent = getIntent();
-        Fragment fragment;
-        if (shouldShowPoiFragment(intent)) {
-            fragment = getPoiFragmentInstance(intent);
-        } else {
-            fragment = new PoiListFragment();
-        }
+        Fragment fragment = shouldShowPoiFragment(intent) ?
+                getPoiFragmentInstance(intent) : new PoiListFragment();
 
         this.getSupportFragmentManager().beginTransaction()
                 .replace(R.id.poisFragmentContainer, fragment)
@@ -78,14 +79,12 @@ public class PoisActivity extends AppCompatActivity {
     }
 
     public static Intent createIntent(Activity activity, double latitude, double longitude) {
-
         return new Intent(activity.getApplicationContext(), PoisActivity.class)
                 .putExtra(PoiFragment.ARG_LATITUDE, latitude)
                 .putExtra(PoiFragment.ARG_LONGITUDE, longitude);
     }
 
     public static Intent createIntent(Activity activity, long itemId) {
-
         return new Intent(activity.getApplicationContext(), PoisActivity.class)
                 .putExtra(PoiFragment.ARG_ITEM_ID, itemId);
     }

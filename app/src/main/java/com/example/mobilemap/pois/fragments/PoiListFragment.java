@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 
 import com.example.mobilemap.adapters.FragmentListView;
 import com.example.mobilemap.R;
-import com.example.mobilemap.pois.PoisListRecyclerViewAdapter;
+import com.example.mobilemap.pois.PoiDetailsListRecyclerViewAdapter;
 import com.example.mobilemap.database.ContentResolverHelper;
 import com.example.mobilemap.database.tables.PoiDetail;
 import com.example.mobilemap.databinding.FragmentPoiListBinding;
@@ -56,7 +56,7 @@ public class PoiListFragment extends Fragment implements FragmentListView {
 
         RecyclerView recyclerView = binding.poiList;
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
-        PoisListRecyclerViewAdapter adapter = new PoisListRecyclerViewAdapter(ContentResolverHelper.getPoisDetail(activity.getContentResolver()),
+        PoiDetailsListRecyclerViewAdapter adapter = new PoiDetailsListRecyclerViewAdapter(ContentResolverHelper.getPoisDetail(activity.getContentResolver()),
                 activity.getContentResolver(), activity, this);
         recyclerView.setAdapter(adapter);
     }

@@ -41,7 +41,7 @@
         android:layout_height="wrap_content" />
 
     <Button
-        android:id="@+id/editBtn"
+        android:id="@+id/editButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="#3F51B5"
@@ -53,7 +53,7 @@
         android:layout_height="wrap_content" />
 
     <Button
-        android:id="@+id/deleteBtn"
+        android:id="@+id/deleteButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="#F44336"

@@ -24,7 +24,7 @@ import com.example.mobilemap.map.SharedPreferencesConstant;
 import com.example.mobilemap.pois.listeners.GeocodeAddressListener;
 import com.example.mobilemap.validators.DoubleRangeValidator;
 import com.example.mobilemap.validators.FieldValidator;
-import com.example.mobilemap.validators.IsFieldEmpty;
+import com.example.mobilemap.validators.IsFieldSet;
 import com.example.mobilemap.pois.PoiTextWatcher;
 import com.example.mobilemap.pois.PoisActivity;
 import com.example.mobilemap.database.ContentResolverHelper;
@@ -67,6 +67,9 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
     public static final String ARG_LATITUDE = "latitude";
     public static final String ARG_LONGITUDE = "longitude";
     public static final String ARG_LAUNCHED_FOR_RESULT = "launchedForResult";
+
+    private static final double MIN_ZOOM = 5.0;
+    private static final double MAX_ZOOM = 20.0;
     private long itemId = DatabaseContract.NOT_EXISTING_ID;
     private boolean launchedForResult = false;
     private Poi poi = null;
@@ -139,33 +142,6 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
         }
     }
 
-    /**
-     * Retourne l'adresse postale accossiée aux coorconnées
-     *
-     * @param point coordonnées de l'adresse recherchée
-     * @return l'adresse contenenant la rue, la ville et le pays
-     */
-    private String getAddressFromCoordinates(GeoPoint point) {
-        if (!Geocoder.isPresent()) {
-            return "";
-        }
-
-        Geocoder geocoder = new Geocoder(this.requireContext(), Locale.getDefault());
-        List<Address> addresses;
-
-        try {
-            addresses = geocoder.getFromLocation(point.getLatitude(), point.getLongitude(), 1);
-        } catch (IOException e) {
-            return "";
-        }
-
-        if (addresses == null || addresses.isEmpty()) {
-            return "";
-        }
-
-        return addresses.get(0).getAddressLine(0);
-    }
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -225,6 +201,33 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
     }
 
     /**
+     * Retourne l'adresse postale accossiée aux coorconnées. Cette méthode est bloquante
+     *
+     * @param point coordonnées de l'adresse recherchée
+     * @return l'adresse contenenant la rue, la ville et le pays
+     */
+    private String getAddressFromCoordinates(GeoPoint point) {
+        if (!Geocoder.isPresent()) {
+            return "";
+        }
+
+        Geocoder geocoder = new Geocoder(this.requireContext(), Locale.getDefault());
+        List<Address> addresses;
+
+        try {
+            addresses = geocoder.getFromLocation(point.getLatitude(), point.getLongitude(), 1);
+        } catch (IOException e) {
+            return "";
+        }
+
+        if (addresses == null || addresses.isEmpty()) {
+            return "";
+        }
+
+        return addresses.get(0).getAddressLine(0);
+    }
+
+    /**
      * Mise à jour des champts de données avec le site
      *
      * @param binding binding de la vue accossiée au fragment
@@ -250,8 +253,8 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
         miniMapView.setMultiTouchControls(true);
         miniMapView.setHorizontalMapRepetitionEnabled(false);
         miniMapView.setVerticalMapRepetitionEnabled(false);
-        miniMapView.setMinZoomLevel(5.0);
-        miniMapView.setMaxZoomLevel(20.0);
+        miniMapView.setMinZoomLevel(MIN_ZOOM);
+        miniMapView.setMaxZoomLevel(MAX_ZOOM);
 
         GeoPoint initialCenter = new GeoPoint(Double.parseDouble(SharedPreferencesConstant.DEFAULT_LATITUDE),
                 Double.parseDouble(SharedPreferencesConstant.DEFAULT_LONGITUDE));
@@ -288,6 +291,7 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
                 modifiedPoi.getLatitude(), modifiedPoi.getLongitude()));
         miniMapView.setExpectedCenter(point);
 
+        // intialisation du marqueur d'illustration
         Marker marker = new Marker(miniMapView);
         marker.setIcon(Objects.requireNonNull(ResourcesCompat.getDrawable(activity.getResources(), R.drawable.small_marker, activity.getTheme())));
         marker.setTitle(modifiedPoi.getName());
@@ -338,7 +342,9 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
 
     private long getSelectedCategory() {
         String categoryName = (String) binding.categoryDropDown.getSelectedItem();
-        Category selectedCategory = categories.stream().filter(category -> category.getName().equals(categoryName)).findFirst().orElse(null);
+        Category selectedCategory = categories.stream()
+                .filter(category -> category.getName().equals(categoryName))
+                .findFirst().orElse(null);
 
         return selectedCategory != null ? selectedCategory.getId() : -1;
     }
@@ -361,16 +367,16 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
     @NonNull
     private ArrayList<FieldValidator> getTextFieldValidators(Resources resources) {
         return new ArrayList<>(Arrays.asList(
-                new IsFieldEmpty(binding.poiName, resources),
-                new IsFieldEmpty(binding.poiPostalAddress, resources),
-                new IsFieldEmpty(binding.poiResume, resources)
+                new IsFieldSet(binding.poiName, resources),
+                new IsFieldSet(binding.poiPostalAddress, resources),
+                new IsFieldSet(binding.poiResume, resources)
         ));
     }
 
     @NonNull
     private ArrayList<FieldValidator> getLatitudeValidators(Resources resources) {
         return new ArrayList<>(Arrays.asList(
-                new IsFieldEmpty(binding.poiLatitude, resources),
+                new IsFieldSet(binding.poiLatitude, resources),
                 new DoubleRangeValidator(binding.poiLatitude, resources, -90, 90)
         ));
     }
@@ -378,7 +384,7 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
     @NonNull
     private ArrayList<FieldValidator> getLongitudeValidators(Resources resources) {
         return new ArrayList<>(Arrays.asList(
-                new IsFieldEmpty(binding.poiLongitude, resources),
+                new IsFieldSet(binding.poiLongitude, resources),
                 new DoubleRangeValidator(binding.poiLongitude, resources, -180, 180)
         ));
     }

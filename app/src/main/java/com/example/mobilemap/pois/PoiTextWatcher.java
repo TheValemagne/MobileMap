@@ -14,12 +14,12 @@ public class PoiTextWatcher implements TextWatcher {
 
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+        // hint vide
     }
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+        // hint vide
     }
 
     @Override

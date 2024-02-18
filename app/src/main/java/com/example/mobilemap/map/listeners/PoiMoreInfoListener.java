@@ -5,23 +5,28 @@ import android.view.View;
 import com.example.mobilemap.map.MainActivity;
 import com.example.mobilemap.pois.PoisActivity;
 
-import org.osmdroid.views.overlay.OverlayWithIW;
-
 /**
+ * Ecouteur pour afficher plus de détails sur un site sélectionné
  * @author J.Houdé
  */
 public class PoiMoreInfoListener implements View.OnClickListener {
     private final MainActivity activity;
-    private final OverlayWithIW overlayItem;
+    private final long itemId;
 
-    public PoiMoreInfoListener(MainActivity activity, OverlayWithIW overlayItem) {
+    /**
+     * Ecouteur pour afficher plus de détails sur un site sélectionné
+     *
+     * @param activity activité mère
+     * @param overlayItemId identifiant du fichier xml
+     */
+    public PoiMoreInfoListener(MainActivity activity, String overlayItemId) {
         this.activity = activity;
-        this.overlayItem = overlayItem;
+        this.itemId = Long.parseLong(overlayItemId);
     }
 
 
     @Override
     public void onClick(View v) {
-        activity.getPoiActivityLauncher().launch(PoisActivity.createIntent(activity, Long.parseLong(overlayItem.getId())));
+        activity.getPoiActivityLauncher().launch(PoisActivity.createIntent(activity, itemId));
     }
 }

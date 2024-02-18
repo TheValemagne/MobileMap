@@ -19,25 +19,30 @@ import com.example.mobilemap.pois.listeners.ShowPoiListener;
 
 import java.util.List;
 
-public class PoisListRecyclerViewAdapter extends BaseAdapter<PoisListRecyclerViewAdapter.ViewHolder, PoiDetail> {
-    public PoisListRecyclerViewAdapter(List<PoiDetail> values, ContentResolver contentResolver, AppCompatActivity activity, PoiListFragment fragment) {
+/**
+ * Adapteur pour la liste de sites détaillés
+ *
+ * @author J.Houdé
+ */
+public class PoiDetailsListRecyclerViewAdapter extends BaseAdapter<PoiDetailsListRecyclerViewAdapter.ViewHolder, PoiDetail> {
+    public PoiDetailsListRecyclerViewAdapter(List<PoiDetail> values, ContentResolver contentResolver, AppCompatActivity activity, PoiListFragment fragment) {
         super(values, contentResolver, activity, fragment);
     }
 
     @NonNull
     @Override
-    public PoisListRecyclerViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new PoisListRecyclerViewAdapter.ViewHolder(PoiListItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
+    public PoiDetailsListRecyclerViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new PoiDetailsListRecyclerViewAdapter.ViewHolder(PoiListItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PoisListRecyclerViewAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull PoiDetailsListRecyclerViewAdapter.ViewHolder holder, int position) {
         PoiDetail poiDetail = values.get(position);
 
-        holder.contentView.setText(poiDetail.getSiteName());
+        holder.content.setText(poiDetail.getSiteName());
         holder.categoryName.setText(poiDetail.getCategoryName());
-        holder.editBtn.setOnClickListener(new ShowPoiListener(poiDetail.getId(), activity));
-        holder.deleteBtn.setOnClickListener(new DeleteDatabaseListListener<>(poiDetail.getId(), activity,
+        holder.editButton.setOnClickListener(new ShowPoiListener(poiDetail.getId(), activity));
+        holder.deleteButton.setOnClickListener(new DeleteDatabaseListListener<>(poiDetail.getId(), activity,
                 ((PoisActivity) activity).getDeleteContext(), this));
     }
 
@@ -46,24 +51,27 @@ public class PoisListRecyclerViewAdapter extends BaseAdapter<PoisListRecyclerVie
         return values.size();
     }
 
+    /**
+     * Vue d'un site dans la recyclerView
+     */
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public final TextView contentView;
+        public final TextView content;
         public final TextView categoryName;
-        public final Button editBtn;
-        public final Button deleteBtn;
+        public final Button editButton;
+        public final Button deleteButton;
 
         public ViewHolder(PoiListItemBinding binding) {
             super(binding.getRoot());
-            contentView = binding.content;
+            content = binding.content;
             categoryName = binding.categoryName;
-            editBtn = binding.editBtn;
-            deleteBtn = binding.deleteBtn;
+            editButton = binding.editButton;
+            deleteButton = binding.deleteButton;
         }
 
         @NonNull
         @Override
         public String toString() {
-            return super.toString() + " '" + contentView.getText() + "'";
+            return super.toString() + " '" + content.getText() + "'";
         }
     }
 }

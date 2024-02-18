@@ -39,9 +39,9 @@ public class CategoryListRecyclerViewAdapter extends BaseAdapter<CategoryListRec
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Category category = values.get(position);
 
-        holder.contentView.setText(category.getName());
-        holder.editBtn.setOnClickListener(new ShowCategoryListener(category.getId(), activity));
-        holder.deleteBtn.setOnClickListener(new DeleteDatabaseListListener<>(category.getId(), activity, ((CategoriesActivity) activity).getDeleteContext(), this));
+        holder.content.setText(category.getName());
+        holder.editButton.setOnClickListener(new ShowCategoryListener(category.getId(), activity));
+        holder.deleteButton.setOnClickListener(new DeleteDatabaseListListener<>(category.getId(), activity, ((CategoriesActivity) activity).getDeleteContext(), this));
     }
 
     @Override
@@ -49,22 +49,26 @@ public class CategoryListRecyclerViewAdapter extends BaseAdapter<CategoryListRec
         return values.size();
     }
 
+    /**
+     * Vue d'une catégorie dans la recyclerView
+     */
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public final TextView contentView;
-        public final Button editBtn;
-        public final Button deleteBtn;
+        public final TextView content;
+        public final Button editButton;
+        public final Button deleteButton;
 
         public ViewHolder(CategoryListItemBinding binding) {
             super(binding.getRoot());
-            contentView = binding.content;
-            editBtn = binding.editBtn;
-            deleteBtn = binding.deleteBtn;
+
+            content = binding.content;
+            editButton = binding.editButton;
+            deleteButton = binding.deleteButton;
         }
 
         @NonNull
         @Override
         public String toString() {
-            return super.toString() + " '" + contentView.getText() + "'";
+            return super.toString() + " '" + content.getText() + "'";
         }
     }
 }
