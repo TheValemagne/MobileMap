@@ -8,7 +8,6 @@ import androidx.preference.PreferenceManager;
 import com.example.mobilemap.map.overlays.initiators.CompassOverlayInitiator;
 import com.example.mobilemap.map.overlays.initiators.ItemizedIconOverlayInitiator;
 import com.example.mobilemap.map.overlays.initiators.LocationOverlayInitiator;
-import com.example.mobilemap.map.overlays.initiators.OverlayInitiator;
 import com.example.mobilemap.map.overlays.initiators.RotationOverlayInitiator;
 import com.example.mobilemap.map.overlays.initiators.ScaleBarInitiator;
 import com.example.mobilemap.map.listeners.MarkerGestureListener;
@@ -33,14 +32,13 @@ import org.osmdroid.views.overlay.infowindow.InfoWindow;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Classe de gestion de la carte principale
@@ -140,17 +138,14 @@ public final class MapManager {
      * Initialisation des couches de la carte
      */
     private void initMapOverlays() {
-        List<Overlay> overlays = new ArrayList<>(Collections.singletonList(new AddMarkerOverlay(activity)));
-        overlays.addAll(Stream.of(
-                new LocationOverlayInitiator(mapView, activity, this),
-                new RotationOverlayInitiator(mapView),
-                new ItemizedIconOverlayInitiator(mapView, this, markerGestureListener, activity),
-                new CompassOverlayInitiator(mapView, context),
-                new ScaleBarInitiator(mapView, context))
-                .map(OverlayInitiator::init)
-                .collect(Collectors.toList()));
-
-        overlays.add(new CopyrightOverlay(context));
+        List<Overlay> overlays = new ArrayList<>(Arrays.asList(
+                new AddMarkerOverlay(activity),
+                new LocationOverlayInitiator(mapView, activity, this).init(),
+                new RotationOverlayInitiator(mapView).init(),
+                new ItemizedIconOverlayInitiator(mapView, this, markerGestureListener, activity).init(),
+                new CompassOverlayInitiator(mapView, context).init(),
+                new ScaleBarInitiator(mapView, context).init(),
+                new CopyrightOverlay(context)));
 
         mapView.getOverlays().addAll(overlays);
     }
