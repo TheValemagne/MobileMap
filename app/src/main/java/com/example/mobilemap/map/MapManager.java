@@ -18,7 +18,6 @@ import com.example.mobilemap.database.ContentResolverHelper;
 import com.example.mobilemap.database.tables.Poi;
 
 import org.osmdroid.api.IGeoPoint;
-import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
@@ -26,6 +25,7 @@ import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.CopyrightOverlay;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
+import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.OverlayWithIW;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
@@ -36,6 +36,7 @@ import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -97,26 +98,34 @@ public final class MapManager {
         markerGestureListener = new MarkerGestureListener(mapView, this, itemInfoWindowMap, activity);
     }
 
+    private static final double MIN_ZOOM = 3.0;
+
     /**
      * Initialisation de la carte
      */
     public void initMap() {
         Configuration.getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context));
 
+        initMapDefaultSettings(mapView);
+
+        mapView.setScrollableAreaLimitLatitude(MapView.getTileSystem().getMaxLatitude(),
+                MapView.getTileSystem().getMinLatitude(), 0);
+        mapView.setMinZoomLevel(MIN_ZOOM);
+        mapView.getController().setZoom(SharedPreferencesConstant.DEFAULT_ZOOM);
+
+        initMapOverlays();
+    }
+
+    /**
+     * Initialisatin de la carte avec les paramètres par défaut
+     * @param mapView vue de la carte
+     */
+    public static void initMapDefaultSettings(MapView mapView) {
         mapView.setTileSource(TileSourceFactory.MAPNIK);
         mapView.getZoomController()
                 .setVisibility(CustomZoomButtonsController.Visibility.NEVER);
         mapView.setMultiTouchControls(true);
-        mapView.setScrollableAreaLimitLatitude(MapView.getTileSystem().getMaxLatitude(),
-                MapView.getTileSystem().getMinLatitude(), 0);
-
         mapView.setVerticalMapRepetitionEnabled(false);
-        mapView.setMinZoomLevel(3.0);
-
-        IMapController mapController = mapView.getController();
-        mapController.setZoom(SharedPreferencesConstant.DEFAULT_ZOOM);
-
-        initMapOverlays();
     }
 
     /**
@@ -125,32 +134,44 @@ public final class MapManager {
     private void initMapOverlays() {
         myLocationNewOverlay = new MyLocationOverlay(new GpsMyLocationProvider(context), mapView, activity, this);
         myLocationNewOverlay.enableMyLocation();
-        mapView.getOverlays().add(myLocationNewOverlay);
 
-        CopyrightOverlay mCopyrightOverlay = new CopyrightOverlay(context);
-        mapView.getOverlays().add(mCopyrightOverlay);
-
-        CompassOverlay mapNorthCompassOverlay = new MapNorthCompassOverlay(context, mapView);
-        mapNorthCompassOverlay.enableCompass();
-        mapNorthCompassOverlay.setCompassCenter(40, 55);
-        mapView.getOverlays().add(mapNorthCompassOverlay);
-
-        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        ScaleBarOverlay mScaleBarOverlay = new ScaleBarOverlay(mapView);
-        mScaleBarOverlay.setCentred(true);
-        mScaleBarOverlay.setScaleBarOffset(displayMetrics.widthPixels / 2, 10);
-        mapView.getOverlays().add(mScaleBarOverlay);
-
-        RotationGestureOverlay mRotationGestureOverlay = new RotationGestureOverlay(mapView);
-        mRotationGestureOverlay.setEnabled(true);
-        mapView.getOverlays().add(mRotationGestureOverlay);
-
-        mapView.getOverlays().add(new AddMarkerOverlay(activity));
+        RotationGestureOverlay rotationGestureOverlay = new RotationGestureOverlay(mapView);
+        rotationGestureOverlay.setEnabled(true);
 
         itemizedOverlay = new ItemizedIconOverlay<>(getOverlayItems(),
                 Objects.requireNonNull(ResourcesCompat.getDrawable(activity.getResources(), R.drawable.small_marker, activity.getTheme())),
                 markerGestureListener, context);
-        mapView.getOverlays().add(itemizedOverlay);
+
+        List<Overlay> overlays = new ArrayList<>(Arrays.asList(
+                myLocationNewOverlay,
+                new CopyrightOverlay(context),
+                initCompassOverlay(),
+                initScaleBarOverlay(),
+                rotationGestureOverlay,
+                new AddMarkerOverlay(activity),
+                itemizedOverlay
+        ));
+
+        overlays.forEach(overlay -> mapView.getOverlays().add(overlay));
+    }
+
+    private static final int SCALE_BAR_Y_OFFSET = 10;
+    private ScaleBarOverlay initScaleBarOverlay() {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        ScaleBarOverlay mScaleBarOverlay = new ScaleBarOverlay(mapView);
+        mScaleBarOverlay.setCentred(true);
+        mScaleBarOverlay.setScaleBarOffset(displayMetrics.widthPixels / 2, SCALE_BAR_Y_OFFSET);
+        return mScaleBarOverlay;
+    }
+
+    private static final int COMPASS_X_OFFSET = 40;
+    private static final int COMPASS_Y_OFFSET = 55;
+
+    private CompassOverlay initCompassOverlay() {
+        CompassOverlay mapNorthCompassOverlay = new MapNorthCompassOverlay(context, mapView);
+        mapNorthCompassOverlay.enableCompass();
+        mapNorthCompassOverlay.setCompassCenter(COMPASS_X_OFFSET, COMPASS_Y_OFFSET);
+        return mapNorthCompassOverlay;
     }
 
     /**
@@ -201,7 +222,6 @@ public final class MapManager {
      * @param infoWindow infoWindows à actualiser
      */
     private void updateInfoWindow(CustomInfoWindow infoWindow) {
-        infoWindow.close();
         Optional<OverlayItem> foundItem = findItem(infoWindow.getPoint());
         foundItem.ifPresent(overlayItem -> createOverlayWithIW(overlayItem, infoWindow));
     }

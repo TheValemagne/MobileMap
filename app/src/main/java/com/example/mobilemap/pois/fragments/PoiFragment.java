@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.example.mobilemap.R;
 import com.example.mobilemap.database.interfaces.ItemView;
 import com.example.mobilemap.map.CustomInfoWindow;
+import com.example.mobilemap.map.MapManager;
 import com.example.mobilemap.map.SharedPreferencesConstant;
 import com.example.mobilemap.pois.listeners.GeocodeAddressListener;
 import com.example.mobilemap.validators.DoubleRangeValidator;
@@ -36,14 +37,10 @@ import com.example.mobilemap.listeners.CancelAction;
 import com.example.mobilemap.listeners.DeleteDatabaseItemListener;
 import com.example.mobilemap.listeners.SaveDatabaseItemListener;
 
-import org.osmdroid.api.IMapController;
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
-import org.osmdroid.views.overlay.infowindow.InfoWindow;
 
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -68,15 +65,16 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
     public static final String ARG_LONGITUDE = "longitude";
     public static final String ARG_LAUNCHED_FOR_RESULT = "launchedForResult";
 
-    private static final double MIN_ZOOM = 5.0;
+    private static final double MIN_ZOOM = 9.0;
     private static final double MAX_ZOOM = 20.0;
+    private static final double DEFAULT_ZOOM = 18.5;
     private long itemId = DatabaseContract.NOT_EXISTING_ID;
     private boolean launchedForResult = false;
     private Poi poi = null;
     private FragmentPoiBinding binding;
     private List<Category> categories;
     private PoisActivity activity;
-    private InfoWindow infoWindow;
+    private Marker marker;
     private Geocoder geocoder;
 
     public PoiFragment() {
@@ -247,25 +245,24 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
      * @param miniMapView mini carte à initialiser
      */
     private void initMiniMap(MapView miniMapView) {
-        miniMapView.setTileSource(TileSourceFactory.MAPNIK);
-        miniMapView.getZoomController()
-                .setVisibility(CustomZoomButtonsController.Visibility.NEVER);
-        miniMapView.setMultiTouchControls(true);
+        MapManager.initMapDefaultSettings(miniMapView);
+
         miniMapView.setHorizontalMapRepetitionEnabled(false);
-        miniMapView.setVerticalMapRepetitionEnabled(false);
+
         miniMapView.setMinZoomLevel(MIN_ZOOM);
         miniMapView.setMaxZoomLevel(MAX_ZOOM);
+        miniMapView.getController().setZoom(DEFAULT_ZOOM);
 
         GeoPoint initialCenter = new GeoPoint(Double.parseDouble(SharedPreferencesConstant.DEFAULT_LATITUDE),
                 Double.parseDouble(SharedPreferencesConstant.DEFAULT_LONGITUDE));
         miniMapView.setScrollableAreaLimitDouble(new BoundingBox(initialCenter.getLatitude(), initialCenter.getLongitude(),
                 initialCenter.getLatitude(), initialCenter.getLongitude()));
 
-        double zoomLevel = 18.5;
-        IMapController mapController = miniMapView.getController();
-        mapController.setZoom(zoomLevel);
-
-        infoWindow = new CustomInfoWindow(R.layout.poi_info_window, miniMapView);
+        // intialisation du marqueur d'illustration
+        marker = new Marker(miniMapView);
+        marker.setIcon(Objects.requireNonNull(ResourcesCompat.getDrawable(activity.getResources(), R.drawable.small_marker, activity.getTheme())));
+        marker.setInfoWindow(new CustomInfoWindow(R.layout.poi_info_window, miniMapView));
+        miniMapView.getOverlays().add(marker);
     }
 
     /**
@@ -282,7 +279,6 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
         }
 
         MapView miniMapView = binding.miniMapView;
-        miniMapView.getOverlays().clear();
 
         Poi modifiedPoi = getValues();
         GeoPoint point = new GeoPoint(modifiedPoi.getLatitude(), modifiedPoi.getLongitude());
@@ -291,15 +287,10 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
                 modifiedPoi.getLatitude(), modifiedPoi.getLongitude()));
         miniMapView.setExpectedCenter(point);
 
-        // intialisation du marqueur d'illustration
-        Marker marker = new Marker(miniMapView);
-        marker.setIcon(Objects.requireNonNull(ResourcesCompat.getDrawable(activity.getResources(), R.drawable.small_marker, activity.getTheme())));
+        // actualisation du marqueur d'illustration
         marker.setTitle(modifiedPoi.getName());
         marker.setSnippet(modifiedPoi.getResume());
         marker.setPosition(point);
-        marker.closeInfoWindow();
-        marker.setInfoWindow(infoWindow);
-        miniMapView.getOverlays().add(marker);
         marker.showInfoWindow();
 
         miniMapView.invalidate();
