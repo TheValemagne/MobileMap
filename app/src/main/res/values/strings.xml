@@ -2,9 +2,7 @@
     <string name="app_name">Sortir à Metz</string>
     <string name="latitude_label">"Latitude: "</string>
     <string name="longitude_label">Longitude:</string>
-    <string name="item_name_label">Name:</string>
-    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
-    <string name="category_name">Name</string>
+    <string name="category_name">Name: </string>
     <string name="empty_list">Empty list</string>
     <string name="category_list">Your categories</string>
     <string name="save">Save</string>

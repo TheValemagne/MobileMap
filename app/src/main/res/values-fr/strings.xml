@@ -4,8 +4,7 @@
     <string name="confirm_delete_category_msg">Etes-vous sûr de vouloir supprimer cette catégorie ? Tous les sites associés seront également supprimé.</string>
     <string name="latitude_label">"Latitude : "</string>
     <string name="longitude_label">"Longitude : "</string>
-    <string name="item_name_label">"Nom : "</string>
-    <string name="category_name">Nom</string>
+    <string name="category_name">"Nom : "</string>
     <string name="empty_list">Liste vide</string>
     <string name="category_list">Vos catégories</string>
     <string name="save">Enregistrer</string>

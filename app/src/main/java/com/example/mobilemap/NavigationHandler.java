@@ -22,6 +22,7 @@ public class NavigationHandler {
     private NavigationHandler nextNavigationHandler;
 
     /**
+     * Gestionnaire de navigation
      *
      * @param navigationButtonId identifiant du bouton de navigation  à gérer
      * @param destinationIntent intent pour le changement d'activité
