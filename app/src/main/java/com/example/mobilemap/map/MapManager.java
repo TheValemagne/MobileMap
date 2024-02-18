@@ -2,17 +2,18 @@ package com.example.mobilemap.map;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.DisplayMetrics;
 
-import androidx.core.content.res.ResourcesCompat;
 import androidx.preference.PreferenceManager;
 
-import com.example.mobilemap.R;
+import com.example.mobilemap.map.overlays.initiators.CompassOverlayInitiator;
+import com.example.mobilemap.map.overlays.initiators.ItemizedIconOverlayInitiator;
+import com.example.mobilemap.map.overlays.initiators.LocationOverlayInitiator;
+import com.example.mobilemap.map.overlays.initiators.OverlayInitiator;
+import com.example.mobilemap.map.overlays.initiators.RotationOverlayInitiator;
+import com.example.mobilemap.map.overlays.initiators.ScaleBarInitiator;
 import com.example.mobilemap.map.listeners.MarkerGestureListener;
 import com.example.mobilemap.map.overlays.AddMarkerOverlay;
 import com.example.mobilemap.map.overlays.CustomOverlayWithIW;
-import com.example.mobilemap.map.overlays.MapNorthCompassOverlay;
-import com.example.mobilemap.map.overlays.MyLocationOverlay;
 import com.example.mobilemap.pois.PoisActivity;
 import com.example.mobilemap.database.ContentResolverHelper;
 import com.example.mobilemap.database.tables.Poi;
@@ -28,21 +29,18 @@ import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.OverlayWithIW;
-import org.osmdroid.views.overlay.ScaleBarOverlay;
-import org.osmdroid.views.overlay.compass.CompassOverlay;
-import org.osmdroid.views.overlay.gestures.RotationGestureOverlay;
 import org.osmdroid.views.overlay.infowindow.InfoWindow;
-import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Classe de gestion de la carte principale
@@ -70,6 +68,10 @@ public final class MapManager {
         return itemizedOverlay;
     }
 
+    public void setItemizedOverlay(ItemizedIconOverlay<OverlayItem> itemizedOverlay) {
+        this.itemizedOverlay = itemizedOverlay;
+    }
+
     private ItemizedIconOverlay<OverlayItem> itemizedOverlay;
 
     public MarkerGestureListener getMarkerGestureListener() {
@@ -79,6 +81,11 @@ public final class MapManager {
     private final Map<String, CustomInfoWindow> itemInfoWindowMap;
 
     private final MarkerGestureListener markerGestureListener;
+
+    public void setMyLocationNewOverlay(MyLocationNewOverlay myLocationNewOverlay) {
+        this.myLocationNewOverlay = myLocationNewOverlay;
+    }
+
     private MyLocationNewOverlay myLocationNewOverlay;
 
     /**
@@ -118,6 +125,7 @@ public final class MapManager {
 
     /**
      * Initialisatin de la carte avec les paramètres par défaut
+     *
      * @param mapView vue de la carte
      */
     public static void initMapDefaultSettings(MapView mapView) {
@@ -132,46 +140,19 @@ public final class MapManager {
      * Initialisation des couches de la carte
      */
     private void initMapOverlays() {
-        myLocationNewOverlay = new MyLocationOverlay(new GpsMyLocationProvider(context), mapView, activity, this);
-        myLocationNewOverlay.enableMyLocation();
+        List<Overlay> overlays = new ArrayList<>(Collections.singletonList(new AddMarkerOverlay(activity)));
+        overlays.addAll(Stream.of(
+                new LocationOverlayInitiator(mapView, activity, this),
+                new RotationOverlayInitiator(mapView),
+                new ItemizedIconOverlayInitiator(mapView, this, markerGestureListener, activity),
+                new CompassOverlayInitiator(mapView, context),
+                new ScaleBarInitiator(mapView, context))
+                .map(OverlayInitiator::init)
+                .collect(Collectors.toList()));
 
-        RotationGestureOverlay rotationGestureOverlay = new RotationGestureOverlay(mapView);
-        rotationGestureOverlay.setEnabled(true);
+        overlays.add(new CopyrightOverlay(context));
 
-        itemizedOverlay = new ItemizedIconOverlay<>(getOverlayItems(),
-                Objects.requireNonNull(ResourcesCompat.getDrawable(activity.getResources(), R.drawable.small_marker, activity.getTheme())),
-                markerGestureListener, context);
-
-        List<Overlay> overlays = new ArrayList<>(Arrays.asList(
-                myLocationNewOverlay,
-                new CopyrightOverlay(context),
-                initCompassOverlay(),
-                initScaleBarOverlay(),
-                rotationGestureOverlay,
-                new AddMarkerOverlay(activity),
-                itemizedOverlay
-        ));
-
-        overlays.forEach(overlay -> mapView.getOverlays().add(overlay));
-    }
-
-    private static final int SCALE_BAR_Y_OFFSET = 10;
-    private ScaleBarOverlay initScaleBarOverlay() {
-        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        ScaleBarOverlay mScaleBarOverlay = new ScaleBarOverlay(mapView);
-        mScaleBarOverlay.setCentred(true);
-        mScaleBarOverlay.setScaleBarOffset(displayMetrics.widthPixels / 2, SCALE_BAR_Y_OFFSET);
-        return mScaleBarOverlay;
-    }
-
-    private static final int COMPASS_X_OFFSET = 40;
-    private static final int COMPASS_Y_OFFSET = 55;
-
-    private CompassOverlay initCompassOverlay() {
-        CompassOverlay mapNorthCompassOverlay = new MapNorthCompassOverlay(context, mapView);
-        mapNorthCompassOverlay.enableCompass();
-        mapNorthCompassOverlay.setCompassCenter(COMPASS_X_OFFSET, COMPASS_Y_OFFSET);
-        return mapNorthCompassOverlay;
+        mapView.getOverlays().addAll(overlays);
     }
 
     /**

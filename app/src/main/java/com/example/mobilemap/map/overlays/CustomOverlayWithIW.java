@@ -5,6 +5,8 @@ import org.osmdroid.views.overlay.OverlayWithIW;
 
 /**
  * Overlay pour afficher le détail d'un marqueur de la carte
+ *
+ * @author J.Houdé
  */
 public class CustomOverlayWithIW extends OverlayWithIW {
     public CustomOverlayWithIW(OverlayItem item) {

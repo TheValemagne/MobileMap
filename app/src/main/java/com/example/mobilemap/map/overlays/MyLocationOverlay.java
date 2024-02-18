@@ -15,6 +15,8 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 /**
  * Overlay pour afficher la position actuelle
+ *
+ * @author J.Houdé
  */
 public class MyLocationOverlay extends MyLocationNewOverlay {
     private final MainActivity activity;
