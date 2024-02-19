@@ -15,7 +15,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -51,6 +50,12 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton removeCircleAroundMe;
     private static final int currentPageId = R.id.navigation_map;
 
+    public ActivityResultLauncher<Intent> getPoiActivityLauncher() {
+        return poiActivityLauncher;
+    }
+
+    private ActivityResultLauncher<Intent> poiActivityLauncher;
+
     @SuppressLint("Range")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +76,8 @@ public class MainActivity extends AppCompatActivity {
 
         mapManager = new MapManager(binding.mapView, this);
         mapManager.initMap();
+
+        poiActivityLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new MapActivityResultCallback(mapManager));
 
         initButtons(binding);
 
@@ -198,15 +205,4 @@ public class MainActivity extends AppCompatActivity {
                     REQUEST_PERMISSIONS_REQUEST_CODE);
         }
     }
-
-    public ActivityResultLauncher<Intent> getPoiActivityLauncher() {
-        return poiActivityLauncher;
-    }
-
-    private final ActivityResultLauncher<Intent> poiActivityLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == Activity.RESULT_OK) {
-                    mapManager.updateMap();
-                }
-            });
 }

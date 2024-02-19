@@ -198,6 +198,7 @@ public final class MapManager {
      * @param infoWindow infoWindows à actualiser
      */
     private void updateInfoWindow(CustomInfoWindow infoWindow) {
+        infoWindow.close(); // ferme les infoWindows pour les actualiser ou supprimer
         Optional<OverlayItem> foundItem = findItem(infoWindow.getPoint());
         foundItem.ifPresent(overlayItem -> createOverlayWithIW(overlayItem, infoWindow));
     }
@@ -326,7 +327,7 @@ public final class MapManager {
      * Récupération du centre du cercle de filtrage
      */
     public void centerToCircleCenter() {
-        mapView.setExpectedCenter(circleManager.getCircleCenter());
+        mapView.getController().animateTo(circleManager.getCircleCenter());
     }
 
     /**

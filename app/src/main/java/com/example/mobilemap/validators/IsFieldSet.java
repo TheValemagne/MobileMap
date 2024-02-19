@@ -23,6 +23,6 @@ public class IsFieldSet extends FieldValidator {
 
     @Override
     public boolean isValid() {
-        return !this.field.getText().toString().isEmpty();
+        return !this.field.getText().toString().trim().isEmpty();
     }
 }

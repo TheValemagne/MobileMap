@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.example.mobilemap.R;
 import com.example.mobilemap.database.interfaces.ItemView;
+import com.example.mobilemap.pois.listeners.SavePoiListener;
 import com.example.mobilemap.map.CustomInfoWindow;
 import com.example.mobilemap.map.MapManager;
 import com.example.mobilemap.map.SharedPreferencesConstant;
@@ -35,7 +36,6 @@ import com.example.mobilemap.database.tables.Poi;
 import com.example.mobilemap.databinding.FragmentPoiBinding;
 import com.example.mobilemap.listeners.CancelAction;
 import com.example.mobilemap.listeners.DeleteDatabaseItemListener;
-import com.example.mobilemap.listeners.SaveDatabaseItemListener;
 
 import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
@@ -314,11 +314,11 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
     }
 
     private void bindActionButtons(FragmentPoiBinding binding) {
-        binding.poiSaveBtn.setOnClickListener(new SaveDatabaseItemListener<>(activity, this, DatabaseContract.Poi.CONTENT_URI, launchedForResult));
+        binding.poiSaveBtn.setOnClickListener(new SavePoiListener(activity, this, DatabaseContract.Poi.CONTENT_URI, launchedForResult));
         binding.poiCancelBtn.setOnClickListener(new CancelAction(activity, launchedForResult));
 
         if (poi != null) {
-            binding.poiDeleteBtn.setOnClickListener(new DeleteDatabaseItemListener(poi.getId(), activity, activity.getDeleteContext()));
+            binding.poiDeleteBtn.setOnClickListener(new DeleteDatabaseItemListener(poi.getId(), activity, activity.getDeleteContext(), launchedForResult));
         }
     }
 

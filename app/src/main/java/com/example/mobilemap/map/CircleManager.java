@@ -213,10 +213,9 @@ public class CircleManager {
      * @return vrai s'il y a un cercle sauvegardé dans les préférences
      */
     public boolean hasSavedCircle() {
-        String circleRadius = mapManager.getSharedPreferences()
-                .getString(SharedPreferencesConstant.CIRCLE_RADIUS_STRING, SharedPreferencesConstant.EMPTY_STRING);
-
-        return !circleRadius.isEmpty();
+        return !mapManager.getSharedPreferences()
+                .getString(SharedPreferencesConstant.CIRCLE_RADIUS_STRING, SharedPreferencesConstant.EMPTY_STRING)
+                .trim().isEmpty();
     }
 
     /**
@@ -282,15 +281,10 @@ public class CircleManager {
             return;
         }
 
-        SharedPreferences sharedPreferences = mapManager.getSharedPreferences();
-
         // récupérer le centre du cercle
         GeoPoint center = getCircleCenter();
-
-        String circleRadiusString = sharedPreferences.getString(SharedPreferencesConstant.CIRCLE_RADIUS_STRING, SharedPreferencesConstant.EMPTY_STRING);
-        double circleRadius = Double.parseDouble(circleRadiusString);
-
-        long categoryFilter = sharedPreferences.getLong(SharedPreferencesConstant.CIRCLE_CATEGORY_FILTER, SharedPreferencesConstant.NOT_FOUND_ID);
+        double circleRadius = getCircleRadius();
+        long categoryFilter = getCategoryFilter();
 
         if (mapManager.isCircleAroundMe()) { // restaurer le cercle autour de l'utilisateur
             lastUserLocation.setPosition(center); // affichage de la dernière position enregistrée en lien avec le cercle tracé
@@ -308,6 +302,30 @@ public class CircleManager {
             drawCircle(overlayItem, circleRadius, categoryFilter); // restaurer le cercle autour d'un site
         });
 
+    }
+
+    /**
+     * Retourne la catégorie de filtrage pour le cercle
+     *
+     * @return retourne la catégorie de filtrage s'il existe un cercle sur la carte, sinon retourne -1
+     */
+    public long getCategoryFilter() {
+        return mapManager.getSharedPreferences().getLong(SharedPreferencesConstant.CIRCLE_CATEGORY_FILTER, SharedPreferencesConstant.NOT_FOUND_ID);
+    }
+
+    /**
+     * Retourne le rayon du cercle en mètre
+     *
+     * @return retourne le rayon du cercle si définie, sinon retourne 0
+     */
+    public double getCircleRadius() {
+        String value = mapManager.getSharedPreferences().getString(SharedPreferencesConstant.CIRCLE_RADIUS_STRING, SharedPreferencesConstant.EMPTY_STRING);
+
+        if (value.trim().isEmpty()) {
+            return 0.0;
+        }
+
+        return Double.parseDouble(mapManager.getSharedPreferences().getString(SharedPreferencesConstant.CIRCLE_RADIUS_STRING, SharedPreferencesConstant.EMPTY_STRING));
     }
 
     /**

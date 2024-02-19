@@ -1,5 +1,6 @@
 package com.example.mobilemap.listeners;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.res.Resources;
@@ -28,6 +29,24 @@ public class DeleteDatabaseItemListener implements View.OnClickListener {
     private final AppCompatActivity activity;
     private final ContentResolver contentResolver;
     private final DeleteItemContext deleteDataContext;
+    private final boolean launchedForResult;
+
+    /**
+     * Ecouteur pour supprimer un élément de la base de données
+     *
+     * @param itemId                identifiant de l'élément à supprimer
+     * @param activity              activité mère
+     * @param deleteCategoryContext contexte pour la supression de l'élément
+     * @param launchedForResult     si l'activité mère a été lancé par une autre activité pour une tâche
+     */
+    public DeleteDatabaseItemListener(long itemId, AppCompatActivity activity, DeleteItemContext deleteCategoryContext, boolean launchedForResult) {
+        this.itemId = itemId;
+        this.activity = activity;
+        this.contentResolver = activity.getContentResolver();
+
+        this.deleteDataContext = deleteCategoryContext;
+        this.launchedForResult = launchedForResult;
+    }
 
     /**
      * Ecouteur pour supprimer un élément de la base de données
@@ -37,11 +56,7 @@ public class DeleteDatabaseItemListener implements View.OnClickListener {
      * @param deleteCategoryContext contexte pour la supression de l'élément
      */
     public DeleteDatabaseItemListener(long itemId, AppCompatActivity activity, DeleteItemContext deleteCategoryContext) {
-        this.itemId = itemId;
-        this.activity = activity;
-        this.contentResolver = activity.getContentResolver();
-
-        this.deleteDataContext = deleteCategoryContext;
+        this(itemId, activity, deleteCategoryContext, false);
     }
 
     @Override
@@ -76,6 +91,12 @@ public class DeleteDatabaseItemListener implements View.OnClickListener {
      * Action après suppression de l'élément dans la base de données
      */
     protected void afterDeleteItem() {
+        if (launchedForResult) { // activité lancée pour un résultat
+            activity.setResult(Activity.RESULT_OK);
+            activity.finish();
+            return;
+        }
+
         activity.getSupportFragmentManager().popBackStackImmediate();
     }
 }
