@@ -12,6 +12,8 @@ import com.example.mobilemap.listeners.SaveDatabaseItemListener;
 
 /**
  * Ecoutouer pour enregistrer un site dans la base de données
+ *
+ * @author J.Houdé
  */
 public class SavePoiListener extends SaveDatabaseItemListener<Poi> {
     public static final String CREATED_POI_LATITUDE = "createdPoiLatitude";

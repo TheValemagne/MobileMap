@@ -9,7 +9,6 @@ import com.example.mobilemap.map.listeners.MarkerGestureListener;
 
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
-import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.OverlayItem;
 
 import java.util.Objects;
@@ -41,12 +40,10 @@ public class ItemizedIconOverlayInitiator extends OverlayInitiator{
     }
 
     @Override
-    public Overlay init() {
-        ItemizedIconOverlay<OverlayItem> itemizedIconOverlay = new ItemizedIconOverlay<>(mapManager.getOverlayItems(),
+    public ItemizedIconOverlay<OverlayItem> init() {
+
+        return new ItemizedIconOverlay<>(mapManager.getOverlayItems(),
                 Objects.requireNonNull(ResourcesCompat.getDrawable(activity.getResources(), R.drawable.small_marker, activity.getTheme())),
                 markerGestureListener, activity.getApplicationContext());
-        mapManager.setItemizedOverlay(itemizedIconOverlay);
-
-        return itemizedIconOverlay;
     }
 }

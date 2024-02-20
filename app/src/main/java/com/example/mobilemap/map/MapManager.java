@@ -66,10 +66,6 @@ public final class MapManager {
         return itemizedOverlay;
     }
 
-    public void setItemizedOverlay(ItemizedIconOverlay<OverlayItem> itemizedOverlay) {
-        this.itemizedOverlay = itemizedOverlay;
-    }
-
     private ItemizedIconOverlay<OverlayItem> itemizedOverlay;
 
     public MarkerGestureListener getMarkerGestureListener() {
@@ -79,10 +75,6 @@ public final class MapManager {
     private final Map<String, CustomInfoWindow> itemInfoWindowMap;
 
     private final MarkerGestureListener markerGestureListener;
-
-    public void setMyLocationNewOverlay(MyLocationNewOverlay myLocationNewOverlay) {
-        this.myLocationNewOverlay = myLocationNewOverlay;
-    }
 
     private MyLocationNewOverlay myLocationNewOverlay;
 
@@ -138,11 +130,14 @@ public final class MapManager {
      * Initialisation des couches de la carte
      */
     private void initMapOverlays() {
+        myLocationNewOverlay = new LocationOverlayInitiator(mapView, activity, this).init();
+        itemizedOverlay = new ItemizedIconOverlayInitiator(mapView, this, markerGestureListener, activity).init();
+
         List<Overlay> overlays = new ArrayList<>(Arrays.asList(
                 new AddMarkerOverlay(activity),
-                new LocationOverlayInitiator(mapView, activity, this).init(),
+                myLocationNewOverlay,
                 new RotationOverlayInitiator(mapView).init(),
-                new ItemizedIconOverlayInitiator(mapView, this, markerGestureListener, activity).init(),
+                itemizedOverlay,
                 new CompassOverlayInitiator(mapView, context).init(),
                 new ScaleBarInitiator(mapView, context).init(),
                 new CopyrightOverlay(context)));
@@ -233,16 +228,6 @@ public final class MapManager {
     }
 
     /**
-     * Mappage d'un Poi en OverlayItem
-     *
-     * @param poi site à convertir
-     * @return OverlayItem correspondant au site
-     */
-    private OverlayItem poiToOverlayItemMapper(Poi poi) {
-        return new OverlayItem(String.valueOf(poi.getId()), poi.getName(), poi.getResume(), new GeoPoint(poi.getLatitude(), poi.getLongitude()));
-    }
-
-    /**
      * Récupération de tous les marqueurs existants
      *
      * @return les marqueurs à afficher sur la carte
@@ -253,6 +238,16 @@ public final class MapManager {
         return pois.stream()
                 .map(this::poiToOverlayItemMapper)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Mappage d'un Poi en OverlayItem
+     *
+     * @param poi site à convertir
+     * @return OverlayItem correspondant au site
+     */
+    private OverlayItem poiToOverlayItemMapper(Poi poi) {
+        return new OverlayItem(String.valueOf(poi.getId()), poi.getName(), poi.getResume(), new GeoPoint(poi.getLatitude(), poi.getLongitude()));
     }
 
     /**
@@ -324,7 +319,7 @@ public final class MapManager {
     }
 
     /**
-     * Récupération du centre du cercle de filtrage
+     * Centrage de la carte sur le centre du cercle de filtrage
      */
     public void centerToCircleCenter() {
         mapView.getController().animateTo(circleManager.getCircleCenter());
@@ -346,6 +341,7 @@ public final class MapManager {
         }
 
         GeoPoint point = myLocationNewOverlay.getMyLocation();
+        // lancement de l'activité de gestion des sites pour ajouter un nouveau site
         activity.getPoiActivityLauncher()
                 .launch(PoisActivity.createIntent(activity, point.getLatitude(), point.getLongitude()));
     }
@@ -375,7 +371,7 @@ public final class MapManager {
 
         circleManager.drawCircle(item, radiusInMeters, categoryFilter);
         markerGestureListener.setLastCircleCenterItemUid(item.getUid()); // enregistrement du centre du cercle pour permettre la supression avec la prochaine action "long tap"
-        mapView.invalidate(); // demande le rafraichissement de la carte si le cercle a été ajouté
+        mapView.invalidate(); // demande le rafraichissement de la carte
     }
 
     /**

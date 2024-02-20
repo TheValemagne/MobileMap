@@ -12,6 +12,11 @@ import com.example.mobilemap.pois.listeners.SavePoiListener;
 
 import org.osmdroid.util.GeoPoint;
 
+/**
+ * Callback pour traiter le résultat de l'activité de gestion des sites
+ *
+ * @author J.Houdé
+ */
 public class MapActivityResultCallback implements ActivityResultCallback<ActivityResult> {
     private final MapManager mapManager;
 

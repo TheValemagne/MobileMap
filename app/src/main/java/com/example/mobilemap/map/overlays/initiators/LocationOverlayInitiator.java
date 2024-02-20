@@ -34,7 +34,6 @@ public class LocationOverlayInitiator extends OverlayInitiator{
     public MyLocationNewOverlay init() {
         MyLocationNewOverlay myLocationNewOverlay = new MyLocationOverlay(new GpsMyLocationProvider(activity.getApplicationContext()), mapView, activity, mapManager);
         myLocationNewOverlay.enableMyLocation();
-        mapManager.setMyLocationNewOverlay(myLocationNewOverlay);
 
         return myLocationNewOverlay;
     }
