@@ -49,4 +49,5 @@
     <string name="poi_resume">Resume of the POI</string>
     <string name="show_pois_detail">Show POIs detail</string>
     <string name="all_fields_are_mandatory">All fields are mandatory</string>
+    <string name="search_hint">Search a location</string>
 </resources>

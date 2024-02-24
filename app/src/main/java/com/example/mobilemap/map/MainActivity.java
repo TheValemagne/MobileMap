@@ -20,10 +20,12 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.SearchView;
 
 import com.example.mobilemap.R;
 import com.example.mobilemap.databinding.ActivityMainBinding;
 import com.example.mobilemap.listeners.NavigationBarItemSelectedListener;
+import com.example.mobilemap.map.listeners.SearchViewListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -48,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton showCircleAroundMe;
 
     private FloatingActionButton removeCircleAroundMe;
+    private SearchView searchView;
     private static final int currentPageId = R.id.navigation_map;
 
     public ActivityResultLauncher<Intent> getPoiActivityLauncher() {
@@ -74,16 +77,19 @@ public class MainActivity extends AppCompatActivity {
             return WindowInsetsCompat.CONSUMED;
         });
 
+        requestPermissionsIfNecessary(Collections.singletonList(
+                Manifest.permission.ACCESS_FINE_LOCATION
+        ));
+
         mapManager = new MapManager(binding.mapView, this);
         mapManager.initMap();
+
+        searchView = binding.searchView;
+        searchView.setOnQueryTextListener(new SearchViewListener(this, mapManager, binding.searchView));
 
         poiActivityLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new MapActivityResultCallback(mapManager));
 
         initButtons(binding);
-
-        requestPermissionsIfNecessary(Collections.singletonList(
-                Manifest.permission.ACCESS_FINE_LOCATION
-        ));
     }
 
     /**
@@ -168,6 +174,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         mapManager.onResume();
+
+        if (searchView != null) {
+            searchView.setQuery("", false);
+            searchView.clearFocus();
+        }
     }
 
     @Override

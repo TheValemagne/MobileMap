@@ -76,8 +76,10 @@ public class AddCircleAroundPoiDialogBuilder extends AlertDialog.Builder {
     private void initSpinner(Spinner spinner, Activity activity) {
         List<Category> categories = ContentResolverHelper.getCategories(activity.getContentResolver());
 
-        List<String> categoryNames = categories.stream().map(Category::getName).collect(Collectors.toList());
-        spinner.setAdapter(new ArrayAdapter<>(this.getContext(), android.R.layout.simple_spinner_dropdown_item, categoryNames));
+        activity.runOnUiThread(() -> {
+            List<String> categoryNames = categories.stream().map(Category::getName).collect(Collectors.toList());
+            spinner.setAdapter(new ArrayAdapter<>(AddCircleAroundPoiDialogBuilder.this.getContext(), android.R.layout.simple_spinner_dropdown_item, categoryNames));
+        });
     }
 
 }

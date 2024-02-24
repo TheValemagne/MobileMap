@@ -50,4 +50,5 @@
     <string name="poi_resume">Résumé du site</string>
     <string name="show_pois_detail">Afficher le détail du site</string>
     <string name="all_fields_are_mandatory">Tous les champs sont obligatoires</string>
+    <string name="search_hint">Rechercher un lieu</string>
 </resources>

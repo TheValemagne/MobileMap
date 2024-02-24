@@ -28,6 +28,11 @@
         <activity
             android:name=".categories.CategoriesActivity"
             android:exported="false" />
+
+        <meta-data
+            android:name="android.app.default_searchable"
+            android:value=".SearchableActivity" />
+
         <activity
             android:name=".map.MainActivity"
             android:exported="true">
