@@ -31,10 +31,10 @@ public class ContentResolverHelper {
     }
 
     /**
-     * Retourne la liste des sites
+     * Retourne la liste des sites détaillés
      *
      * @param contentResolver gestionnaire de la base de données
-     * @return liste des sites
+     * @return liste des sites détaillés
      */
     public static List<PoiDetail> getPoisDetail(ContentResolver contentResolver) {
         Cursor cursor = contentResolver
@@ -46,10 +46,10 @@ public class ContentResolverHelper {
     }
 
     /**
-     * Retourne la liste des sites détaillés
+     * Retourne la liste des sites
      *
      * @param contentResolver gestionnaire de la base de données
-     * @return liste des sites détaillés
+     * @return liste des sites
      */
     public static List<Poi> getPois(ContentResolver contentResolver) {
         Cursor cursor = contentResolver

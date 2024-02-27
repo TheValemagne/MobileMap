@@ -14,6 +14,7 @@ public final class DatabaseContract {
     public static final String DATABASE_NAME = "metzMap";
 
     private DatabaseContract() {
+        // vide
     }
 
     public static final String AUTHORITY = String.format("%s.provider", DATABASE_NAME);
@@ -27,6 +28,9 @@ public final class DatabaseContract {
 
     public static final Uri CONTENT_URI = builder.build();
 
+    /**
+     * Classe de contrat pour la table poi
+     */
     public static class Poi implements BaseColumns {
         private static final Uri.Builder builder;
         public static final String TABLE_NAME = "poi";
@@ -65,6 +69,9 @@ public final class DatabaseContract {
                 COLUMN_LONGITUDE, COLUMN_POSTAL_ADDRESS, COLUMN_CATEGORY_ID, COLUMN_RESUME};
     }
 
+    /**
+     * Classe de contrat pour la table category
+     */
     public static class Category implements BaseColumns {
         private static final Uri.Builder builder;
         public static final String TABLE_NAME = "category";
@@ -82,6 +89,9 @@ public final class DatabaseContract {
         public static final String[] COLUMNS = new String[]{_ID, COLUMN_NAME};
     }
 
+    /**
+     * Classe de contrat pour la vue poi_detail
+     */
     public static class PoiDetail implements BaseColumns {
         private static final Uri.Builder builder;
         public static final String TABLE_NAME = "poi_detail";

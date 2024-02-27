@@ -107,11 +107,12 @@ public class CategoryFragment extends Fragment implements ItemView<Category> {
     }
 
     /**
-     * Initialisation des écouteurs des boutons d'actions : annuler, supprimer, enregistrer
+     * Initialisation des écouteurs des boutons d'actions : annuler, supprimer et enregistrer
      */
     private void bindActionButtons() {
         binding.categorySaveBtn.setOnClickListener(new SaveDatabaseItemListener<>(activity, this, DatabaseContract.Category.CONTENT_URI));
         binding.categoryCancelBtn.setOnClickListener(new CancelAction(activity, false));
+
         if (category != null) {
             binding.categoryDeleteBtn.setOnClickListener(new DeleteDatabaseItemListener(category.getId(), activity, activity.getDeleteContext()));
         }
@@ -135,13 +136,9 @@ public class CategoryFragment extends Fragment implements ItemView<Category> {
 
         return Optional.of(Category.fromCursor(cursor));
     }
-
-    /**
-     * Vérifie que toutes les données entrées sont valides.
-     *
-     * @return vrai si les données sont valides
-     */
-    public boolean check() {
+    
+    @Override
+    public boolean isValid() {
         Resources resources = requireActivity().getResources();
 
         List<FieldValidator> fieldValidators = new ArrayList<>(Arrays.asList(

@@ -16,6 +16,11 @@ import org.osmdroid.views.overlay.Overlay;
 public class AddMarkerOverlay extends Overlay {
     private final MainActivity activity;
 
+    /**
+     * Overlay pour ajouter de nouveau marquer sur la carte
+     *
+     * @param activity activité principale
+     */
     public AddMarkerOverlay(MainActivity activity) {
         this.activity = activity;
     }

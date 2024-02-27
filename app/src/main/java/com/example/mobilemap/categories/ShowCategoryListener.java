@@ -11,6 +11,7 @@ import com.example.mobilemap.database.DatabaseContract;
 
 /**
  * Création de l'écouteur pour afficher une catéogorie
+ *
  * @author J.Houdé
  */
 public class ShowCategoryListener implements View.OnClickListener {

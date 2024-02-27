@@ -8,9 +8,15 @@ import org.osmdroid.views.overlay.OverlayWithIW;
  *
  * @author J.Houdé
  */
-public class CustomOverlayWithIW extends OverlayWithIW {
-    public CustomOverlayWithIW(OverlayItem item) {
+public class PoiOverlayWithIW extends OverlayWithIW {
+    /**
+     * Overlay pour afficher le détail d'un marqueur de la carte
+     *
+     * @param item élément à représenter dans la fenêtre
+     */
+    public PoiOverlayWithIW(OverlayItem item) {
         super();
+
         setId(item.getUid());
         setTitle(item.getTitle());
         setSnippet(item.getSnippet());

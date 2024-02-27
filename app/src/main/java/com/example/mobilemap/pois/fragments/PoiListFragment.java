@@ -70,6 +70,6 @@ public class PoiListFragment extends Fragment implements FragmentListView {
         binding.informationLabel.setText(requireActivity().getResources().getText(informationMsgId));
 
         binding.informationLabel.setVisibility(poiDetails.isEmpty() ? View.VISIBLE : View.INVISIBLE);
-        binding.addPoiButton.setVisibility(shouldEnableList ? View.VISIBLE : View.INVISIBLE);
+        binding.addPoiButton.setVisibility(shouldEnableList ? View.VISIBLE : View.GONE);
     }
 }

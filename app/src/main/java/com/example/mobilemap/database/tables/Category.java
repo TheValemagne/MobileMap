@@ -28,11 +28,22 @@ public class Category extends DatabaseItem {
         this.name = name;
     }
 
+    /**
+     * Constructeur d'une catégorie existante
+     *
+     * @param id   identifiant unique de la catégorie
+     * @param name nom de la catégorie
+     */
     public Category(long id, String name) {
         super(id);
         this.name = name;
     }
 
+    /**
+     * Constructeur d'une catégorie à enregister
+     *
+     * @param name nom de la catégorie
+     */
     public Category(String name) {
         this(-1, name);
     }

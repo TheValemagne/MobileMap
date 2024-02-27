@@ -7,12 +7,12 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-import com.example.mobilemap.R;
 import com.example.mobilemap.database.ContentResolverHelper;
 import com.example.mobilemap.database.DatabaseContract;
 import com.example.mobilemap.database.tables.Category;
 import com.example.mobilemap.databinding.DialogAskCircleRadiusBinding;
-import com.example.mobilemap.map.MapManager;
+import com.example.mobilemap.map.manager.MapManager;
+import com.example.mobilemap.validators.IsFieldSet;
 
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.overlay.OverlayItem;
@@ -59,22 +59,11 @@ public class AddCircleDialogListener implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        if (!check()) {
+        if (!new IsFieldSet(editCircleRadius, resources).check()) {
             return;
         }
 
         showCircle(dialog);
-    }
-
-    private boolean check() {
-        String textRadius = editCircleRadius.getText().toString();
-
-        if (textRadius.isEmpty()) {
-            editCircleRadius.setError(resources.getString(R.string.error_field_is_empty));
-            return false;
-        }
-
-        return true;
     }
 
     /**

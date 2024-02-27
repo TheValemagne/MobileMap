@@ -78,7 +78,7 @@ public class DeleteDatabaseItemListener implements View.OnClickListener {
     }
 
     /**
-     * Exécute la requête de supression
+     * Exécute la requête de suppression
      */
     private void deleteItem() {
         contentResolver.delete(deleteDataContext.getDatabaseUri(),

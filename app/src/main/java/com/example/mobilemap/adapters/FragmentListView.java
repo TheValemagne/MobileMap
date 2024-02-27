@@ -1,7 +1,7 @@
 package com.example.mobilemap.adapters;
 
 /**
- * Interface de gestion de RecyclerView
+ * Interface de gestion d'une RecyclerView
  *
  * @author J.Houdé
  */

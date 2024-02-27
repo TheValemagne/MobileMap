@@ -32,6 +32,11 @@ public class PoiDetail implements HasId {
 
     private final String categoryName;
 
+    /**
+     * @param id           identifiant unique du site
+     * @param name         nom du site
+     * @param categoryName nom de la catégorie
+     */
     public PoiDetail(long id, String name, String categoryName) {
         this.id = id;
         this.siteName = name;

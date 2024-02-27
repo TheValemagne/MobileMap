@@ -19,12 +19,20 @@ import com.example.mobilemap.listeners.DeleteDatabaseListListener;
 import java.util.List;
 
 /**
- * Adapteur pour la liste de catégorie
+ * Adapteur pour la liste de catégories
  *
  * @author J.Houdé
  */
 public class CategoryListRecyclerViewAdapter extends BaseAdapter<CategoryListRecyclerViewAdapter.ViewHolder, Category> {
 
+    /**
+     * Adapteur pour la liste de catégories
+     *
+     * @param values          liste de données à afficher
+     * @param contentResolver Résolveur de contenu
+     * @param activity        activité mère
+     * @param fragment        fragment affichhant la liste
+     */
     public CategoryListRecyclerViewAdapter(List<Category> values, ContentResolver contentResolver, AppCompatActivity activity, CategoryListFragment fragment) {
         super(values, contentResolver, activity, fragment);
     }
@@ -39,6 +47,7 @@ public class CategoryListRecyclerViewAdapter extends BaseAdapter<CategoryListRec
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Category category = values.get(position);
 
+        // initialisation de la ligne avec les données correspondantes
         holder.content.setText(category.getName());
         holder.editButton.setOnClickListener(new ShowCategoryListener(category.getId(), activity));
         holder.deleteButton.setOnClickListener(new DeleteDatabaseListListener<>(category.getId(), activity, ((CategoriesActivity) activity).getDeleteContext(), this));

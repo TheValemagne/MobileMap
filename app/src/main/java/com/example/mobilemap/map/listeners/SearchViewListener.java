@@ -5,7 +5,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.widget.SearchView;
 
-import com.example.mobilemap.map.MapManager;
+import com.example.mobilemap.map.manager.MapManager;
 import com.example.mobilemap.map.SuggestionAdapter;
 
 import org.osmdroid.util.GeoPoint;
@@ -14,12 +14,27 @@ import org.osmdroid.views.overlay.OverlayItem;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Ecouteur pour la gestion de la recherche et des suggestions d'une searchView
+ *
+ * @author J.Houdé
+ */
 public class SearchViewListener implements SearchView.OnQueryTextListener {
     private final Activity activity;
     private final MapManager mapManager;
     private final SearchView searchView;
     private final Geocoder geocoder;
 
+    private final static int SUGGESTION_LIMIT = 5;
+    private final static int QUERY_SEARCH_LIMIT = 1;
+
+    /**
+     * Ecouteur pour la gestion de la recherche et des suggestions d'une searchView
+     *
+     * @param activity   actiivité mère
+     * @param mapManager gestionnaire de la carte
+     * @param searchView bare de recherche à manipuler
+     */
     public SearchViewListener(Activity activity, MapManager mapManager, SearchView searchView) {
         this.activity = activity;
         this.mapManager = mapManager;
@@ -29,13 +44,15 @@ public class SearchViewListener implements SearchView.OnQueryTextListener {
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        List<Address> addresses;
+        // recherche des coordonnées de l'adresse sélectionnée
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            geocoder.getFromLocationName(query, 1, new RequestSearResultListener(mapManager));
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) { // uniquement pour les appareils tournant sous tiramisu
+            geocoder.getFromLocationName(query, QUERY_SEARCH_LIMIT, new RequestSearResultListener(mapManager));
         } else {
+            List<Address> addresses;
+
             try {
-                addresses = geocoder.getFromLocationName(query, 1);
+                addresses = geocoder.getFromLocationName(query, QUERY_SEARCH_LIMIT);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -51,6 +68,7 @@ public class SearchViewListener implements SearchView.OnQueryTextListener {
                     address.getLocality(),
                     new GeoPoint(address.getLatitude(), address.getLongitude())));
         }
+
         searchView.clearFocus();
         return true;
     }
@@ -61,11 +79,13 @@ public class SearchViewListener implements SearchView.OnQueryTextListener {
             return false;
         }
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            geocoder.getFromLocationName(newText, 5, new RequestSuggestionsListener(activity, searchView));
+        // recherche des suggestions de localisation
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) { // uniquement pour les appareils tournant sous tiramisu
+            geocoder.getFromLocationName(newText, SUGGESTION_LIMIT, new RequestSuggestionsListener(activity, searchView));
         } else {
             try {
-                List<Address> addresses = new Geocoder(activity).getFromLocationName(newText, 5);
+                List<Address> addresses = new Geocoder(activity).getFromLocationName(newText, SUGGESTION_LIMIT);
 
                 if (addresses == null || addresses.isEmpty()) {
                     return true;

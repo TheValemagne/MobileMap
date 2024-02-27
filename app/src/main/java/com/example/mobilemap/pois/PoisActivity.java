@@ -39,12 +39,13 @@ public class PoisActivity extends AppCompatActivity {
         bottomNavigationMenuView.setSelectedItemId(currentPageId);
         bottomNavigationMenuView.setOnItemSelectedListener(new NavigationBarItemSelectedListener(this, currentPageId));
 
-
         if (this.getSupportFragmentManager().findFragmentById(R.id.poisFragmentContainer) != null) {
             return;
         }
 
         Intent intent = getIntent();
+
+        // Affichage du fragment avec le détail d'un site ou la liste des sites en fonction des paramètres stockés dans l'intent
         Fragment fragment = shouldShowPoiFragment(intent) ?
                 getPoiFragmentInstance(intent) : new PoiListFragment();
 
@@ -71,6 +72,10 @@ public class PoisActivity extends AppCompatActivity {
                 || intent.hasExtra(PoiFragment.ARG_ITEM_ID);
     }
 
+    /**
+     * Retourne les informations de suppression d'un site
+     * @return informations pour suppression d'un site
+     */
     public DeleteItemContext getDeleteContext() {
         Resources resources = this.getResources();
         return new DeleteItemContext(DatabaseContract.Poi.CONTENT_URI,

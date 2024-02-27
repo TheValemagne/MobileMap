@@ -4,7 +4,7 @@ import androidx.core.content.res.ResourcesCompat;
 
 import com.example.mobilemap.R;
 import com.example.mobilemap.map.MainActivity;
-import com.example.mobilemap.map.MapManager;
+import com.example.mobilemap.map.manager.MapManager;
 import com.example.mobilemap.map.listeners.MarkerGestureListener;
 
 import org.osmdroid.views.MapView;

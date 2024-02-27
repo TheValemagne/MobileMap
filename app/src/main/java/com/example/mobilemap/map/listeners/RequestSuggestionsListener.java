@@ -16,12 +16,23 @@ import com.example.mobilemap.map.SuggestionAdapter;
 
 import java.util.List;
 
+/**
+ * Ecouteur de réception des suggestions d'adresses
+ *
+ * @author J.Houdé
+ */
 @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
 public class RequestSuggestionsListener implements Geocoder.GeocodeListener {
     private final Activity activity;
     private final SearchView searchView;
     private final Handler handler;
 
+    /**
+     * Ecouteur de réception des suggestions d'adresses
+     *
+     * @param activity   activité mère
+     * @param searchView barre de recherche
+     */
     public RequestSuggestionsListener(Activity activity, SearchView searchView) {
         this.activity = activity;
         this.searchView = searchView;
@@ -34,7 +45,7 @@ public class RequestSuggestionsListener implements Geocoder.GeocodeListener {
         MatrixCursor cursor = SuggestionAdapter.getCursorAdapter(addresses);
 
         Runnable runnable = () -> {
-            // This thread runs in the UI
+            // L'action doit être executé dans le thread principal ayant le contrôle de l'interface
             handler.postDelayed(() -> {
                 searchView.setSuggestionsAdapter(new SuggestionAdapter(activity, cursor, searchView, addresses));
                 searchView.getSuggestionsAdapter().notifyDataSetChanged();

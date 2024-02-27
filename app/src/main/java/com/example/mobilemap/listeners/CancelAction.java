@@ -26,7 +26,7 @@ public class CancelAction implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        if (lauchedForResult) { // lancé par une autre activité pour une tâche
+        if (lauchedForResult) { // si lancé par une autre activité pour une tâche
             activity.finish();
         }
 

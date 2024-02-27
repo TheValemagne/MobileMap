@@ -52,6 +52,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 " FROM " + DatabaseContract.Poi.TABLE_NAME + " AS S INNER JOIN "
                 + DatabaseContract.Category.TABLE_NAME + " AS C ON S." + DatabaseContract.Poi.COLUMN_CATEGORY_ID + " = C." + DatabaseContract.Category._ID + ";");
 
+        // insertion des catégories par défaut
         db.execSQL("INSERT INTO " + DatabaseContract.Category.TABLE_NAME + "(" + DatabaseContract.Category.COLUMN_NAME + ")" +
                 "VALUES ('Auberge'), ('Bar'), ('Château'), ('Eglise'), ('Hôtel'), ('Jardin'), ('Musée'), ('Restaurant')");
     }
@@ -66,6 +67,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         migrateDatabase(sqLiteDatabase);
     }
 
+    /**
+     * Réalisation de la migration de la base de données
+     *
+     * @param db base de données SQLite
+     */
     private void migrateDatabase(SQLiteDatabase db) {
         List<String> tables = new ArrayList<>(Arrays.asList(
                 DatabaseContract.Category.TABLE_NAME,

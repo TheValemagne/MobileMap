@@ -13,6 +13,12 @@ import org.osmdroid.views.overlay.compass.CompassOverlay;
  * @author J.Houdé
  */
 public class MapNorthCompassOverlay extends CompassOverlay {
+    /**
+     * Overlay de boussole liée à la rotation de la carte
+     *
+     * @param context contexte de l'appication
+     * @param mapView vue de la carte
+     */
     public MapNorthCompassOverlay(Context context, MapView mapView) {
         super(context, mapView);
     }

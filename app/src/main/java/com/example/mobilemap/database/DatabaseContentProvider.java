@@ -20,6 +20,11 @@ import java.util.Objects;
 public final class DatabaseContentProvider extends ContentProvider {
     private DatabaseHelper databaseHelper;
 
+    /**
+     * Retourne le nom de la table depuis une URI
+     * @param uri URI de la requête
+     * @return nom de la table requêtée
+     */
     private String getTable(Uri uri) {
         return Objects.requireNonNull(uri.getPath()).substring(1);
     }
@@ -42,7 +47,6 @@ public final class DatabaseContentProvider extends ContentProvider {
     @Nullable
     @Override
     public String getType(@NonNull Uri uri) {
-        // vnd.android.cursor.dir/site
         return null;
     }
 

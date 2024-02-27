@@ -16,19 +16,36 @@ import com.example.mobilemap.R;
 import java.text.MessageFormat;
 import java.util.List;
 
+/**
+ * Adapter de suggestions
+ */
 public class SuggestionAdapter extends CursorAdapter {
     private final SearchView searchView;
     private final List<Address> addresses;
     private TextView suggestionAddress;
     private TextView suggestionLocality;
 
-    public SuggestionAdapter(Context context, Cursor c, SearchView searchView, List<Address> addresses) {
-        super(context, c, FLAG_REGISTER_CONTENT_OBSERVER);
-        this.searchView = searchView;
+    /**
+     * Adapter de suggestions
+     *
+     * @param context contexte de l'application
+     * @param cursor cursor contenant le résultat
+     * @param searchView bare de recherche
+     * @param addresses listes d'addresses de suggestion
+     */
+    public SuggestionAdapter(Context context, Cursor cursor, SearchView searchView, List<Address> addresses) {
+        super(context, cursor, FLAG_REGISTER_CONTENT_OBSERVER);
 
+        this.searchView = searchView;
         this.addresses = addresses;
     }
 
+    /**
+     * Retourne un cursor avec les addresses données
+     *
+     * @param addresses liste de suggestions d'addresses
+     * @return cursor avec les addresses données
+     */
     public static MatrixCursor getCursorAdapter(List<Address> addresses) {
         Object[] temp = new Object[]{0, "default"};
         String[] columns = new String[]{"_id", "text"};
@@ -36,8 +53,8 @@ public class SuggestionAdapter extends CursorAdapter {
 
         for (int i = 0; i < addresses.size(); i++) {
             Address address = addresses.get(i);
-            temp[0] = i;
-            temp[1] = address.getAddressLine(0);
+            temp[0] = i; // index
+            temp[1] = address.getAddressLine(0); // adresses
             cursor.addRow(temp);
         }
 

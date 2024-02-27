@@ -41,7 +41,7 @@ public class SaveDatabaseItemListener<T extends DatabaseItem> implements View.On
 
     @Override
     public void onClick(View v) {
-        if (!fragment.check()) {
+        if (!fragment.isValid()) {
             return;
         }
 

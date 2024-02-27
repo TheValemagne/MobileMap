@@ -13,6 +13,7 @@ import com.example.mobilemap.database.ContentResolverHelper;
 import com.example.mobilemap.database.tables.Category;
 import com.example.mobilemap.databinding.DialogAskCircleRadiusBinding;
 import com.example.mobilemap.map.listeners.AddCircleDialogListener;
+import com.example.mobilemap.map.manager.MapManager;
 
 import org.osmdroid.views.overlay.OverlayItem;
 
@@ -77,6 +78,7 @@ public class AddCircleAroundPoiDialogBuilder extends AlertDialog.Builder {
         List<Category> categories = ContentResolverHelper.getCategories(activity.getContentResolver());
 
         activity.runOnUiThread(() -> {
+            // nécessite les droits de mofications de l'interface
             List<String> categoryNames = categories.stream().map(Category::getName).collect(Collectors.toList());
             spinner.setAdapter(new ArrayAdapter<>(AddCircleAroundPoiDialogBuilder.this.getContext(), android.R.layout.simple_spinner_dropdown_item, categoryNames));
         });

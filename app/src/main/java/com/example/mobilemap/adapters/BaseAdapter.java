@@ -12,11 +12,16 @@ import java.util.List;
 /**
  * Classe abstraite d'une liste
  *
- * @author J.Houdé
  * @param <T> le type du support de vue
  * @param <U> type de l'élément à afficher
+ * @author J.Houdé
  */
 public abstract class BaseAdapter<T extends RecyclerView.ViewHolder, U extends HasId> extends RecyclerView.Adapter<T> {
+    /**
+     * Récupération de la liste d'éléments stockés
+     *
+     * @return liste d'éléments
+     */
     public List<U> getValues() {
         return values;
     }
@@ -30,7 +35,7 @@ public abstract class BaseAdapter<T extends RecyclerView.ViewHolder, U extends H
      * @param values           liste initiale de la liste
      * @param contentResolver  gestionnaire de la base de données
      * @param activity         activité à l'origine du fragment
-     * @param fragmentListView framgent gérant la liste
+     * @param fragmentListView fragment gérant la liste
      */
     public BaseAdapter(List<U> values, ContentResolver contentResolver, AppCompatActivity activity, FragmentListView fragmentListView) {
         super();
@@ -47,8 +52,8 @@ public abstract class BaseAdapter<T extends RecyclerView.ViewHolder, U extends H
      * @param position position de l'élément à supprimer
      */
     public void removeItem(int position) {
-        values.remove(position);
+        values.remove(position); // supression de l'élément de la liste
         this.notifyItemRemoved(position);
-        this.fragmentListView.updateView();
+        this.fragmentListView.updateView(); // mise à jour de la vue graphique
     }
 }

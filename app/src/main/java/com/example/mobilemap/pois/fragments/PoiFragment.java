@@ -8,21 +8,17 @@ import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.TextView;
 
 import com.example.mobilemap.R;
 import com.example.mobilemap.database.interfaces.ItemView;
+import com.example.mobilemap.map.manager.MiniMapManager;
 import com.example.mobilemap.pois.listeners.SavePoiListener;
-import com.example.mobilemap.map.CustomInfoWindow;
-import com.example.mobilemap.map.MapManager;
-import com.example.mobilemap.map.SharedPreferencesConstant;
 import com.example.mobilemap.pois.listeners.GeocodeAddressListener;
 import com.example.mobilemap.validators.DoubleRangeValidator;
 import com.example.mobilemap.validators.FieldValidator;
@@ -37,10 +33,7 @@ import com.example.mobilemap.databinding.FragmentPoiBinding;
 import com.example.mobilemap.listeners.CancelAction;
 import com.example.mobilemap.listeners.DeleteDatabaseItemListener;
 
-import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.Marker;
 
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -48,7 +41,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -65,16 +57,12 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
     public static final String ARG_LONGITUDE = "longitude";
     public static final String ARG_LAUNCHED_FOR_RESULT = "launchedForResult";
 
-    private static final double MIN_ZOOM = 9.0;
-    private static final double MAX_ZOOM = 20.0;
-    private static final double DEFAULT_ZOOM = 18.5;
     private long itemId = DatabaseContract.NOT_EXISTING_ID;
     private boolean launchedForResult = false;
     private Poi poi = null;
     private FragmentPoiBinding binding;
     private List<Category> categories;
     private PoisActivity activity;
-    private Marker marker;
     private Geocoder geocoder;
 
     public PoiFragment() {
@@ -160,14 +148,20 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
             updateFields(binding);
         }
 
-        initMiniMap(binding.miniMapView);
-        updateMiniMap();
+        MiniMapManager miniMapManager = new MiniMapManager(activity, this, binding.miniMapView,
+                Arrays.asList(binding.poiLatitude, binding.poiLongitude));
 
-        PoiTextWatcher poiTextWatcher = new PoiTextWatcher(this);
-        binding.poiName.addTextChangedListener(poiTextWatcher);
-        binding.poiLatitude.addTextChangedListener(poiTextWatcher);
-        binding.poiLongitude.addTextChangedListener(poiTextWatcher);
-        binding.poiResume.addTextChangedListener(poiTextWatcher);
+        miniMapManager.initMap();
+        miniMapManager.updateMap();
+
+        PoiTextWatcher poiTextWatcher = new PoiTextWatcher(miniMapManager);
+        Arrays.asList(
+                binding.poiName,
+                binding.poiLatitude,
+                binding.poiLongitude,
+                binding.poiResume
+        ).forEach(editText -> editText.addTextChangedListener(poiTextWatcher));
+
         bindActionButtons(binding);
 
         return binding.getRoot();
@@ -178,23 +172,20 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
      */
     private void updateFieldsFromArguments() {
         Bundle bundle = getArguments();
-        if (bundle == null) {
+        if (bundle == null || !bundle.containsKey(ARG_LATITUDE) || !bundle.containsKey(ARG_LONGITUDE)) {
             return;
         }
 
-        if (bundle.containsKey(ARG_LATITUDE) && bundle.containsKey(ARG_LONGITUDE)) {
-            double latitude = bundle.getDouble(ARG_LATITUDE);
-            binding.poiLatitude.setText(String.valueOf(latitude));
+        double latitude = bundle.getDouble(ARG_LATITUDE);
+        binding.poiLatitude.setText(String.valueOf(latitude));
 
-            double longitude = bundle.getDouble(ARG_LONGITUDE);
-            binding.poiLongitude.setText(String.valueOf(longitude));
+        double longitude = bundle.getDouble(ARG_LONGITUDE);
+        binding.poiLongitude.setText(String.valueOf(longitude));
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                geocoder.getFromLocation(latitude, longitude, 1, new GeocodeAddressListener(binding.poiPostalAddress));
-            } else {
-                binding.poiPostalAddress.setText(getAddressFromCoordinates(new GeoPoint(latitude, longitude)));
-            }
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // uniquement pour les appareils tournant sous tiramisu
+            geocoder.getFromLocation(latitude, longitude, 1, new GeocodeAddressListener(binding.poiPostalAddress));
+        } else {
+            binding.poiPostalAddress.setText(getAddressFromCoordinates(new GeoPoint(latitude, longitude)));
         }
     }
 
@@ -237,63 +228,6 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
         binding.poiPostalAddress.setText(poi.getPostalAddress());
         setSelectedCategory(poi.getCategoryId());
         binding.poiResume.setText(poi.getResume());
-    }
-
-    /**
-     * Initialisation de la mini carte
-     *
-     * @param miniMapView mini carte à initialiser
-     */
-    private void initMiniMap(MapView miniMapView) {
-        MapManager.initMapDefaultSettings(miniMapView);
-
-        miniMapView.setHorizontalMapRepetitionEnabled(false);
-
-        miniMapView.setMinZoomLevel(MIN_ZOOM);
-        miniMapView.setMaxZoomLevel(MAX_ZOOM);
-        miniMapView.getController().setZoom(DEFAULT_ZOOM);
-
-        GeoPoint initialCenter = new GeoPoint(Double.parseDouble(SharedPreferencesConstant.DEFAULT_LATITUDE),
-                Double.parseDouble(SharedPreferencesConstant.DEFAULT_LONGITUDE));
-        miniMapView.setScrollableAreaLimitDouble(new BoundingBox(initialCenter.getLatitude(), initialCenter.getLongitude(),
-                initialCenter.getLatitude(), initialCenter.getLongitude()));
-
-        // intialisation du marqueur d'illustration
-        marker = new Marker(miniMapView);
-        marker.setIcon(Objects.requireNonNull(ResourcesCompat.getDrawable(activity.getResources(), R.drawable.small_marker, activity.getTheme())));
-        marker.setInfoWindow(new CustomInfoWindow(R.layout.poi_info_window, miniMapView));
-        miniMapView.getOverlays().add(marker);
-    }
-
-    /**
-     * Actualisation de la mini carte
-     */
-    public void updateMiniMap() {
-        List<TextView> textViews = new ArrayList<>(Arrays.asList(
-                binding.poiLatitude,
-                binding.poiLongitude
-        ));
-
-        if (textViews.stream().anyMatch(textView -> textView.getText().toString().isEmpty())) {
-            return;
-        }
-
-        MapView miniMapView = binding.miniMapView;
-
-        Poi modifiedPoi = getValues();
-        GeoPoint point = new GeoPoint(modifiedPoi.getLatitude(), modifiedPoi.getLongitude());
-
-        miniMapView.setScrollableAreaLimitDouble(new BoundingBox(modifiedPoi.getLatitude(), modifiedPoi.getLongitude(),
-                modifiedPoi.getLatitude(), modifiedPoi.getLongitude()));
-        miniMapView.setExpectedCenter(point);
-
-        // actualisation du marqueur d'illustration
-        marker.setTitle(modifiedPoi.getName());
-        marker.setSnippet(modifiedPoi.getResume());
-        marker.setPosition(point);
-        marker.showInfoWindow();
-
-        miniMapView.invalidate();
     }
 
     private void initCategoryDropDown() {
@@ -341,7 +275,7 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
     }
 
     @Override
-    public boolean check() {
+    public boolean isValid() {
         Resources resources = requireActivity().getResources();
 
         boolean AreTextFieldsSet = getTextFieldValidators(resources).stream()

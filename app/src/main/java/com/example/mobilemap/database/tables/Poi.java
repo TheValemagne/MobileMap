@@ -79,6 +79,17 @@ public class Poi extends DatabaseItem {
         this.resume = resume;
     }
 
+    /**
+     * Constructeur d'un site existant
+     *
+     * @param id            identifiant unique du site
+     * @param name          nom du site
+     * @param latitude      latitude du site (-90 à 90)
+     * @param longitude     longitude du site (-180 à 180)
+     * @param postalAddress adresse postale du site
+     * @param categoryId    catégorie associée au site
+     * @param resume        résumé / description du site
+     */
     public Poi(long id, String name, double latitude, double longitude, String postalAddress, long categoryId, String resume) {
         super(id);
         this.name = name;
@@ -89,6 +100,16 @@ public class Poi extends DatabaseItem {
         this.resume = resume;
     }
 
+    /**
+     * Constructeur d'un site à enregister
+     *
+     * @param name          nom de la catégorie
+     * @param latitude      latitude du site (-90 à 90)
+     * @param longitude     longitude du site (-180 à 180)
+     * @param postalAddress adresse postale du site
+     * @param categoryId    catégorie associée au site
+     * @param resume        résumé / description du site
+     */
     public Poi(String name, double latitude, double longitude, String postalAddress, long categoryId, String resume) {
         this(-1, name, latitude, longitude, postalAddress, categoryId, resume);
     }

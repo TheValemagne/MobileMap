@@ -8,6 +8,7 @@ import android.os.Bundle;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 
+import com.example.mobilemap.map.manager.MapManager;
 import com.example.mobilemap.pois.listeners.SavePoiListener;
 
 import org.osmdroid.util.GeoPoint;
@@ -36,10 +37,10 @@ public class MapActivityResultCallback implements ActivityResultCallback<Activit
                 && intent != null
                 && intent.getExtras() != null
                 && shouldRemoveCircle(intent.getExtras())) {
-            mapManager.removeCircle(); // supprime le ercle si le nouveau site ne correspond pas au filter actuellement appliqué
+            mapManager.removeCircle(); // supprime le cercle si le nouveau site ne correspond pas au filter actuellement appliqué
         }
 
-        mapManager.updateMap(); // actuaisation de la carte
+        mapManager.updateMap(); // actualisation de la carte
     }
 
     /**

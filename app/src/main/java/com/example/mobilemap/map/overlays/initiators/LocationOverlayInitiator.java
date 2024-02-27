@@ -1,7 +1,7 @@
 package com.example.mobilemap.map.overlays.initiators;
 
 import com.example.mobilemap.map.MainActivity;
-import com.example.mobilemap.map.MapManager;
+import com.example.mobilemap.map.manager.MapManager;
 import com.example.mobilemap.map.overlays.MyLocationOverlay;
 
 import org.osmdroid.views.MapView;

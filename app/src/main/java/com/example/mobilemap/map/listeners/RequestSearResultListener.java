@@ -9,18 +9,28 @@ import android.os.Looper;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
-import com.example.mobilemap.map.MapManager;
+import com.example.mobilemap.map.manager.MapManager;
 
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.overlay.OverlayItem;
 
 import java.util.List;
 
+/**
+ * Ecouteur de recherche d'une position sur la carte
+ *
+ * @author J.Houdé
+ */
 @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
 public class RequestSearResultListener implements Geocoder.GeocodeListener {
     private final MapManager mapManager;
     private final Handler handler;
 
+    /**
+     * Ecouteur de recherche d'une position sur la carte
+     *
+     * @param mapManager gestionnaire de la carte
+     */
     public RequestSearResultListener(MapManager mapManager) {
         this.mapManager = mapManager;
 
@@ -30,7 +40,7 @@ public class RequestSearResultListener implements Geocoder.GeocodeListener {
     @Override
     public void onGeocode(@NonNull List<Address> addresses) {
         Runnable runnable = () -> {
-            // This thread runs in the UI
+            // L'action d'affichage du cercle est executé dans le thread principal ayant le contrôle de l'interface
             handler.postDelayed(() -> {
                 Address address = addresses.get(0);
                 mapManager.showAddCircleAroundPoiDialog(new OverlayItem(
@@ -40,6 +50,7 @@ public class RequestSearResultListener implements Geocoder.GeocodeListener {
                         new GeoPoint(address.getLatitude(), address.getLongitude())));
             }, 10);
         };
+
         new Thread(runnable).start();
     }
 }

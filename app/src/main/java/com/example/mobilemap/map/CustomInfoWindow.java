@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.example.mobilemap.R;
 import com.example.mobilemap.map.listeners.PoiMoreInfoListener;
+import com.example.mobilemap.map.manager.CircleManager;
 
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
@@ -38,7 +39,7 @@ public class CustomInfoWindow extends InfoWindow {
      * Fenêtre d'information d'un marqueur d'illustration
      *
      * @param layoutResId identifiant de la ressource graphique
-     * @param mapView vue de la carte
+     * @param mapView     vue de la carte
      */
     public CustomInfoWindow(int layoutResId, MapView mapView) {
         this(layoutResId, null, mapView, null, null);
@@ -47,11 +48,11 @@ public class CustomInfoWindow extends InfoWindow {
     /**
      * Fenêtre d'information d'un marqueur intéractif
      *
-     * @param layoutResId identifiant de la ressource graphique
-     * @param point coordonnées du marquer associé
-     * @param mapView vue de la carte
+     * @param layoutResId   identifiant de la ressource graphique
+     * @param point         coordonnées du marquer associé
+     * @param mapView       vue de la carte
      * @param circleManager gestionnaire de cercles de filtrage
-     * @param activity activité mère
+     * @param activity      activité mère
      */
     public CustomInfoWindow(int layoutResId, GeoPoint point, MapView mapView, CircleManager circleManager, MainActivity activity) {
         super(layoutResId, mapView);
@@ -81,15 +82,18 @@ public class CustomInfoWindow extends InfoWindow {
 
         moreInfoButton.setOnClickListener(new PoiMoreInfoListener(activity, overlayItem.getId()));
 
-        if (circleManager != null && point != null && circleManager.hasSavedCircle()) {
-            TextView bubbleSubDescription = mView.findViewById(R.id.bubbleSubdescription);
-            bubbleSubDescription.setVisibility(View.VISIBLE);
+        TextView bubbleSubDescription = mView.findViewById(R.id.bubbleSubdescription);
 
-            Locale locale = LocaleList.getDefault().get(0);
-            bubbleSubDescription.setText(MessageFormat.format(activity.getResources().getString(R.string.distanceLabel),
-                    String.format(locale, "%.2f", getDistanceToCircleCenter())));
+        if (circleManager == null || point == null || !circleManager.hasSavedCircle()) {
+            bubbleSubDescription.setVisibility(View.GONE);
+            return;
         }
 
+        bubbleSubDescription.setVisibility(View.VISIBLE);
+
+        Locale locale = LocaleList.getDefault().get(0);
+        bubbleSubDescription.setText(MessageFormat.format(activity.getResources().getString(R.string.distanceLabel),
+                String.format(locale, "%.2f", getDistanceToCircleCenter())));
     }
 
     /**

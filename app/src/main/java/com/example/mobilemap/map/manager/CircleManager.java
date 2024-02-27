@@ -1,4 +1,4 @@
-package com.example.mobilemap.map;
+package com.example.mobilemap.map.manager;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -7,6 +7,9 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 
 import androidx.core.content.res.ResourcesCompat;
+
+import com.example.mobilemap.map.CustomInfoWindow;
+import com.example.mobilemap.map.SharedPreferencesConstant;
 
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.util.GeoPoint;
@@ -31,7 +34,7 @@ public class CircleManager {
     private final Activity activity;
     private final MapManager mapManager;
     private Polygon circle;
-    private final Map<String, CustomInfoWindow> itemInfoWindowMap;
+    private final Map<String, CustomInfoWindow> infoWindowMap;
     private final Marker lastUserLocation;
 
     /**
@@ -40,28 +43,30 @@ public class CircleManager {
      * @param mapView           vue de la map
      * @param activity          activité mère
      * @param mapManager        gestionnaire de la carte
-     * @param itemInfoWindowMap map des infoWindow
+     * @param infoWindowMap map des infoWindow
      */
-    public CircleManager(MapView mapView, Activity activity, MapManager mapManager, Map<String, CustomInfoWindow> itemInfoWindowMap) {
+    public CircleManager(MapView mapView, Activity activity, MapManager mapManager, Map<String, CustomInfoWindow> infoWindowMap) {
         this.mapView = mapView;
         this.activity = activity;
         this.mapManager = mapManager;
-        this.itemInfoWindowMap = itemInfoWindowMap;
+        this.infoWindowMap = infoWindowMap;
 
         this.lastUserLocation = new Marker(mapView, activity);
 
         lastUserLocation.setAnchor(.5f, .8125f);
         lastUserLocation.setInfoWindow(null);
-        lastUserLocation.setIcon(ResourcesCompat.getDrawable(activity.getResources(), org.osmdroid.library.R.drawable.person, activity.getTheme()));
+        lastUserLocation.setIcon(ResourcesCompat.getDrawable(activity.getResources(),
+                org.osmdroid.library.R.drawable.person, activity.getTheme()));
     }
 
     /**
-     * Retourne le marqueur pour le centre du cercle
+     * Retourne le drawable pour le centre du cercle
      *
      * @return Drawable du marqueur
      */
-    public Drawable getCenterMarker() {
-        return ResourcesCompat.getDrawable(activity.getResources(), org.osmdroid.library.R.drawable.osm_ic_center_map, activity.getTheme());
+    public Drawable getCenterPointDrawable() {
+        return ResourcesCompat.getDrawable(activity.getResources(),
+                org.osmdroid.library.R.drawable.osm_ic_center_map, activity.getTheme());
     }
 
     /**
@@ -90,6 +95,7 @@ public class CircleManager {
 
         // Sauvegarde les données du circle pour retracer le cercle si l'application est mise en pause
         saveCircleValues(center, radiusInMeters, categoryFilter).apply();
+        mapManager.updateOpenedInfoWindows();
     }
 
     /**
@@ -106,7 +112,7 @@ public class CircleManager {
         item.ifPresent(items::remove); // supprimer le marqueur avec l'image classique s'il est de la catégorie voulue
 
         OverlayItem circleCenter = item.orElse(centerItem);
-        circleCenter.setMarker(getCenterMarker()); // modifier le marqueur au centre du cercle
+        circleCenter.setMarker(getCenterPointDrawable()); // modifier le marqueur au centre du cercle
         circleCenter.setMarkerHotspot(OverlayItem.HotspotPlace.CENTER); // centrage du marqueur avec la position sur la carte
         items.add(circleCenter);
     }
@@ -133,6 +139,7 @@ public class CircleManager {
 
         // Sauvegarde les données du circle pour retracer le cercle si l'application est mise en pause
         saveCircleAroundMeValues(userLocation, radiusInMeters, categoryFilter).apply();
+        mapManager.updateOpenedInfoWindows();
     }
 
     /**
@@ -158,7 +165,7 @@ public class CircleManager {
     }
 
     /**
-     * Filtre les sites affichés pour afficher uniquement ceux à l'intérrieur du cercle
+     * Filtre les sites affichés pour afficher uniquement ceux à l'interrieur du cercle
      *
      * @param items          liste de marqueurs
      * @param center         point centrale du cercle
@@ -178,12 +185,12 @@ public class CircleManager {
 
             if (isInsideCircle(item, centerLocation, radiusInMeters)) {
                 itemsInsideCircle.add(item);
-            } else if (itemInfoWindowMap.containsKey(item.getUid())) {
-                Objects.requireNonNull(itemInfoWindowMap.get(item.getUid())).close();
+            } else if (infoWindowMap.containsKey(item.getUid())) {
+                Objects.requireNonNull(infoWindowMap.get(item.getUid())).close();
             }
         }
 
-        mapManager.getItemizedOverlay().addItems(itemsInsideCircle);
+        mapManager.getItemizedOverlay().addItems(itemsInsideCircle); // ajout des marqueurs respectant le filtre
         mapView.invalidate();
     }
 
@@ -202,9 +209,9 @@ public class CircleManager {
         markerLocation.setLatitude(markerPosition.getLatitude());
         markerLocation.setLongitude(markerPosition.getLongitude());
 
-        float distance = centerLocation.distanceTo(markerLocation);
+        float distanceToCircleCenter = centerLocation.distanceTo(markerLocation);
 
-        return distance <= radiusInMeters;
+        return distanceToCircleCenter <= radiusInMeters;
     }
 
     /**
@@ -325,7 +332,7 @@ public class CircleManager {
             return 0.0;
         }
 
-        return Double.parseDouble(mapManager.getSharedPreferences().getString(SharedPreferencesConstant.CIRCLE_RADIUS_STRING, SharedPreferencesConstant.EMPTY_STRING));
+        return Double.parseDouble(value);
     }
 
     /**

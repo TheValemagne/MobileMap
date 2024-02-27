@@ -4,7 +4,7 @@ import android.content.SharedPreferences;
 import android.location.Location;
 
 import com.example.mobilemap.map.MainActivity;
-import com.example.mobilemap.map.MapManager;
+import com.example.mobilemap.map.manager.MapManager;
 import com.example.mobilemap.map.SharedPreferencesConstant;
 
 import org.osmdroid.util.GeoPoint;
@@ -22,6 +22,14 @@ public class MyLocationOverlay extends MyLocationNewOverlay {
     private final MainActivity activity;
     private final MapManager mapManager;
 
+    /**
+     * Overlay pour afficher la position actuelle
+     *
+     * @param gpsMyLocationProvider location provider d'Osmdroid
+     * @param mapView               vue de la carte
+     * @param activity              activité principale
+     * @param mapManager            gestionnaire de carte
+     */
     public MyLocationOverlay(GpsMyLocationProvider gpsMyLocationProvider, MapView mapView, MainActivity activity, MapManager mapManager) {
         super(gpsMyLocationProvider, mapView);
         this.activity = activity;
@@ -34,16 +42,19 @@ public class MyLocationOverlay extends MyLocationNewOverlay {
 
         activity.shouldShowLocationBtn(location != null);
 
-        if (location != null && mapManager.isCircleAroundMe()) { // mise à jour du circle avec le déplacement de l'utilisateur
-            SharedPreferences sharedPreferences = mapManager.getSharedPreferences(); // récupération des données sauvegardées
-
-            String circleRadiusString = sharedPreferences.getString(SharedPreferencesConstant.CIRCLE_RADIUS_STRING, SharedPreferencesConstant.EMPTY_STRING);
-            double circleRadius = Double.parseDouble(circleRadiusString);
-
-            long categoryFilter = sharedPreferences.getLong(SharedPreferencesConstant.CIRCLE_CATEGORY_FILTER, SharedPreferencesConstant.NOT_FOUND_ID);
-
-            GeoPoint point = new GeoPoint(location.getLatitude(), location.getLongitude());
-            mapManager.drawCircleAroundMe(point, circleRadius, categoryFilter); // actualisation du cercle
+        if (location == null || !mapManager.isCircleAroundMe()) {
+            return;
         }
+
+        // mise à jour du circle avec le déplacement de l'utilisateur
+        SharedPreferences sharedPreferences = mapManager.getSharedPreferences(); // récupération des données sauvegardées
+
+        String circleRadiusString = sharedPreferences.getString(SharedPreferencesConstant.CIRCLE_RADIUS_STRING, SharedPreferencesConstant.EMPTY_STRING);
+        double circleRadius = Double.parseDouble(circleRadiusString);
+
+        long categoryFilter = sharedPreferences.getLong(SharedPreferencesConstant.CIRCLE_CATEGORY_FILTER, SharedPreferencesConstant.NOT_FOUND_ID);
+
+        GeoPoint point = new GeoPoint(location.getLatitude(), location.getLongitude());
+        mapManager.drawCircleAroundMe(point, circleRadius, categoryFilter); // actualisation du cercle
     }
 }

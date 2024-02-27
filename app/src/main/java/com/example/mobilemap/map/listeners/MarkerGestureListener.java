@@ -3,7 +3,7 @@ package com.example.mobilemap.map.listeners;
 import com.example.mobilemap.R;
 import com.example.mobilemap.map.CustomInfoWindow;
 import com.example.mobilemap.map.MainActivity;
-import com.example.mobilemap.map.MapManager;
+import com.example.mobilemap.map.manager.MapManager;
 
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
@@ -21,7 +21,7 @@ import java.util.Map;
 public class MarkerGestureListener implements ItemizedIconOverlay.OnItemGestureListener<OverlayItem> {
     private final MapManager mapManager;
     private final MapView mapView;
-    private final Map<String, CustomInfoWindow> itemInfoWindowMap;
+    private final Map<String, CustomInfoWindow> infoWindowMap;
     private final MainActivity activity;
 
     private String lastCircleCenterItemUid;
@@ -33,15 +33,15 @@ public class MarkerGestureListener implements ItemizedIconOverlay.OnItemGestureL
     /**
      * Ecouteur pour la gestion des gestes de la ItemizedIconOverlay
      *
-     * @param mapView vue de la carte
-     * @param mapManager gestionnaire de la carte
-     * @param itemInfoWindowMap map d'infoWindows
-     * @param activity activité mère
+     * @param mapView           vue de la carte
+     * @param mapManager        gestionnaire de la carte
+     * @param infoWindowMap map d'infoWindows
+     * @param activity          activité mère
      */
-    public MarkerGestureListener(MapView mapView, MapManager mapManager, Map<String, CustomInfoWindow> itemInfoWindowMap, MainActivity activity) {
+    public MarkerGestureListener(MapView mapView, MapManager mapManager, Map<String, CustomInfoWindow> infoWindowMap, MainActivity activity) {
         this.mapView = mapView;
         this.mapManager = mapManager;
-        this.itemInfoWindowMap = itemInfoWindowMap;
+        this.infoWindowMap = infoWindowMap;
         this.activity = activity;
 
         lastCircleCenterItemUid = "";
@@ -50,18 +50,20 @@ public class MarkerGestureListener implements ItemizedIconOverlay.OnItemGestureL
     @Override
     public boolean onItemSingleTapUp(int index, OverlayItem item) {
         String uid = item.getUid();
-        if (!itemInfoWindowMap.containsKey(uid)) {
-            itemInfoWindowMap.put(uid, new CustomInfoWindow(R.layout.poi_info_window, (GeoPoint) item.getPoint(), mapView, mapManager.getCircleManager(), activity));
+
+        if (!infoWindowMap.containsKey(uid)) { // création d'une infoWindows pour le marqueur
+            infoWindowMap.put(uid,
+                    new CustomInfoWindow(R.layout.poi_info_window, (GeoPoint) item.getPoint(), mapView, mapManager.getCircleManager(), activity));
         }
 
-        InfoWindow infoWindow = itemInfoWindowMap.get(uid);
+        InfoWindow infoWindow = infoWindowMap.get(uid);
 
-        if (infoWindow != null && infoWindow.isOpen()) { // fermeture de l'infoWindow si elel est déjà ouverte
+        if (infoWindow != null && infoWindow.isOpen()) { // fermeture de l'infoWindow si elle est déjà ouverte
             infoWindow.close();
             return true;
         }
 
-        mapView.getOverlays().add(mapManager.createOverlayWithIW(item, infoWindow));
+        mapView.getOverlays().add(mapManager.createOverlayWithIW(item, infoWindow)); // ouverte de l'infoWindows et affichage sur la carte
 
         return true;
     }

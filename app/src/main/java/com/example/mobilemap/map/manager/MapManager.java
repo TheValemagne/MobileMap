@@ -1,10 +1,14 @@
-package com.example.mobilemap.map;
+package com.example.mobilemap.map.manager;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 
 import androidx.preference.PreferenceManager;
 
+import com.example.mobilemap.map.AddCircleAroundPoiDialogBuilder;
+import com.example.mobilemap.map.CustomInfoWindow;
+import com.example.mobilemap.map.MainActivity;
+import com.example.mobilemap.map.SharedPreferencesConstant;
 import com.example.mobilemap.map.overlays.initiators.CompassOverlayInitiator;
 import com.example.mobilemap.map.overlays.initiators.ItemizedIconOverlayInitiator;
 import com.example.mobilemap.map.overlays.initiators.LocationOverlayInitiator;
@@ -12,7 +16,7 @@ import com.example.mobilemap.map.overlays.initiators.RotationOverlayInitiator;
 import com.example.mobilemap.map.overlays.initiators.ScaleBarInitiator;
 import com.example.mobilemap.map.listeners.MarkerGestureListener;
 import com.example.mobilemap.map.overlays.AddMarkerOverlay;
-import com.example.mobilemap.map.overlays.CustomOverlayWithIW;
+import com.example.mobilemap.map.overlays.PoiOverlayWithIW;
 import com.example.mobilemap.pois.PoisActivity;
 import com.example.mobilemap.database.ContentResolverHelper;
 import com.example.mobilemap.database.tables.Poi;
@@ -72,7 +76,7 @@ public final class MapManager {
         return markerGestureListener;
     }
 
-    private final Map<String, CustomInfoWindow> itemInfoWindowMap;
+    private final Map<String, CustomInfoWindow> infoWindowMap;
 
     private final MarkerGestureListener markerGestureListener;
 
@@ -90,9 +94,9 @@ public final class MapManager {
         this.context = activity.getApplicationContext();
 
         sharedPreferences = context.getSharedPreferences(SharedPreferencesConstant.PREFS_NAME, Context.MODE_PRIVATE);
-        itemInfoWindowMap = new HashMap<>();
-        circleManager = new CircleManager(mapView, activity, this, itemInfoWindowMap);
-        markerGestureListener = new MarkerGestureListener(mapView, this, itemInfoWindowMap, activity);
+        infoWindowMap = new HashMap<>();
+        circleManager = new CircleManager(mapView, activity, this, infoWindowMap);
+        markerGestureListener = new MarkerGestureListener(mapView, this, infoWindowMap, activity);
     }
 
     private static final double MIN_ZOOM = 3.0;
@@ -180,11 +184,18 @@ public final class MapManager {
             itemizedOverlay.addItems(getOverlayItems());
         }
 
-        itemInfoWindowMap.values()
-                .stream().filter(InfoWindow::isOpen)
-                .forEach(this::updateInfoWindow);
+        updateOpenedInfoWindows();
 
         mapView.invalidate();
+    }
+
+    /**
+     * Actualisation de toutes les infoWindows ouvertes
+     */
+    public void updateOpenedInfoWindows() {
+        infoWindowMap.values().stream()
+                .filter(InfoWindow::isOpen)
+                .forEach(this::updateInfoWindow);
     }
 
     /**
@@ -218,13 +229,23 @@ public final class MapManager {
      * @return contneu à afficher
      */
     public OverlayWithIW createOverlayWithIW(OverlayItem item, InfoWindow infoWindow) {
-        OverlayWithIW overlayWithIW = new CustomOverlayWithIW(item);
+        OverlayWithIW overlayWithIW = new PoiOverlayWithIW(item);
 
         overlayWithIW.setInfoWindow(infoWindow);
         overlayWithIW.getInfoWindow().open(overlayWithIW, (GeoPoint) item.getPoint(),
                 CustomInfoWindow.OFFSET_X, CustomInfoWindow.OFFSET_Y);
 
         return overlayWithIW;
+    }
+
+    /**
+     * Mappage d'un Poi en OverlayItem
+     *
+     * @param poi site à convertir
+     * @return OverlayItem correspondant au site
+     */
+    private OverlayItem poiToOverlayItemMapper(Poi poi) {
+        return new OverlayItem(String.valueOf(poi.getId()), poi.getName(), poi.getResume(), new GeoPoint(poi.getLatitude(), poi.getLongitude()));
     }
 
     /**
@@ -238,16 +259,6 @@ public final class MapManager {
         return pois.stream()
                 .map(this::poiToOverlayItemMapper)
                 .collect(Collectors.toList());
-    }
-
-    /**
-     * Mappage d'un Poi en OverlayItem
-     *
-     * @param poi site à convertir
-     * @return OverlayItem correspondant au site
-     */
-    private OverlayItem poiToOverlayItemMapper(Poi poi) {
-        return new OverlayItem(String.valueOf(poi.getId()), poi.getName(), poi.getResume(), new GeoPoint(poi.getLatitude(), poi.getLongitude()));
     }
 
     /**
@@ -267,8 +278,8 @@ public final class MapManager {
             }
 
             String uid = String.valueOf(poi.getId());
-            if (itemInfoWindowMap.containsKey(uid)) { // ferme les infoWindow des marquers à retirer
-                Objects.requireNonNull(itemInfoWindowMap.get(uid)).close();
+            if (infoWindowMap.containsKey(uid)) { // ferme les infoWindow des marquers à retirer
+                Objects.requireNonNull(infoWindowMap.get(uid)).close();
             }
         }
 

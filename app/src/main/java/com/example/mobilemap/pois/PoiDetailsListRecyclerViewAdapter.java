@@ -25,6 +25,14 @@ import java.util.List;
  * @author J.Houdé
  */
 public class PoiDetailsListRecyclerViewAdapter extends BaseAdapter<PoiDetailsListRecyclerViewAdapter.ViewHolder, PoiDetail> {
+    /**
+     * Adapteur pour la liste de sites détaillés
+     *
+     * @param values liste de données à afficher
+     * @param contentResolver Résolveur de contenu
+     * @param activity activité mère
+     * @param fragment fragment affichhant la liste
+     */
     public PoiDetailsListRecyclerViewAdapter(List<PoiDetail> values, ContentResolver contentResolver, AppCompatActivity activity, PoiListFragment fragment) {
         super(values, contentResolver, activity, fragment);
     }
@@ -39,6 +47,7 @@ public class PoiDetailsListRecyclerViewAdapter extends BaseAdapter<PoiDetailsLis
     public void onBindViewHolder(@NonNull PoiDetailsListRecyclerViewAdapter.ViewHolder holder, int position) {
         PoiDetail poiDetail = values.get(position);
 
+        // initialisation de la ligne avec les données correspondantes
         holder.content.setText(poiDetail.getSiteName());
         holder.categoryName.setText(poiDetail.getCategoryName());
         holder.editButton.setOnClickListener(new ShowPoiListener(poiDetail.getId(), activity));

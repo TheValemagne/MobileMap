@@ -23,9 +23,11 @@ import android.widget.LinearLayout;
 import android.widget.SearchView;
 
 import com.example.mobilemap.R;
+import com.example.mobilemap.database.ContentResolverHelper;
 import com.example.mobilemap.databinding.ActivityMainBinding;
 import com.example.mobilemap.listeners.NavigationBarItemSelectedListener;
 import com.example.mobilemap.map.listeners.SearchViewListener;
+import com.example.mobilemap.map.manager.MapManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -67,9 +69,9 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this); // permet d'étendre l'affichage de l'application à tout l'écran
 
         ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-
         ConstraintLayout constraintLayout = binding.getRoot();
+        setContentView(constraintLayout);
+
         // ajustement de la bar de navigation pour éviter tout dépassement ou superposition avec la bar avec les 3 boutons
         ViewCompat.setOnApplyWindowInsetsListener(constraintLayout, (v, windowInsets) -> {
             Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemGestures());
@@ -85,11 +87,32 @@ public class MainActivity extends AppCompatActivity {
         mapManager.initMap();
 
         searchView = binding.searchView;
+        searchView.clearFocus();
         searchView.setOnQueryTextListener(new SearchViewListener(this, mapManager, binding.searchView));
 
-        poiActivityLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new MapActivityResultCallback(mapManager));
+        floatingButtonsLayout = binding.floatingButtonsLayout;
+        floatingButtonsLayout.setVisibility(View.GONE);
+
+        filterFloatingLayout = binding.filterFloatingLayout;
+        filterFloatingLayout.setVisibility(View.GONE);
 
         initButtons(binding);
+
+        if (ContentResolverHelper.getPois(this.getContentResolver()).isEmpty()) {
+            disableFilterButtons();
+        }
+
+        poiActivityLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new MapActivityResultCallback(mapManager));
+    }
+
+    /**
+     * Déactivation des éléments de filtrage des marqueurs
+     */
+    private void disableFilterButtons() {
+        searchView.setVisibility(View.GONE);
+        searchView.setFocusable(false);
+
+        filterFloatingLayout.setVisibility(View.GONE);
     }
 
     /**
@@ -101,12 +124,6 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationMenuView = binding.mainNavigationBar;
         bottomNavigationMenuView.setSelectedItemId(currentPageId);
         bottomNavigationMenuView.setOnItemSelectedListener(new NavigationBarItemSelectedListener(this, currentPageId));
-
-        floatingButtonsLayout = binding.floatingButtonsLayout;
-        floatingButtonsLayout.setVisibility(View.GONE);
-
-        filterFloatingLayout = binding.filterFloatingLayout;
-        filterFloatingLayout.setVisibility(View.GONE);
 
         showCircleAroundMe = binding.showCircleAroundMe;
         showCircleAroundMe.setOnClickListener(v -> mapManager.showAddCircleAroundMeDialog());
@@ -124,9 +141,13 @@ public class MainActivity extends AppCompatActivity {
      */
     public void shouldShowLocationBtn(boolean isVisible) {
         int visibility = isVisible ? View.VISIBLE : View.GONE;
+        boolean hasStoredPoi = !ContentResolverHelper.getPois(this.getContentResolver()).isEmpty();
+        int filterButtonsVisibility = hasStoredPoi ? View.VISIBLE : View.GONE;
 
         floatingButtonsLayout.setVisibility(visibility);
-        filterFloatingLayout.setVisibility(visibility);
+        filterFloatingLayout.setVisibility(isVisible && hasStoredPoi ? View.VISIBLE : View.GONE);
+        searchView.setVisibility(filterButtonsVisibility);
+        searchView.setFocusable(hasStoredPoi);
     }
 
     /**
@@ -179,6 +200,12 @@ public class MainActivity extends AppCompatActivity {
             searchView.setQuery("", false);
             searchView.clearFocus();
         }
+
+        if (searchView != null
+                && filterFloatingLayout != null
+                && ContentResolverHelper.getPois(this.getContentResolver()).isEmpty()) {
+            disableFilterButtons();
+        }
     }
 
     @Override
@@ -200,6 +227,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Demande les permissions nécessaires à la carte
+     * @param permissions liste de permissions à demander
+     */
     private void requestPermissionsIfNecessary(List<String> permissions) {
         ArrayList<String> permissionsToRequest = new ArrayList<>();
         for (String permission : permissions) {

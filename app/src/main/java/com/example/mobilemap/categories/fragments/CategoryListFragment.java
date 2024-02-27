@@ -22,7 +22,7 @@ import com.example.mobilemap.categories.ShowCategoryListener;
 import java.util.List;
 
 /**
- * Fragment permettant la gestion de lal iste des catégories
+ * Fragment permettant la gestion de la liste des catégories
  * A simple {@link Fragment} subclass.
  *
  * @author J.Houdé
