@@ -197,7 +197,6 @@ public class MainActivity extends AppCompatActivity {
         mapManager.onResume();
 
         if (searchView != null) {
-            searchView.setQuery("", false);
             searchView.clearFocus();
         }
 
