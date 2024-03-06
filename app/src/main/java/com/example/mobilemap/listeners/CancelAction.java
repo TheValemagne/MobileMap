@@ -11,22 +11,22 @@ import androidx.appcompat.app.AppCompatActivity;
  */
 public class CancelAction implements View.OnClickListener {
     private final AppCompatActivity activity;
-    private final boolean lauchedForResult;
+    private final boolean launchedForResult;
 
     /**
      * Ecouteur pour annuler une action d'un fragment
      *
      * @param activity         activité mère
-     * @param lauchedForResult si l'activité mère a été lancé par une autre activité pour une tâche
+     * @param launchedForResult si l'activité mère a été lancé par une autre activité pour une tâche
      */
-    public CancelAction(AppCompatActivity activity, boolean lauchedForResult) {
+    public CancelAction(AppCompatActivity activity, boolean launchedForResult) {
         this.activity = activity;
-        this.lauchedForResult = lauchedForResult;
+        this.launchedForResult = launchedForResult;
     }
 
     @Override
     public void onClick(View v) {
-        if (lauchedForResult) { // si lancé par une autre activité pour une tâche
+        if (launchedForResult) { // si lancé par une autre activité pour une tâche
             activity.finish();
         }
 

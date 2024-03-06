@@ -24,7 +24,7 @@ public class DeleteDatabaseListListener<T extends RecyclerView.ViewHolder, U ext
      * Ecouteur pour supprimer un élément de la base de données depuis une liste
      *
      * @param itemId                identifiant de l'élément à supprimer
-     * @param activity              activité mère
+     * @param activity              activité gérant les données
      * @param deleteCategoryContext contexte pour la supression de l'élément
      * @param adapter               adapteur de la liste
      */

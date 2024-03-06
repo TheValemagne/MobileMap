@@ -30,7 +30,7 @@ public class CategoryListRecyclerViewAdapter extends BaseAdapter<CategoryListRec
      *
      * @param values          liste de données à afficher
      * @param contentResolver Résolveur de contenu
-     * @param activity        activité mère
+     * @param activity        activité gérant les données
      * @param fragment        fragment affichhant la liste
      */
     public CategoryListRecyclerViewAdapter(List<Category> values, ContentResolver contentResolver, AppCompatActivity activity, CategoryListFragment fragment) {

@@ -6,7 +6,7 @@ import androidx.core.content.res.ResourcesCompat;
 
 import com.example.mobilemap.R;
 import com.example.mobilemap.database.tables.Poi;
-import com.example.mobilemap.map.CustomInfoWindow;
+import com.example.mobilemap.map.PoiInfoWindow;
 import com.example.mobilemap.map.SharedPreferencesConstant;
 import com.example.mobilemap.pois.PoisActivity;
 import com.example.mobilemap.pois.fragments.PoiFragment;
@@ -69,7 +69,7 @@ public class MiniMapManager {
         // intialisation du marqueur d'illustration
         marker = new Marker(miniMapView);
         marker.setIcon(Objects.requireNonNull(ResourcesCompat.getDrawable(activity.getResources(), R.drawable.small_marker, activity.getTheme())));
-        marker.setInfoWindow(new CustomInfoWindow(R.layout.poi_info_window, miniMapView));
+        marker.setInfoWindow(new PoiInfoWindow(R.layout.poi_info_window, miniMapView));
         miniMapView.getOverlays().add(marker);
     }
 
@@ -89,12 +89,22 @@ public class MiniMapManager {
         miniMapView.setExpectedCenter(point);
 
         // actualisation du marqueur d'illustration
+        updateMarker(modifiedPoi, point);
+
+        miniMapView.invalidate();
+    }
+
+    /**
+     * actualisation du marqueur d'illustration
+     *
+     * @param modifiedPoi site avec contenu actualiser
+     * @param point  nouvelle position du marqueur
+     */
+    private void updateMarker(Poi modifiedPoi, GeoPoint point) {
         marker.setTitle(modifiedPoi.getName());
         marker.setSnippet(modifiedPoi.getResume());
         marker.setPosition(point);
         marker.showInfoWindow();
-
-        miniMapView.invalidate();
     }
 
 }

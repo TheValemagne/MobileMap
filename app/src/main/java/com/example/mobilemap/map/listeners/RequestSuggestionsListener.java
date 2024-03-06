@@ -1,7 +1,6 @@
 package com.example.mobilemap.map.listeners;
 
 import android.app.Activity;
-import android.database.MatrixCursor;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Build;
@@ -30,7 +29,7 @@ public class RequestSuggestionsListener implements Geocoder.GeocodeListener {
     /**
      * Ecouteur de réception des suggestions d'adresses
      *
-     * @param activity   activité mère
+     * @param activity   activité principale
      * @param searchView barre de recherche
      */
     public RequestSuggestionsListener(Activity activity, SearchView searchView) {
@@ -42,12 +41,10 @@ public class RequestSuggestionsListener implements Geocoder.GeocodeListener {
 
     @Override
     public void onGeocode(@NonNull List<Address> addresses) {
-        MatrixCursor cursor = SuggestionAdapter.getCursorAdapter(addresses);
-
         Runnable runnable = () -> {
             // L'action doit être executé dans le thread principal ayant le contrôle de l'interface
             handler.postDelayed(() -> {
-                searchView.setSuggestionsAdapter(new SuggestionAdapter(activity, cursor, searchView, addresses));
+                searchView.setSuggestionsAdapter(new SuggestionAdapter(activity, searchView, addresses));
                 searchView.getSuggestionsAdapter().notifyDataSetChanged();
             }, 10);
         };

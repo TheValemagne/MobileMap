@@ -35,12 +35,13 @@ public class AddCircleAroundPoiDialogBuilder extends AlertDialog.Builder {
     /**
      * Dialogue de demande de données pour afficher un cercle
      *
-     * @param activity   activité mère
+     * @param activity   activité principale
      * @param mapManager gestionnaire de la carte
      * @param item       élément reptrésentant le centre du futur cercle
      */
     public AddCircleAroundPoiDialogBuilder(Activity activity, MapManager mapManager, OverlayItem item) {
         super(activity);
+
         this.activity = activity;
         this.mapManager = mapManager;
         this.item = item;
@@ -60,6 +61,7 @@ public class AddCircleAroundPoiDialogBuilder extends AlertDialog.Builder {
     public AlertDialog show() {
         AlertDialog dialog = super.show();
 
+        // bouton de validation
         Button buttonPositive = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
         buttonPositive.setText(resources.getString(R.string.dialog_show));
         buttonPositive.setVisibility(View.VISIBLE);

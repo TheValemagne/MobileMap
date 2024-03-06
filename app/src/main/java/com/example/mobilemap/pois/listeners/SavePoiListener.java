@@ -24,8 +24,8 @@ public class SavePoiListener extends SaveDatabaseItemListener<Poi> {
     /**
      * Ecoutouer pour enregistrer un site dans la base de données
      *
-     * @param activity           activité mère
-     * @param fragment           fragement mère
+     * @param activity           activité gérant le fragment avec le détail
+     * @param fragment           fragement avec le détail
      * @param databaseUri        uri de la table
      * @param launchedForResult  si l'activité mère a été lancé par une autre activité pour une tâche
      */

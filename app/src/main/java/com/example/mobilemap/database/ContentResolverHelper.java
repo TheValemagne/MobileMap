@@ -7,6 +7,7 @@ import com.example.mobilemap.database.tables.Category;
 import com.example.mobilemap.database.tables.Poi;
 import com.example.mobilemap.database.tables.PoiDetail;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,7 +26,10 @@ public class ContentResolverHelper {
         Cursor cursor = contentResolver
                 .query(DatabaseContract.Category.CONTENT_URI, DatabaseContract.Category.COLUMNS,
                         null, null, DatabaseContract.Category.COLUMN_NAME + " COLLATE LOCALIZED ASC");
-        assert cursor != null;
+
+        if(cursor == null) {
+            return new ArrayList<>();
+        }
 
         return Category.mapFromList(cursor);
     }
@@ -40,7 +44,10 @@ public class ContentResolverHelper {
         Cursor cursor = contentResolver
                 .query(DatabaseContract.PoiDetail.CONTENT_URI, DatabaseContract.PoiDetail.COLUMNS,
                         null, null, DatabaseContract.PoiDetail.COLUMN_SITE_NAME + " COLLATE LOCALIZED ASC");
-        assert cursor != null;
+
+        if(cursor == null) {
+            return new ArrayList<>();
+        }
 
         return PoiDetail.mapFromList(cursor);
     }
@@ -55,7 +62,10 @@ public class ContentResolverHelper {
         Cursor cursor = contentResolver
                 .query(DatabaseContract.Poi.CONTENT_URI, DatabaseContract.Poi.COLUMNS,
                         null, null, DatabaseContract.Poi.COLUMN_NAME + " COLLATE LOCALIZED ASC");
-        assert cursor != null;
+
+        if(cursor == null) {
+            return new ArrayList<>();
+        }
 
         return Poi.mapFromList(cursor);
     }

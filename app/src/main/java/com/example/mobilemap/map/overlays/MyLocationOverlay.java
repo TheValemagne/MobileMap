@@ -40,13 +40,12 @@ public class MyLocationOverlay extends MyLocationNewOverlay {
     public void onLocationChanged(Location location, IMyLocationProvider source) {
         super.onLocationChanged(location, source); // utilisation de hanlder.postAtTime dans le code source pour actualiser la position
 
-        activity.shouldShowLocationBtn(location != null);
+        activity.shouldShowLocationBtn(location != null); // affichage ou non du bouton de localisation
 
         if (location == null || !mapManager.isCircleAroundMe()) {
             return;
         }
 
-        // mise à jour du circle avec le déplacement de l'utilisateur
         SharedPreferences sharedPreferences = mapManager.getSharedPreferences(); // récupération des données sauvegardées
 
         String circleRadiusString = sharedPreferences.getString(SharedPreferencesConstant.CIRCLE_RADIUS_STRING, SharedPreferencesConstant.EMPTY_STRING);
@@ -54,6 +53,7 @@ public class MyLocationOverlay extends MyLocationNewOverlay {
 
         long categoryFilter = sharedPreferences.getLong(SharedPreferencesConstant.CIRCLE_CATEGORY_FILTER, SharedPreferencesConstant.NOT_FOUND_ID);
 
+        // mise à jour du cercle avec le déplacement de l'utilisateur
         GeoPoint point = new GeoPoint(location.getLatitude(), location.getLongitude());
         mapManager.drawCircleAroundMe(point, circleRadius, categoryFilter); // actualisation du cercle
     }

@@ -23,7 +23,7 @@ import java.util.Locale;
  *
  * @author J.Houdé
  */
-public class CustomInfoWindow extends InfoWindow {
+public class PoiInfoWindow extends InfoWindow {
     public static final int OFFSET_X = 0;
     public static final int OFFSET_Y = -70;
     private final CircleManager circleManager;
@@ -41,7 +41,7 @@ public class CustomInfoWindow extends InfoWindow {
      * @param layoutResId identifiant de la ressource graphique
      * @param mapView     vue de la carte
      */
-    public CustomInfoWindow(int layoutResId, MapView mapView) {
+    public PoiInfoWindow(int layoutResId, MapView mapView) {
         this(layoutResId, null, mapView, null, null);
     }
 
@@ -54,7 +54,7 @@ public class CustomInfoWindow extends InfoWindow {
      * @param circleManager gestionnaire de cercles de filtrage
      * @param activity      activité mère
      */
-    public CustomInfoWindow(int layoutResId, GeoPoint point, MapView mapView, CircleManager circleManager, MainActivity activity) {
+    public PoiInfoWindow(int layoutResId, GeoPoint point, MapView mapView, CircleManager circleManager, MainActivity activity) {
         super(layoutResId, mapView);
 
         this.point = point;
@@ -89,6 +89,7 @@ public class CustomInfoWindow extends InfoWindow {
             return;
         }
 
+        // affichage de la distance à vol d'oiseau par rapport au centre du cercle
         bubbleSubDescription.setVisibility(View.VISIBLE);
 
         Locale locale = LocaleList.getDefault().get(0);

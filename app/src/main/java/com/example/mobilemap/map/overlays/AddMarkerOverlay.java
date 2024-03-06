@@ -32,7 +32,9 @@ public class AddMarkerOverlay extends Overlay {
         double longitude = mapView.getProjection().fromPixels((int) event.getX(), (int) event.getY()).getLongitude();
 
         // lancement de l'activité gérant les sites our créer le nouveau marqueur
-        activity.getPoiActivityLauncher().launch(PoisActivity.createIntent(activity, latitude, longitude));
+        activity.getPoiActivityLauncher()
+                .launch(PoisActivity.createIntent(activity, latitude, longitude));
+
         return true;
     }
 

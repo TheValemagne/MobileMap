@@ -38,22 +38,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 DatabaseContract.Poi.COLUMN_POSTAL_ADDRESS + " text NOT NULL," +
                 DatabaseContract.Poi.COLUMN_CATEGORY_ID + " INTEGER NOT NULL," +
                 DatabaseContract.Poi.COLUMN_RESUME + " text NOT NULL," +
-                "FOREIGN KEY(" + DatabaseContract.Poi.COLUMN_CATEGORY_ID + ") REFERENCES "
-                + DatabaseContract.Category.TABLE_NAME + "(" + DatabaseContract.Category._ID + ") ON DELETE CASCADE);");
+                "FOREIGN KEY(" + DatabaseContract.Poi.COLUMN_CATEGORY_ID + ") REFERENCES " +
+                DatabaseContract.Category.TABLE_NAME + "(" + DatabaseContract.Category._ID + ") ON DELETE CASCADE);");
 
         db.execSQL("CREATE TABLE " + DatabaseContract.Category.TABLE_NAME + " (" +
                 DatabaseContract.Category._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 DatabaseContract.Category.COLUMN_NAME + " text NOT NULL UNIQUE);");
 
-        db.execSQL("CREATE VIEW " + DatabaseContract.PoiDetail.TABLE_NAME + " \n" +
+        db.execSQL("CREATE VIEW " + DatabaseContract.PoiDetail.TABLE_NAME + " " +
                 "AS SELECT S." + DatabaseContract.Poi._ID + " AS " + DatabaseContract.PoiDetail._ID +
                 ", S." + DatabaseContract.Poi.COLUMN_NAME + " AS " + DatabaseContract.PoiDetail.COLUMN_SITE_NAME + ", " +
                 "C." + DatabaseContract.Category.COLUMN_NAME + " AS " + DatabaseContract.PoiDetail.COLUMN_CATEGORY_NAME +
-                " FROM " + DatabaseContract.Poi.TABLE_NAME + " AS S INNER JOIN "
-                + DatabaseContract.Category.TABLE_NAME + " AS C ON S." + DatabaseContract.Poi.COLUMN_CATEGORY_ID + " = C." + DatabaseContract.Category._ID + ";");
+                " FROM " + DatabaseContract.Poi.TABLE_NAME + " AS S INNER JOIN " +
+                DatabaseContract.Category.TABLE_NAME + " AS C ON S." + DatabaseContract.Poi.COLUMN_CATEGORY_ID + " = C." + DatabaseContract.Category._ID + ";");
 
         // insertion des catégories par défaut
-        db.execSQL("INSERT INTO " + DatabaseContract.Category.TABLE_NAME + "(" + DatabaseContract.Category.COLUMN_NAME + ")" +
+        db.execSQL("INSERT INTO " + DatabaseContract.Category.TABLE_NAME + "(" + DatabaseContract.Category.COLUMN_NAME + ") " +
                 "VALUES ('Auberge'), ('Bar'), ('Château'), ('Eglise'), ('Hôtel'), ('Jardin'), ('Musée'), ('Restaurant')");
     }
 

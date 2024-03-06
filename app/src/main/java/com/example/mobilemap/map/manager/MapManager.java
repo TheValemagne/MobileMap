@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 import androidx.preference.PreferenceManager;
 
 import com.example.mobilemap.map.AddCircleAroundPoiDialogBuilder;
-import com.example.mobilemap.map.CustomInfoWindow;
+import com.example.mobilemap.map.PoiInfoWindow;
 import com.example.mobilemap.map.MainActivity;
 import com.example.mobilemap.map.SharedPreferencesConstant;
 import com.example.mobilemap.map.overlays.initiators.CompassOverlayInitiator;
@@ -76,7 +76,7 @@ public final class MapManager {
         return markerGestureListener;
     }
 
-    private final Map<String, CustomInfoWindow> infoWindowMap;
+    private final Map<String, PoiInfoWindow> infoWindowMap;
 
     private final MarkerGestureListener markerGestureListener;
 
@@ -137,6 +137,7 @@ public final class MapManager {
         myLocationNewOverlay = new LocationOverlayInitiator(mapView, activity, this).init();
         itemizedOverlay = new ItemizedIconOverlayInitiator(mapView, this, markerGestureListener, activity).init();
 
+        // hint l'ordre des overlays est important pour les supporpositions et le dernier de la liste sera la premièr couche intéractive avec l'utilisateur
         List<Overlay> overlays = new ArrayList<>(Arrays.asList(
                 new AddMarkerOverlay(activity),
                 myLocationNewOverlay,
@@ -203,7 +204,7 @@ public final class MapManager {
      *
      * @param infoWindow infoWindows à actualiser
      */
-    private void updateInfoWindow(CustomInfoWindow infoWindow) {
+    private void updateInfoWindow(PoiInfoWindow infoWindow) {
         infoWindow.close(); // ferme les infoWindows pour les actualiser ou supprimer
         Optional<OverlayItem> foundItem = findItem(infoWindow.getPoint());
         foundItem.ifPresent(overlayItem -> createOverlayWithIW(overlayItem, infoWindow));
@@ -233,7 +234,7 @@ public final class MapManager {
 
         overlayWithIW.setInfoWindow(infoWindow);
         overlayWithIW.getInfoWindow().open(overlayWithIW, (GeoPoint) item.getPoint(),
-                CustomInfoWindow.OFFSET_X, CustomInfoWindow.OFFSET_Y);
+                PoiInfoWindow.OFFSET_X, PoiInfoWindow.OFFSET_Y);
 
         return overlayWithIW;
     }
@@ -381,7 +382,8 @@ public final class MapManager {
         }
 
         circleManager.drawCircle(item, radiusInMeters, categoryFilter);
-        markerGestureListener.setLastCircleCenterItemUid(item.getUid()); // enregistrement du centre du cercle pour permettre la supression avec la prochaine action "long tap"
+        // enregistrement du centre du cercle pour permettre la supression avec la prochaine action "long tap"
+        markerGestureListener.setLastCircleCenterItemUid(item.getUid());
         mapView.invalidate(); // demande le rafraichissement de la carte
     }
 

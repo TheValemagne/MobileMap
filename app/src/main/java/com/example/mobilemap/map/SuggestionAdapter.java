@@ -11,7 +11,7 @@ import android.widget.CursorAdapter;
 import android.widget.SearchView;
 import android.widget.TextView;
 
-import com.example.mobilemap.R;
+import com.example.mobilemap.databinding.SuggestionListItemBinding;
 
 import java.text.MessageFormat;
 import java.util.List;
@@ -29,12 +29,11 @@ public class SuggestionAdapter extends CursorAdapter {
      * Adapter de suggestions
      *
      * @param context contexte de l'application
-     * @param cursor cursor contenant le résultat
      * @param searchView bare de recherche
      * @param addresses listes d'addresses de suggestion
      */
-    public SuggestionAdapter(Context context, Cursor cursor, SearchView searchView, List<Address> addresses) {
-        super(context, cursor, FLAG_REGISTER_CONTENT_OBSERVER);
+    public SuggestionAdapter(Context context, SearchView searchView, List<Address> addresses) {
+        super(context, SuggestionAdapter.getCursorAdapter(addresses), FLAG_REGISTER_CONTENT_OBSERVER);
 
         this.searchView = searchView;
         this.addresses = addresses;
@@ -46,16 +45,15 @@ public class SuggestionAdapter extends CursorAdapter {
      * @param addresses liste de suggestions d'addresses
      * @return cursor avec les addresses données
      */
-    public static MatrixCursor getCursorAdapter(List<Address> addresses) {
-        Object[] temp = new Object[]{0, "default"};
+    private static MatrixCursor getCursorAdapter(List<Address> addresses) {
         String[] columns = new String[]{"_id", "text"};
         MatrixCursor cursor = new MatrixCursor(columns);
 
-        for (int i = 0; i < addresses.size(); i++) {
-            Address address = addresses.get(i);
-            temp[0] = i; // index
-            temp[1] = address.getAddressLine(0); // adresses
-            cursor.addRow(temp);
+        for (int index = 0; index < addresses.size(); index++) {
+            Address address = addresses.get(index);
+
+            // récupération de l'adresse avec la rue, la ville et le pays
+            cursor.addRow(new Object[]{index, address.getAddressLine(0)});
         }
 
         return cursor;
@@ -63,13 +61,13 @@ public class SuggestionAdapter extends CursorAdapter {
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        LayoutInflater inflater=(LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view=inflater.inflate(R.layout.suggestion_list_item, parent, false);
+        LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        SuggestionListItemBinding binding = SuggestionListItemBinding.inflate(inflater);
 
-        suggestionAddress = view.findViewById(R.id.suggestionAddress);
-        suggestionLocality = view.findViewById(R.id.suggestionLocality);
+        suggestionAddress = binding.suggestionAddress;
+        suggestionLocality = binding.suggestionLocality;
 
-        return view;
+        return binding.getRoot();
     }
 
     @Override

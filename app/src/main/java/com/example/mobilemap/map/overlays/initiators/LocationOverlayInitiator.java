@@ -9,7 +9,7 @@ import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 /**
- * Initialisateur de l'overlay de la localisation
+ * Initialisateur de l'overlay de la localisation / position de l'utilisateur
  *
  * @author J.Houdé
  */
@@ -18,7 +18,7 @@ public class LocationOverlayInitiator extends OverlayInitiator{
     private final MapManager mapManager;
 
     /**
-     * Initialisateur de l'overlay de la localisation
+     * Initialisateur de l'overlay de la localisation / position de l'utilisateur
      *
      * @param mapView vue de la carte
      * @param mapManager gestionaire de la carte
@@ -26,6 +26,7 @@ public class LocationOverlayInitiator extends OverlayInitiator{
      */
     public LocationOverlayInitiator(MapView mapView, MainActivity activity, MapManager mapManager) {
         super(mapView);
+
         this.activity = activity;
         this.mapManager = mapManager;
     }

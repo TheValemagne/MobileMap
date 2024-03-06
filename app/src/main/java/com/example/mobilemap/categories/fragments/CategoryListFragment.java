@@ -53,7 +53,7 @@ public class CategoryListFragment extends Fragment implements FragmentListView {
      * @param activity activité à l'origine du fragment
      */
     private void initRecyclerView(AppCompatActivity activity) {
-        updateView();
+        updateListView();
 
         RecyclerView recyclerView = binding.categoryList;
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
@@ -63,7 +63,7 @@ public class CategoryListFragment extends Fragment implements FragmentListView {
     }
 
     @Override
-    public void updateView() {
+    public void updateListView() {
         List<Category> categories = ContentResolverHelper.getCategories(requireActivity().getContentResolver());
 
         binding.emptyLabel.setVisibility(categories.isEmpty() ? View.VISIBLE : View.INVISIBLE);

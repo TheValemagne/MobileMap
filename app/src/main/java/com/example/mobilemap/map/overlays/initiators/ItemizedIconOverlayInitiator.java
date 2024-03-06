@@ -33,6 +33,7 @@ public class ItemizedIconOverlayInitiator extends OverlayInitiator{
      */
     public ItemizedIconOverlayInitiator(MapView mapView, MapManager mapManager, MarkerGestureListener markerGestureListener, MainActivity activity) {
         super(mapView);
+
         this.mapManager = mapManager;
         this.activity = activity;
 
@@ -44,6 +45,7 @@ public class ItemizedIconOverlayInitiator extends OverlayInitiator{
 
         return new ItemizedIconOverlay<>(mapManager.getOverlayItems(),
                 Objects.requireNonNull(ResourcesCompat.getDrawable(activity.getResources(), R.drawable.small_marker, activity.getTheme())),
-                markerGestureListener, activity.getApplicationContext());
+                markerGestureListener,
+                activity.getApplicationContext());
     }
 }

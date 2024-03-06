@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -64,6 +65,9 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
     private List<Category> categories;
     private PoisActivity activity;
     private Geocoder geocoder;
+    private List<FieldValidator> textFieldValidators;
+    private List<FieldValidator> latitudeValidators;
+    private List<FieldValidator> longitudeValidators;
 
     public PoiFragment() {
         // Required empty public constructor
@@ -78,10 +82,12 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
      */
     public static PoiFragment newInstance(long itemId, boolean launchedForResult) {
         PoiFragment fragment = new PoiFragment();
+
         Bundle args = new Bundle();
         args.putLong(ARG_ITEM_ID, itemId);
         args.putBoolean(ARG_LAUNCHED_FOR_RESULT, launchedForResult);
         fragment.setArguments(args);
+
         return fragment;
     }
 
@@ -95,11 +101,13 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
      */
     public static PoiFragment newInstance(double latitude, double longitude, boolean launchedForResult) {
         PoiFragment fragment = new PoiFragment();
+
         Bundle args = new Bundle();
         args.putDouble(ARG_LATITUDE, latitude);
         args.putDouble(ARG_LONGITUDE, longitude);
         args.putBoolean(ARG_LAUNCHED_FOR_RESULT, launchedForResult);
         fragment.setArguments(args);
+
         return fragment;
     }
 
@@ -108,6 +116,7 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
         super.onCreate(savedInstanceState);
 
         initFromArguments();
+
         activity = (PoisActivity) requireActivity();
         geocoder = new Geocoder(this.requireContext(), Locale.getDefault());
     }
@@ -144,8 +153,8 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
             binding.poiBtnSpace.setVisibility(View.GONE);
             updateFieldsFromArguments();
         } else {
-            poi = findPoi(itemId);
-            updateFields(binding);
+            findPoi(itemId).ifPresent(item -> poi = item);
+            updateFields();
         }
 
         MiniMapManager miniMapManager = new MiniMapManager(activity, this, binding.miniMapView,
@@ -162,7 +171,8 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
                 binding.poiResume
         ).forEach(editText -> editText.addTextChangedListener(poiTextWatcher));
 
-        bindActionButtons(binding);
+        bindActionButtons();
+        initValidators();
 
         return binding.getRoot();
     }
@@ -187,6 +197,29 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
         } else {
             binding.poiPostalAddress.setText(getAddressFromCoordinates(new GeoPoint(latitude, longitude)));
         }
+    }
+
+    /**
+     * Initialisation des validateurs de champs textes
+     */
+    private void initValidators() {
+        Resources resources = requireActivity().getResources();
+
+        textFieldValidators = new ArrayList<>(Arrays.asList(
+                new IsFieldSet(binding.poiName, resources),
+                new IsFieldSet(binding.poiPostalAddress, resources),
+                new IsFieldSet(binding.poiResume, resources)
+        ));
+
+        latitudeValidators = new ArrayList<>(Arrays.asList(
+                new IsFieldSet(binding.poiLatitude, resources),
+                new DoubleRangeValidator(binding.poiLatitude, resources, -90, 90)
+        ));
+
+        longitudeValidators = new ArrayList<>(Arrays.asList(
+                new IsFieldSet(binding.poiLongitude, resources),
+                new DoubleRangeValidator(binding.poiLongitude, resources, -180, 180)
+        ));
     }
 
     /**
@@ -218,10 +251,8 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
 
     /**
      * Mise à jour des champts de données avec le site
-     *
-     * @param binding binding de la vue accossiée au fragment
      */
-    private void updateFields(FragmentPoiBinding binding) {
+    private void updateFields() {
         binding.poiName.setText(poi.getName());
         binding.poiLatitude.setText(String.valueOf(poi.getLatitude()));
         binding.poiLongitude.setText(String.valueOf(poi.getLongitude()));
@@ -237,17 +268,24 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
         binding.categoryDropDown.setAdapter(new ArrayAdapter<>(this.requireContext(), android.R.layout.simple_spinner_dropdown_item, categoryNames));
     }
 
-    private Poi findPoi(long id) {
+    private Optional<Poi> findPoi(long id) {
         Cursor cursor = requireActivity().getContentResolver()
                 .query(DatabaseContract.Poi.CONTENT_URI, DatabaseContract.Poi.COLUMNS, MessageFormat.format("{0} = {1}", DatabaseContract.Poi._ID, id),
                         null, null);
-        assert cursor != null;
+
+        if (cursor == null) {
+            return Optional.empty();
+        }
+
         cursor.moveToFirst();
 
-        return Poi.fromCursor(cursor);
+        return Optional.of(Poi.fromCursor(cursor));
     }
 
-    private void bindActionButtons(FragmentPoiBinding binding) {
+    /**
+     * Initialisation des écouteurs des boutons d'actions : annuler, supprimer et enregistrer
+     */
+    private void bindActionButtons() {
         binding.poiSaveBtn.setOnClickListener(new SavePoiListener(activity, this, DatabaseContract.Poi.CONTENT_URI, launchedForResult));
         binding.poiCancelBtn.setOnClickListener(new CancelAction(activity, launchedForResult));
 
@@ -276,42 +314,15 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
 
     @Override
     public boolean isValid() {
-        Resources resources = requireActivity().getResources();
-
-        boolean AreTextFieldsSet = getTextFieldValidators(resources).stream()
+        boolean AreTextFieldsSet = textFieldValidators.stream()
                 .map(FieldValidator::check)
                 .reduce(true, (aBoolean, aBoolean2) -> aBoolean && aBoolean2);
-        boolean isLatitudeValid = getLatitudeValidators(resources).stream()
+        boolean isLatitudeValid = latitudeValidators.stream()
                 .allMatch(FieldValidator::check);
-        boolean isLongitudeValid = getLongitudeValidators(resources).stream()
+        boolean isLongitudeValid = longitudeValidators.stream()
                 .allMatch(FieldValidator::check);
 
         return AreTextFieldsSet && isLatitudeValid && isLongitudeValid;
-    }
-
-    @NonNull
-    private ArrayList<FieldValidator> getTextFieldValidators(Resources resources) {
-        return new ArrayList<>(Arrays.asList(
-                new IsFieldSet(binding.poiName, resources),
-                new IsFieldSet(binding.poiPostalAddress, resources),
-                new IsFieldSet(binding.poiResume, resources)
-        ));
-    }
-
-    @NonNull
-    private ArrayList<FieldValidator> getLatitudeValidators(Resources resources) {
-        return new ArrayList<>(Arrays.asList(
-                new IsFieldSet(binding.poiLatitude, resources),
-                new DoubleRangeValidator(binding.poiLatitude, resources, -90, 90)
-        ));
-    }
-
-    @NonNull
-    private ArrayList<FieldValidator> getLongitudeValidators(Resources resources) {
-        return new ArrayList<>(Arrays.asList(
-                new IsFieldSet(binding.poiLongitude, resources),
-                new DoubleRangeValidator(binding.poiLongitude, resources, -180, 180)
-        ));
     }
 
     @Override

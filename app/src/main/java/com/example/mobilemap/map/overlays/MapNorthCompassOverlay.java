@@ -8,13 +8,13 @@ import org.osmdroid.views.Projection;
 import org.osmdroid.views.overlay.compass.CompassOverlay;
 
 /**
- * Overlay de boussole liée à la rotation de la carte
+ * Overlay de boussole indiquant le sens d'orientation de la carte
  *
  * @author J.Houdé
  */
 public class MapNorthCompassOverlay extends CompassOverlay {
     /**
-     * Overlay de boussole liée à la rotation de la carte
+     * Overlay de boussole indiquant le sens d'orientation de la carte
      *
      * @param context contexte de l'appication
      * @param mapView vue de la carte
@@ -24,8 +24,8 @@ public class MapNorthCompassOverlay extends CompassOverlay {
     }
 
     @Override
-    public void draw(Canvas c, Projection pProjection) {
+    public void draw(Canvas canvas, Projection projection) {
         // rotation de la boussole liée à la rotation de la carte
-        drawCompass(c, -mMapView.getMapOrientation(), pProjection.getScreenRect());
+        drawCompass(canvas, -mMapView.getMapOrientation(), projection.getScreenRect());
     }
 }

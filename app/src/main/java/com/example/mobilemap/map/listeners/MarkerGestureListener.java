@@ -1,7 +1,7 @@
 package com.example.mobilemap.map.listeners;
 
 import com.example.mobilemap.R;
-import com.example.mobilemap.map.CustomInfoWindow;
+import com.example.mobilemap.map.PoiInfoWindow;
 import com.example.mobilemap.map.MainActivity;
 import com.example.mobilemap.map.manager.MapManager;
 
@@ -21,7 +21,7 @@ import java.util.Map;
 public class MarkerGestureListener implements ItemizedIconOverlay.OnItemGestureListener<OverlayItem> {
     private final MapManager mapManager;
     private final MapView mapView;
-    private final Map<String, CustomInfoWindow> infoWindowMap;
+    private final Map<String, PoiInfoWindow> infoWindowMap;
     private final MainActivity activity;
 
     private String lastCircleCenterItemUid;
@@ -36,9 +36,9 @@ public class MarkerGestureListener implements ItemizedIconOverlay.OnItemGestureL
      * @param mapView           vue de la carte
      * @param mapManager        gestionnaire de la carte
      * @param infoWindowMap map d'infoWindows
-     * @param activity          activité mère
+     * @param activity          activité principale
      */
-    public MarkerGestureListener(MapView mapView, MapManager mapManager, Map<String, CustomInfoWindow> infoWindowMap, MainActivity activity) {
+    public MarkerGestureListener(MapView mapView, MapManager mapManager, Map<String, PoiInfoWindow> infoWindowMap, MainActivity activity) {
         this.mapView = mapView;
         this.mapManager = mapManager;
         this.infoWindowMap = infoWindowMap;
@@ -53,7 +53,7 @@ public class MarkerGestureListener implements ItemizedIconOverlay.OnItemGestureL
 
         if (!infoWindowMap.containsKey(uid)) { // création d'une infoWindows pour le marqueur
             infoWindowMap.put(uid,
-                    new CustomInfoWindow(R.layout.poi_info_window, (GeoPoint) item.getPoint(), mapView, mapManager.getCircleManager(), activity));
+                    new PoiInfoWindow(R.layout.poi_info_window, (GeoPoint) item.getPoint(), mapView, mapManager.getCircleManager(), activity));
         }
 
         InfoWindow infoWindow = infoWindowMap.get(uid);

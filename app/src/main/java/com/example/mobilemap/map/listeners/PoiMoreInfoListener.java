@@ -17,7 +17,7 @@ public class PoiMoreInfoListener implements View.OnClickListener {
     /**
      * Ecouteur pour afficher plus de détails sur un site sélectionné
      *
-     * @param activity      activité mère
+     * @param activity      activité principale
      * @param overlayItemId identifiant du fichier xml
      */
     public PoiMoreInfoListener(MainActivity activity, String overlayItemId) {

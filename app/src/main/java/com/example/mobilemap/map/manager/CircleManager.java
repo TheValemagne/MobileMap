@@ -8,7 +8,7 @@ import android.location.Location;
 
 import androidx.core.content.res.ResourcesCompat;
 
-import com.example.mobilemap.map.CustomInfoWindow;
+import com.example.mobilemap.map.PoiInfoWindow;
 import com.example.mobilemap.map.SharedPreferencesConstant;
 
 import org.osmdroid.api.IGeoPoint;
@@ -34,29 +34,41 @@ public class CircleManager {
     private final Activity activity;
     private final MapManager mapManager;
     private Polygon circle;
-    private final Map<String, CustomInfoWindow> infoWindowMap;
+    private final Map<String, PoiInfoWindow> infoWindowMap;
     private final Marker lastUserLocation;
 
     /**
      * Gestion des circles de filtrage de la carte
      *
      * @param mapView           vue de la map
-     * @param activity          activité mère
+     * @param activity          activité principale
      * @param mapManager        gestionnaire de la carte
      * @param infoWindowMap map des infoWindow
      */
-    public CircleManager(MapView mapView, Activity activity, MapManager mapManager, Map<String, CustomInfoWindow> infoWindowMap) {
+    public CircleManager(MapView mapView, Activity activity, MapManager mapManager, Map<String, PoiInfoWindow> infoWindowMap) {
         this.mapView = mapView;
         this.activity = activity;
         this.mapManager = mapManager;
         this.infoWindowMap = infoWindowMap;
 
-        this.lastUserLocation = new Marker(mapView, activity);
+        this.lastUserLocation = initMarker(mapView, activity);
+    }
 
-        lastUserLocation.setAnchor(.5f, .8125f);
-        lastUserLocation.setInfoWindow(null);
-        lastUserLocation.setIcon(ResourcesCompat.getDrawable(activity.getResources(),
+    /**
+     * Initialisation du marqueur pour la dernière localisation de l'utilisateur
+     * @param mapView vue de la map
+     * @param activity activité principale
+     * @return le marqueur de position
+     */
+    private Marker initMarker(MapView mapView, Activity activity) {
+        Marker marker = new Marker(mapView, activity);
+
+        marker.setAnchor(.5f, .8125f);
+        marker.setInfoWindow(null);
+        marker.setIcon(ResourcesCompat.getDrawable(activity.getResources(),
                 org.osmdroid.library.R.drawable.person, activity.getTheme()));
+
+        return marker;
     }
 
     /**
@@ -295,7 +307,7 @@ public class CircleManager {
 
         if (mapManager.isCircleAroundMe()) { // restaurer le cercle autour de l'utilisateur
             lastUserLocation.setPosition(center); // affichage de la dernière position enregistrée en lien avec le cercle tracé
-            int index = mapView.getOverlays().indexOf(mapManager.getItemizedOverlay());
+            int index = mapView.getOverlays().indexOf(mapManager.getItemizedOverlay()); // insertion du marqueur derrière les marqueurs
             mapView.getOverlays().add(index, lastUserLocation);
 
             drawCircleAroundMe(center, circleRadius, categoryFilter);

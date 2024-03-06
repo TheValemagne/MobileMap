@@ -28,8 +28,8 @@ public class SaveDatabaseItemListener<T extends DatabaseItem> implements View.On
     /**
      * Ecouteur pour enregistrer un élément dans la base de données
      *
-     * @param activity          activité mère
-     * @param fragment          fragement mère
+     * @param activity          activité gérant les données
+     * @param fragment          fragement gérant les données
      * @param databaseUri       uri de la table
      */
     public SaveDatabaseItemListener(AppCompatActivity activity, ItemView<T> fragment, Uri databaseUri) {

@@ -31,7 +31,7 @@ public class SearchViewListener implements SearchView.OnQueryTextListener {
     /**
      * Ecouteur pour la gestion de la recherche et des suggestions d'une searchView
      *
-     * @param activity   actiivité mère
+     * @param activity   activité principale
      * @param mapManager gestionnaire de la carte
      * @param searchView bare de recherche à manipuler
      */
@@ -80,7 +80,6 @@ public class SearchViewListener implements SearchView.OnQueryTextListener {
         }
 
         // recherche des suggestions de localisation
-
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) { // uniquement pour les appareils tournant sous tiramisu
             geocoder.getFromLocationName(newText, SUGGESTION_LIMIT, new RequestSuggestionsListener(activity, searchView));
         } else {
@@ -91,7 +90,7 @@ public class SearchViewListener implements SearchView.OnQueryTextListener {
                     return true;
                 }
 
-                searchView.setSuggestionsAdapter(new SuggestionAdapter(activity, SuggestionAdapter.getCursorAdapter(addresses), searchView, addresses));
+                searchView.setSuggestionsAdapter(new SuggestionAdapter(activity, searchView, addresses));
 
             } catch (IOException e) {
                 throw new RuntimeException(e);

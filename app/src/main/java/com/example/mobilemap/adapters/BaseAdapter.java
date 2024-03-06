@@ -18,9 +18,9 @@ import java.util.List;
  */
 public abstract class BaseAdapter<T extends RecyclerView.ViewHolder, U extends HasId> extends RecyclerView.Adapter<T> {
     /**
-     * Récupération de la liste d'éléments stockés
+     * Récupération de la liste des éléments stockés
      *
-     * @return liste d'éléments
+     * @return liste d'éléments de la liste
      */
     public List<U> getValues() {
         return values;
@@ -35,7 +35,7 @@ public abstract class BaseAdapter<T extends RecyclerView.ViewHolder, U extends H
      * @param values           liste initiale de la liste
      * @param contentResolver  gestionnaire de la base de données
      * @param activity         activité à l'origine du fragment
-     * @param fragmentListView fragment gérant la liste
+     * @param fragmentListView fragment gérant la liste graphique
      */
     public BaseAdapter(List<U> values, ContentResolver contentResolver, AppCompatActivity activity, FragmentListView fragmentListView) {
         super();
@@ -49,11 +49,11 @@ public abstract class BaseAdapter<T extends RecyclerView.ViewHolder, U extends H
     /**
      * Supprimer l'élément de la liste à la position indiquée
      *
-     * @param position position de l'élément à supprimer
+     * @param position position de l'élément à supprimer de la liste
      */
     public void removeItem(int position) {
         values.remove(position); // supression de l'élément de la liste
         this.notifyItemRemoved(position);
-        this.fragmentListView.updateView(); // mise à jour de la vue graphique
+        this.fragmentListView.updateListView(); // mise à jour de la vue graphique
     }
 }

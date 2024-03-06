@@ -76,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
         ViewCompat.setOnApplyWindowInsetsListener(constraintLayout, (v, windowInsets) -> {
             Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemGestures());
             constraintLayout.setPadding(0, 0, 0, insets.bottom);
+
             return WindowInsetsCompat.CONSUMED;
         });
 
@@ -83,6 +84,21 @@ public class MainActivity extends AppCompatActivity {
                 Manifest.permission.ACCESS_FINE_LOCATION
         ));
 
+        bindUI(binding);
+
+        if (ContentResolverHelper.getPois(this.getContentResolver()).isEmpty()) {
+            disableFilterButtons();
+        }
+
+        poiActivityLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new MapActivityResultCallback(mapManager));
+    }
+
+    /**
+     * Initialisation des éléments graphiques
+     *
+     * @param binding lien avec la vue graphique
+     */
+    private void bindUI(ActivityMainBinding binding) {
         mapManager = new MapManager(binding.mapView, this);
         mapManager.initMap();
 
@@ -97,22 +113,6 @@ public class MainActivity extends AppCompatActivity {
         filterFloatingLayout.setVisibility(View.GONE);
 
         initButtons(binding);
-
-        if (ContentResolverHelper.getPois(this.getContentResolver()).isEmpty()) {
-            disableFilterButtons();
-        }
-
-        poiActivityLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new MapActivityResultCallback(mapManager));
-    }
-
-    /**
-     * Déactivation des éléments de filtrage des marqueurs
-     */
-    private void disableFilterButtons() {
-        searchView.setVisibility(View.GONE);
-        searchView.setFocusable(false);
-
-        filterFloatingLayout.setVisibility(View.GONE);
     }
 
     /**
@@ -136,7 +136,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * Déactivation des éléments de filtrage des marqueurs
+     */
+    private void disableFilterButtons() {
+        searchView.setVisibility(View.GONE);
+        searchView.setFocusable(false);
+
+        filterFloatingLayout.setVisibility(View.GONE);
+    }
+
+    /**
      * Gestion de l'affichage des boutons en lien avec la localisation actuelle
+     *
      * @param isVisible affiche les boutons si vrai, sinon les caches
      */
     public void shouldShowLocationBtn(boolean isVisible) {
@@ -159,6 +170,7 @@ public class MainActivity extends AppCompatActivity {
         if (hasCircleAroundMe) {
             filterFloatingLayout.setVisibility(View.VISIBLE);
         }
+
         if (floatingButtonsLayout.getVisibility() == View.GONE && !hasCircleAroundMe) {
             filterFloatingLayout.setVisibility(View.GONE);
         }
@@ -182,18 +194,21 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+
         mapManager.onPause();
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
+
         bottomNavigationMenuView.setSelectedItemId(currentPageId);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+
         mapManager.onResume();
 
         if (searchView != null) {
@@ -210,6 +225,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
         mapManager.onDetach();
     }
 
@@ -218,16 +234,19 @@ public class MainActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         ArrayList<String> permissionsToRequest = new ArrayList<>(Arrays.asList(permissions).subList(0, grantResults.length));
 
-        if (permissionsToRequest.size() > 0) {
-            ActivityCompat.requestPermissions(
-                    this,
-                    permissionsToRequest.toArray(new String[0]),
-                    REQUEST_PERMISSIONS_REQUEST_CODE);
+        if (permissionsToRequest.isEmpty()) {
+            return;
         }
+
+        ActivityCompat.requestPermissions(
+                this,
+                permissionsToRequest.toArray(new String[0]),
+                REQUEST_PERMISSIONS_REQUEST_CODE);
     }
 
     /**
      * Demande les permissions nécessaires à la carte
+     *
      * @param permissions liste de permissions à demander
      */
     private void requestPermissionsIfNecessary(List<String> permissions) {
@@ -239,11 +258,14 @@ public class MainActivity extends AppCompatActivity {
                 permissionsToRequest.add(permission);
             }
         }
-        if (permissionsToRequest.size() > 0) {
-            ActivityCompat.requestPermissions(
-                    this,
-                    permissionsToRequest.toArray(new String[0]),
-                    REQUEST_PERMISSIONS_REQUEST_CODE);
+
+        if (permissionsToRequest.isEmpty()) {
+            return;
         }
+
+        ActivityCompat.requestPermissions(
+                this,
+                permissionsToRequest.toArray(new String[0]),
+                REQUEST_PERMISSIONS_REQUEST_CODE);
     }
 }

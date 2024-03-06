@@ -48,37 +48,40 @@ public class CategoryFragment extends Fragment implements ItemView<Category> {
     private List<String> categoryNames;
 
     private CategoriesActivity activity;
+    private List<FieldValidator> fieldValidators;
 
     public CategoryFragment() {
         // Required empty public constructor
     }
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
+     * Méthode factory pour créer une nouvelle instance avec un identifiant de catégorie
      *
      * @param itemId identifiant de la catégorie à afficher.
-     * @return A new instance of fragment CategoryFragment.
+     * @return Nouvelle instance du fragment CategoryFragment.
      */
     public static CategoryFragment newInstance(long itemId) {
         CategoryFragment fragment = new CategoryFragment();
+
         Bundle args = new Bundle();
         args.putLong(ARG_ITEM_ID, itemId);
         fragment.setArguments(args);
+
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
+
+        if (getArguments() != null && getArguments().containsKey(ARG_ITEM_ID)) { // initilisation de l'identifiant de la catégorie si existant
             itemId = getArguments().getLong(ARG_ITEM_ID);
         }
 
         activity = (CategoriesActivity) requireActivity();
         categoryNames = ContentResolverHelper.getCategories(activity.getContentResolver())
                 .stream().map(Category::getName)
-                .collect(Collectors.toList()); // récupérer la lsite des noms uniques des catégories existantes
+                .collect(Collectors.toList()); // récupérer la liste des noms uniques des catégories existantes
     }
 
     @Override
@@ -97,11 +100,12 @@ public class CategoryFragment extends Fragment implements ItemView<Category> {
 
             if (foundCategory.isPresent()) {
                 category = foundCategory.get();
-                binding.categoryName.setText(category.getName());
+                binding.categoryName.setText(foundCategory.get().getName());
             }
         }
 
         bindActionButtons();
+        initValidators();
 
         return binding.getRoot();
     }
@@ -116,6 +120,18 @@ public class CategoryFragment extends Fragment implements ItemView<Category> {
         if (category != null) {
             binding.categoryDeleteBtn.setOnClickListener(new DeleteDatabaseItemListener(category.getId(), activity, activity.getDeleteContext()));
         }
+    }
+
+    /**
+     * Initialisation des validateurs de champs textes
+     */
+    private void initValidators() {
+        Resources resources = requireActivity().getResources();
+
+        fieldValidators = new ArrayList<>(Arrays.asList(
+                new IsFieldSet(binding.categoryName, resources),
+                new IsUniqueCategoryValidator(binding.categoryName, resources, categoryNames)
+        ));
     }
 
     /**
@@ -139,13 +155,6 @@ public class CategoryFragment extends Fragment implements ItemView<Category> {
     
     @Override
     public boolean isValid() {
-        Resources resources = requireActivity().getResources();
-
-        List<FieldValidator> fieldValidators = new ArrayList<>(Arrays.asList(
-                new IsFieldSet(binding.categoryName, resources),
-                new IsUniqueCategoryValidator(binding.categoryName, resources, categoryNames)
-        ));
-
         return fieldValidators.stream().allMatch(FieldValidator::check);
     }
 
@@ -154,6 +163,7 @@ public class CategoryFragment extends Fragment implements ItemView<Category> {
      *
      * @return la catégorie avec le contenu entré dans la page
      */
+    @Override
     public Category getValues() {
         String name = binding.categoryName.getText().toString();
 

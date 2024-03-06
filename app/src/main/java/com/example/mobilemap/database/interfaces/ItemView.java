@@ -19,7 +19,7 @@ public interface ItemView<T extends DatabaseItem> {
     /**
      * Récupération des données entrées
      *
-     * @return object contenant les données du formulaire
+     * @return objet contenant les données du formulaire
      */
     T getValues();
 }

@@ -12,7 +12,7 @@ public class PoiOverlayWithIW extends OverlayWithIW {
     /**
      * Overlay pour afficher le détail d'un marqueur de la carte
      *
-     * @param item élément à représenter dans la fenêtre
+     * @param item élément à représenter dans la fenêtre d'information
      */
     public PoiOverlayWithIW(OverlayItem item) {
         super();

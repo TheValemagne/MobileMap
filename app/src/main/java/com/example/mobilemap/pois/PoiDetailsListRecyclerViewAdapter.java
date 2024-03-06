@@ -33,7 +33,8 @@ public class PoiDetailsListRecyclerViewAdapter extends BaseAdapter<PoiDetailsLis
      * @param activity activité mère
      * @param fragment fragment affichhant la liste
      */
-    public PoiDetailsListRecyclerViewAdapter(List<PoiDetail> values, ContentResolver contentResolver, AppCompatActivity activity, PoiListFragment fragment) {
+    public PoiDetailsListRecyclerViewAdapter(List<PoiDetail> values, ContentResolver contentResolver,
+                                             AppCompatActivity activity, PoiListFragment fragment) {
         super(values, contentResolver, activity, fragment);
     }
 
