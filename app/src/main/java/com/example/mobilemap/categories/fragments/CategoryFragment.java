@@ -92,7 +92,7 @@ public class CategoryFragment extends Fragment implements ItemView<Category> {
         Resources resources = requireActivity().getResources();
         binding.title.setText(resources.getText(itemId == DatabaseContract.NOT_EXISTING_ID ? R.string.add_category : R.string.edit_category));
 
-        if (itemId == -1) { // ajout d'une nouvelle catégorie
+        if (itemId == DatabaseContract.NOT_EXISTING_ID) { // ajout d'une nouvelle catégorie
             binding.categoryDeleteBtn.setVisibility(View.GONE);
             binding.deleteBtnSpace.setVisibility(View.GONE);
         } else { // modification d'une catégorie
@@ -101,6 +101,8 @@ public class CategoryFragment extends Fragment implements ItemView<Category> {
             if (foundCategory.isPresent()) {
                 category = foundCategory.get();
                 binding.categoryName.setText(foundCategory.get().getName());
+
+                categoryNames.remove(category.getName()); // enlève le nom de la catégorie actuelle pour permettre une modification des données
             }
         }
 
@@ -129,8 +131,8 @@ public class CategoryFragment extends Fragment implements ItemView<Category> {
         Resources resources = requireActivity().getResources();
 
         fieldValidators = new ArrayList<>(Arrays.asList(
-                new IsFieldSet(binding.categoryName, resources),
-                new IsUniqueCategoryValidator(binding.categoryName, resources, categoryNames)
+                new IsFieldSet(binding.categoryName, resources), // vérification si un onm a été défini
+                new IsUniqueCategoryValidator(binding.categoryName, resources, categoryNames) // vérification si le nom de catégorie est unique (catégorie à modifier exclue)
         ));
     }
 
@@ -165,12 +167,13 @@ public class CategoryFragment extends Fragment implements ItemView<Category> {
      */
     @Override
     public Category getValues() {
-        String name = binding.categoryName.getText().toString();
+        String name = binding.categoryName.getText().toString().trim();
 
-        if (category == null) {
+        if (category == null) { // création d'une nouvelle catégorie
             return new Category(name);
         }
 
+        // modification de la catégorie existante
         category.setName(name);
         return category;
     }

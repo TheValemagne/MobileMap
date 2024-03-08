@@ -30,6 +30,6 @@ public class IsUniqueCategoryValidator extends FieldValidator{
 
     @Override
     public boolean isValid() {
-        return !notAvailableValues.contains(this.field.getText().toString());
+        return !notAvailableValues.contains(this.field.getText().toString().trim());
     }
 }
