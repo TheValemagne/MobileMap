@@ -12,7 +12,8 @@ import org.osmdroid.views.overlay.ScaleBarOverlay;
  * @author J.Houdé
  */
 public class ScaleBarInitiator extends OverlayInitiator{
-    private static final int SCALE_BAR_Y_OFFSET = 10;
+    private static final int Y_OFFSET =  140;
+    private static final int X_OFFSET = 233;
     private final Context context;
 
     /**
@@ -32,7 +33,7 @@ public class ScaleBarInitiator extends OverlayInitiator{
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         ScaleBarOverlay scaleBarOverlay = new ScaleBarOverlay(mapView);
         scaleBarOverlay.setCentred(true);
-        scaleBarOverlay.setScaleBarOffset(displayMetrics.widthPixels / 2, SCALE_BAR_Y_OFFSET);
+        scaleBarOverlay.setScaleBarOffset(displayMetrics.widthPixels - X_OFFSET, displayMetrics.heightPixels - Y_OFFSET);
 
         return scaleBarOverlay;
     }
