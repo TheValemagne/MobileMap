@@ -8,6 +8,7 @@ import android.os.Bundle;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 
+import com.example.mobilemap.database.DatabaseContract;
 import com.example.mobilemap.map.manager.MapManager;
 import com.example.mobilemap.pois.listeners.SavePoiListener;
 
@@ -55,7 +56,7 @@ public class MapActivityResultCallback implements ActivityResultCallback<Activit
         Location point = convertToLocation("point", bundle.getDouble(SavePoiListener.CREATED_POI_LATITUDE), bundle.getDouble(SavePoiListener.CREATED_POI_LONGITUDE));
 
         return point.distanceTo(centerLocation) > mapManager.getCircleManager().getCircleRadius() ||
-                mapManager.getCircleManager().getCategoryFilter() != bundle.getLong(SavePoiListener.CREATED_POI_CATEGORY, -1);
+                mapManager.getCircleManager().getCategoryFilter() != bundle.getLong(SavePoiListener.CREATED_POI_CATEGORY, DatabaseContract.NOT_EXISTING_ID);
     }
 
     /**

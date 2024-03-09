@@ -16,12 +16,12 @@ import com.example.mobilemap.map.SuggestionAdapter;
 import java.util.List;
 
 /**
- * Ecouteur de réception des suggestions d'adresses
+ * Ecouteur de réception des suggestions de recherches d'adresses
  *
  * @author J.Houdé
  */
 @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
-public class RequestSuggestionsListener implements Geocoder.GeocodeListener {
+public class RequestSearchSuggestionsListener implements Geocoder.GeocodeListener {
     private final Activity activity;
     private final SearchView searchView;
     private final Handler handler;
@@ -32,9 +32,10 @@ public class RequestSuggestionsListener implements Geocoder.GeocodeListener {
      * @param activity   activité principale
      * @param searchView barre de recherche
      */
-    public RequestSuggestionsListener(Activity activity, SearchView searchView) {
+    public RequestSearchSuggestionsListener(Activity activity, SearchView searchView) {
         this.activity = activity;
         this.searchView = searchView;
+
         handler = new Handler(Looper.getMainLooper());
     }
 

@@ -12,14 +12,14 @@ public interface ItemView<T extends DatabaseItem> {
     /**
      * Vérification des champs de données
      *
-     * @return vrai si les données sont valides
+     * @return retourne vrai si les données sont valides, sinon faux
      */
     boolean isValid();
 
     /**
      * Récupération des données entrées
      *
-     * @return objet contenant les données du formulaire
+     * @return objet contenant les données renseignés du formulaire
      */
     T getValues();
 }

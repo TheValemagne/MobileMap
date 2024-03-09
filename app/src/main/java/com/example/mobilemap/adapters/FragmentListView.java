@@ -7,7 +7,7 @@ package com.example.mobilemap.adapters;
  */
 public interface FragmentListView {
     /**
-     * Actualisation de l'interface de la liste
+     * Actualisation des éléments affichés en lien avec la liste
      */
-    void updateListView();
+    void updateView();
 }

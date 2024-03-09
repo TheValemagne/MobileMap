@@ -52,7 +52,7 @@ public class PoiListFragment extends Fragment implements FragmentListView {
     }
 
     private void initRecyclerView(AppCompatActivity activity) {
-        updateListView();
+        updateView();
 
         RecyclerView recyclerView = binding.poiList;
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
@@ -62,7 +62,7 @@ public class PoiListFragment extends Fragment implements FragmentListView {
     }
 
     @Override
-    public void updateListView() {
+    public void updateView() {
         boolean shouldEnableList = shouldEnableList();
         List<PoiDetail> poiDetails = ContentResolverHelper.getPoisDetail(requireActivity().getContentResolver());
 

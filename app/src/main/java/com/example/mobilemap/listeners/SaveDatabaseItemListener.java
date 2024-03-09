@@ -16,8 +16,8 @@ import java.text.MessageFormat;
 /**
  * Ecouteur pour enregistrer un élément dans la base de données
  *
- * @author J.Houdé
  * @param <T> élément de la base de données qui étend DatabaseItem
+ * @author J.Houdé
  */
 public class SaveDatabaseItemListener<T extends DatabaseItem> implements View.OnClickListener {
     protected final AppCompatActivity activity;
@@ -28,9 +28,9 @@ public class SaveDatabaseItemListener<T extends DatabaseItem> implements View.On
     /**
      * Ecouteur pour enregistrer un élément dans la base de données
      *
-     * @param activity          activité gérant les données
-     * @param fragment          fragement gérant les données
-     * @param databaseUri       uri de la table
+     * @param activity    activité gérant les données
+     * @param fragment    fragement gérant les données
+     * @param databaseUri uri de la table
      */
     public SaveDatabaseItemListener(AppCompatActivity activity, ItemView<T> fragment, Uri databaseUri) {
         this.activity = activity;

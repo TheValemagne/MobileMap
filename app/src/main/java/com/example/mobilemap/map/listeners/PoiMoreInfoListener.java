@@ -28,6 +28,6 @@ public class PoiMoreInfoListener implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        activity.getPoiActivityLauncher().launch(PoisActivity.createIntent(activity, itemId));
+        activity.getPoiActivityLauncher().launch(PoisActivity.createIntent(activity, itemId)); // lancement de l'activité pour afficher le détail d'un site
     }
 }

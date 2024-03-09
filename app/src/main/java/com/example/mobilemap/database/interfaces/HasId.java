@@ -8,7 +8,8 @@ package com.example.mobilemap.database.interfaces;
 public interface HasId {
     /**
      * Retourne l'identifiant de la donnée
-     * @return identifiant unique
+     *
+     * @return identifiant unique de la donnée
      */
     long getId();
 }

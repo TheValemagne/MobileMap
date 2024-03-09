@@ -33,7 +33,7 @@ public class CompassOverlayInitiator extends OverlayInitiator{
     public CompassOverlay init() {
         CompassOverlay mapNorthCompassOverlay = new MapNorthCompassOverlay(context, mapView);
         mapNorthCompassOverlay.enableCompass();
-        mapNorthCompassOverlay.setCompassCenter(COMPASS_X_OFFSET, COMPASS_Y_OFFSET);
+        mapNorthCompassOverlay.setCompassCenter(COMPASS_X_OFFSET, COMPASS_Y_OFFSET); // placement de la boussole sur la carte
 
         return mapNorthCompassOverlay;
     }

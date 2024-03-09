@@ -1,6 +1,5 @@
 package com.example.mobilemap.pois;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.app.Activity;
@@ -8,6 +7,8 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 
+import com.example.mobilemap.activities.BaseActivity;
+import com.example.mobilemap.activities.DatabaseItemManager;
 import com.example.mobilemap.R;
 import com.example.mobilemap.database.ContentResolverHelper;
 import com.example.mobilemap.database.DatabaseContract;
@@ -15,17 +16,13 @@ import com.example.mobilemap.database.DeleteItemContext;
 import com.example.mobilemap.databinding.ActivityPoisBinding;
 import com.example.mobilemap.pois.fragments.PoiFragment;
 import com.example.mobilemap.pois.fragments.PoiListFragment;
-import com.example.mobilemap.listeners.NavigationBarItemSelectedListener;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 /**
  * Activité pour la gestion des sites
  *
  * @author J.Houdé
  */
-public class PoisActivity extends AppCompatActivity {
-    private BottomNavigationView bottomNavigationMenuView;
-    private static final int currentPageId = R.id.navigation_pois;
+public class PoisActivity extends BaseActivity implements DatabaseItemManager {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,9 +32,7 @@ public class PoisActivity extends AppCompatActivity {
 
         setContentView(binding.getRoot());
 
-        bottomNavigationMenuView = binding.poisNavigationBar;
-        bottomNavigationMenuView.setSelectedItemId(currentPageId);
-        bottomNavigationMenuView.setOnItemSelectedListener(new NavigationBarItemSelectedListener(this, currentPageId));
+        initNavigationBar(binding.poisNavigationBar, R.id.navigation_pois);
 
         if (this.getSupportFragmentManager().findFragmentById(R.id.poisFragmentContainer) != null) {
             return;
@@ -76,6 +71,7 @@ public class PoisActivity extends AppCompatActivity {
      * Retourne les informations de suppression d'un site
      * @return informations pour suppression d'un site
      */
+    @Override
     public DeleteItemContext getDeleteContext() {
         Resources resources = this.getResources();
         return new DeleteItemContext(DatabaseContract.Poi.CONTENT_URI,
@@ -94,9 +90,4 @@ public class PoisActivity extends AppCompatActivity {
                 .putExtra(PoiFragment.ARG_ITEM_ID, itemId);
     }
 
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        bottomNavigationMenuView.setSelectedItemId(currentPageId);
-    }
 }

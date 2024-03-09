@@ -36,16 +36,6 @@ public class PoiInfoWindow extends InfoWindow {
     private final MainActivity activity;
 
     /**
-     * Fenêtre d'information d'un marqueur d'illustration
-     *
-     * @param layoutResId identifiant de la ressource graphique
-     * @param mapView     vue de la carte
-     */
-    public PoiInfoWindow(int layoutResId, MapView mapView) {
-        this(layoutResId, null, mapView, null, null);
-    }
-
-    /**
      * Fenêtre d'information d'un marqueur intéractif
      *
      * @param layoutResId   identifiant de la ressource graphique
@@ -62,6 +52,16 @@ public class PoiInfoWindow extends InfoWindow {
         this.activity = activity;
     }
 
+    /**
+     * Fenêtre d'information d'un marqueur d'illustration
+     *
+     * @param layoutResId identifiant de la ressource graphique
+     * @param mapView     vue de la carte
+     */
+    public PoiInfoWindow(int layoutResId, MapView mapView) {
+        this(layoutResId, null, mapView, null, null);
+    }
+
     @Override
     public void onOpen(Object item) {
         OverlayWithIW overlayItem = (OverlayWithIW) item;
@@ -75,8 +75,7 @@ public class PoiInfoWindow extends InfoWindow {
         ImageButton moreInfoButton = mView.findViewById(R.id.moreInfoButton);
 
         if (activity == null) { // Pour la page de détail du site uniquement
-            moreInfoButton.setEnabled(false);
-            mView.setOnTouchListener((v, event) -> mView.performClick());
+            moreInfoButton.setEnabled(false); // déactivation du bouton plus d'information
             return;
         }
 
@@ -84,7 +83,7 @@ public class PoiInfoWindow extends InfoWindow {
 
         TextView bubbleSubDescription = mView.findViewById(R.id.bubbleSubdescription);
 
-        if (circleManager == null || point == null || !circleManager.hasSavedCircle()) {
+        if (circleManager == null || point == null || !circleManager.hasSavedCircle()) { // marqueur d'illustration ou pas de cerclé affiché
             bubbleSubDescription.setVisibility(View.GONE);
             return;
         }
@@ -94,7 +93,7 @@ public class PoiInfoWindow extends InfoWindow {
 
         Locale locale = LocaleList.getDefault().get(0);
         bubbleSubDescription.setText(MessageFormat.format(activity.getResources().getString(R.string.distanceLabel),
-                String.format(locale, "%.2f", getDistanceToCircleCenter())));
+                String.format(locale, "%.2f", getDistanceToCircleCenter()))); // affichage de la distance au centre du cercle en mètre
     }
 
     /**

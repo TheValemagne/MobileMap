@@ -20,64 +20,11 @@ import java.util.List;
  */
 public class Poi extends DatabaseItem {
     private String name;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     private double latitude;
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(@FloatRange(from = -90.0, to = 90.0) double latitude) {
-        this.latitude = latitude;
-    }
-
     private double longitude;
-
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(@FloatRange(from = -180.0, to = 180.0) double longitude) {
-        this.longitude = longitude;
-    }
-
     private String postalAddress;
-
-    public String getPostalAddress() {
-        return postalAddress;
-    }
-
-    public void setPostalAddress(String postalAddress) {
-        this.postalAddress = postalAddress;
-    }
-
     private long categoryId;
-
-    public long getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(long categoryId) {
-        this.categoryId = categoryId;
-    }
-
     private String resume;
-
-    public String getResume() {
-        return resume;
-    }
-
-    public void setResume(String resume) {
-        this.resume = resume;
-    }
 
     /**
      * Constructeur d'un site existant
@@ -114,6 +61,111 @@ public class Poi extends DatabaseItem {
         this(-1, name, latitude, longitude, postalAddress, categoryId, resume);
     }
 
+    @NonNull
+    @Override
+    public String toString() {
+        return MessageFormat.format("Site(_id={0}, name={1}, latitude={2}, longitude={3}, postalAddress={4}, categoryId={5}, resume={6})",
+                id, name, latitude, longitude, postalAddress, categoryId, resume);
+    }
+
+    /**
+     * Retourne le nom du site
+     *
+     * @return nom du site
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Modifie le nom du site
+     *
+     * @param name nouveau nom du site
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * Retourne la latitude du site
+     * @return latitude du site
+     */
+    public double getLatitude() {
+        return latitude;
+    }
+
+    /**
+     * Modifie la latitude du site
+     * @param latitude latidute du site, un chiffre dans [-90, 90]
+     */
+    public void setLatitude(@FloatRange(from = -90.0, to = 90.0) double latitude) {
+        this.latitude = latitude;
+    }
+
+    /**
+     * Retourne la longitude du site
+     * @return longitude du site
+     */
+    public double getLongitude() {
+        return longitude;
+    }
+
+    /**
+     * Modifie la longitude du site
+     * @param longitude longitude du site, un chiffre dans [-180, 180]
+     */
+    public void setLongitude(@FloatRange(from = -180.0, to = 180.0) double longitude) {
+        this.longitude = longitude;
+    }
+
+    /**
+     * Retourne l'adresse postale du site
+     * @return adresse postale du site
+     */
+    public String getPostalAddress() {
+        return postalAddress;
+    }
+
+    /**
+     * Modifie l'adresse postale du site
+     * @param postalAddress nouvelle adresse postale
+     */
+    public void setPostalAddress(String postalAddress) {
+        this.postalAddress = postalAddress;
+    }
+
+    /**
+     * Retourne l'identifiant de la catégorie du site
+     * @return identifiant de la catégorie du site
+     */
+    public long getCategoryId() {
+        return categoryId;
+    }
+
+    /**
+     * Modifie l'identifiant de la catégorie du site
+     * @param categoryId nouvelle identifiant de la catégorie du site
+     */
+    public void setCategoryId(long categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    /**
+     * Retourne le résumé du site
+     * @return résumé du site
+     */
+    public String getResume() {
+        return resume;
+    }
+
+    /**
+     * Modifie le résumé du site
+     * @param resume résumé du site
+     */
+    public void setResume(String resume) {
+        this.resume = resume;
+    }
+
     /**
      * Convertie un cursor en site
      *
@@ -131,13 +183,6 @@ public class Poi extends DatabaseItem {
                 cursor.getLong(cursor.getColumnIndex(DatabaseContract.Poi.COLUMN_CATEGORY_ID)),
                 cursor.getString(cursor.getColumnIndex(DatabaseContract.Poi.COLUMN_RESUME))
         );
-    }
-
-    @NonNull
-    @Override
-    public String toString() {
-        return MessageFormat.format("Site(_id={0}, name={1}, latitude={2}, longitude={3}, postalAddress={4}, categoryId={5}, resume={6})",
-                id, name, latitude, longitude, postalAddress, categoryId, resume);
     }
 
     @Override

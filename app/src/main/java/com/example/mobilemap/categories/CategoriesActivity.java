@@ -1,26 +1,22 @@
 package com.example.mobilemap.categories;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.res.Resources;
 import android.os.Bundle;
 
+import com.example.mobilemap.activities.BaseActivity;
+import com.example.mobilemap.activities.DatabaseItemManager;
 import com.example.mobilemap.R;
 import com.example.mobilemap.database.DatabaseContract;
 import com.example.mobilemap.database.DeleteItemContext;
 import com.example.mobilemap.databinding.ActivityCategoriesBinding;
 import com.example.mobilemap.categories.fragments.CategoryListFragment;
-import com.example.mobilemap.listeners.NavigationBarItemSelectedListener;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 /**
  * Activité de gestion des catégories
  *
  * @author J.Houdé
  */
-public class CategoriesActivity extends AppCompatActivity {
-    private BottomNavigationView bottomNavigationMenuView;
-    private static final int currentPageId = R.id.navigation_categories;
+public class CategoriesActivity extends BaseActivity implements DatabaseItemManager {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,9 +25,7 @@ public class CategoriesActivity extends AppCompatActivity {
 
         setContentView(binding.getRoot());
 
-        bottomNavigationMenuView = binding.categoriesNavigationBar;
-        bottomNavigationMenuView.setSelectedItemId(currentPageId);
-        bottomNavigationMenuView.setOnItemSelectedListener(new NavigationBarItemSelectedListener(this, currentPageId));
+        initNavigationBar(binding.categoriesNavigationBar, R.id.navigation_categories);
 
         if (this.getSupportFragmentManager().findFragmentById(R.id.categoriesFragmentContainer) != null) {
             return;
@@ -47,6 +41,7 @@ public class CategoriesActivity extends AppCompatActivity {
      *
      * @return informations pour supprimer la catégorie
      */
+    @Override
     public DeleteItemContext getDeleteContext() {
         Resources resources = this.getResources();
 
@@ -55,9 +50,4 @@ public class CategoriesActivity extends AppCompatActivity {
                 resources.getString(R.string.confirm_delete_category_msg));
     }
 
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        bottomNavigationMenuView.setSelectedItemId(currentPageId);
-    }
 }

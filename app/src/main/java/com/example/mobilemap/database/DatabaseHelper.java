@@ -54,7 +54,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // insertion des catégories par défaut
         db.execSQL("INSERT INTO " + DatabaseContract.Category.TABLE_NAME + "(" + DatabaseContract.Category.COLUMN_NAME + ") " +
-                "VALUES ('Auberge'), ('Bar'), ('Château'), ('Eglise'), ('Hôtel'), ('Jardin'), ('Musée'), ('Restaurant')");
+                "VALUES ('Auberge'), ('Bar'), ('Château'), ('Église'), ('Hôtel'), ('Jardin'), ('Monument'), ('Musée'), ('Restaurant')");
     }
 
     @Override

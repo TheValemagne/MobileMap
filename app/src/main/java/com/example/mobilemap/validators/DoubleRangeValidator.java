@@ -18,10 +18,10 @@ public class DoubleRangeValidator extends FieldValidator {
     /**
      * Vérification d'un intervalle de valeur pour double
      *
-     * @param field champ à vérifier
+     * @param field     champ à vérifier
      * @param resources gestionnaire de ressourses
-     * @param minBound valeur minimale (inclue)
-     * @param maxBound valeur maximale (inclue)
+     * @param minBound  valeur minimale (inclue)
+     * @param maxBound  valeur maximale (inclue)
      */
     public DoubleRangeValidator(EditText field, Resources resources, double minBound, double maxBound) {
         super(field, MessageFormat.format(resources.getString(R.string.coordinate_out_of_bound), minBound, maxBound));

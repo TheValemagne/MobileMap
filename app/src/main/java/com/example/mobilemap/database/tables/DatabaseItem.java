@@ -10,14 +10,6 @@ import com.example.mobilemap.database.interfaces.HasId;
  * @author J.Houdé
  */
 public abstract class DatabaseItem implements HasId {
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
     protected long id;
 
     /**
@@ -27,6 +19,10 @@ public abstract class DatabaseItem implements HasId {
      */
     public DatabaseItem(long id) {
         this.id = id;
+    }
+
+    public long getId() {
+        return id;
     }
 
     /**

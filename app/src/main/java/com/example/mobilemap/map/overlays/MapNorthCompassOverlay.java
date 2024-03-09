@@ -25,7 +25,7 @@ public class MapNorthCompassOverlay extends CompassOverlay {
 
     @Override
     public void draw(Canvas canvas, Projection projection) {
-        // rotation de la boussole liée à la rotation de la carte
+        // rotation de la boussole en fonction de la rotation de la carte pour afficher le nord de la carte
         drawCompass(canvas, -mMapView.getMapOrientation(), projection.getScreenRect());
     }
 }

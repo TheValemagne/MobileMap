@@ -28,10 +28,10 @@ public class PoiDetailsListRecyclerViewAdapter extends BaseAdapter<PoiDetailsLis
     /**
      * Adapteur pour la liste de sites détaillés
      *
-     * @param values liste de données à afficher
+     * @param values          liste initiale de données
      * @param contentResolver Résolveur de contenu
-     * @param activity activité mère
-     * @param fragment fragment affichhant la liste
+     * @param activity        activité gérant les données
+     * @param fragment        fragment gérant l'affichage de la liste
      */
     public PoiDetailsListRecyclerViewAdapter(List<PoiDetail> values, ContentResolver contentResolver,
                                              AppCompatActivity activity, PoiListFragment fragment) {

@@ -17,19 +17,6 @@ import java.util.List;
 public class PoiDetail implements HasId {
     private final long id;
     private final String siteName;
-
-    public long getId() {
-        return id;
-    }
-
-    public String getSiteName() {
-        return siteName;
-    }
-
-    public String getCategoryName() {
-        return categoryName;
-    }
-
     private final String categoryName;
 
     /**
@@ -41,6 +28,26 @@ public class PoiDetail implements HasId {
         this.id = id;
         this.siteName = name;
         this.categoryName = categoryName;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    /**
+     * Retourne le nom du site
+     * @return nom du site
+     */
+    public String getSiteName() {
+        return siteName;
+    }
+
+    /**
+     * Retourne le nom de la catégorie du site
+     * @return nom de la catégorie du site
+     */
+    public String getCategoryName() {
+        return categoryName;
     }
 
     /**

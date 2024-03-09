@@ -24,10 +24,14 @@ public class MarkerGestureListener implements ItemizedIconOverlay.OnItemGestureL
     private final Map<String, PoiInfoWindow> infoWindowMap;
     private final MainActivity activity;
 
-    private String lastCircleCenterItemUid;
+    private String currentCircleCenterItemUid;
 
-    public void setLastCircleCenterItemUid(String uid) {
-        this.lastCircleCenterItemUid = uid;
+    /**
+     * Actualisation de l'identifiant du site actuellement utilisé comme centre du cercle
+     * @param uid identifiant du site au centre du cercle
+     */
+    public void setCurrentCircleCenterItemUid(String uid) {
+        this.currentCircleCenterItemUid = uid;
     }
 
     /**
@@ -44,7 +48,7 @@ public class MarkerGestureListener implements ItemizedIconOverlay.OnItemGestureL
         this.infoWindowMap = infoWindowMap;
         this.activity = activity;
 
-        lastCircleCenterItemUid = "";
+        currentCircleCenterItemUid = "";
     }
 
     @Override
@@ -70,9 +74,9 @@ public class MarkerGestureListener implements ItemizedIconOverlay.OnItemGestureL
 
     @Override
     public boolean onItemLongPress(int index, OverlayItem item) {
-        if (lastCircleCenterItemUid.equals(item.getUid())) { // s'il y a déjà un cercle pour le site sélectionné
-            mapManager.removeCircle();
-            lastCircleCenterItemUid = "";
+        if (currentCircleCenterItemUid.equals(item.getUid())) { // s'il y a déjà un cercle pour le site sélectionné
+            mapManager.removeCircle(); // supression du cercle
+            currentCircleCenterItemUid = ""; // supression de l'identfiant enregistré
             return true;
         }
 

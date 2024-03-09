@@ -33,10 +33,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * Fragment permettant la gestion d'une catégorie
- * A simple {@link Fragment} subclass.
- * Use the {@link CategoryFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Fragment permettant l'affichage, modification et suppression d'une catégorie
+ * Utilisation de la méthode {@link CategoryFragment#newInstance} pour créer une nouvelle instance avec une catégorie existante
  *
  * @author J.Houdé
  */
@@ -64,7 +62,7 @@ public class CategoryFragment extends Fragment implements ItemView<Category> {
         CategoryFragment fragment = new CategoryFragment();
 
         Bundle args = new Bundle();
-        args.putLong(ARG_ITEM_ID, itemId);
+        args.putLong(ARG_ITEM_ID, itemId); // ajout de l'identifiant de la catégorie à afficher
         fragment.setArguments(args);
 
         return fragment;
@@ -74,14 +72,14 @@ public class CategoryFragment extends Fragment implements ItemView<Category> {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments() != null && getArguments().containsKey(ARG_ITEM_ID)) { // initilisation de l'identifiant de la catégorie si existant
+        if (getArguments() != null && getArguments().containsKey(ARG_ITEM_ID)) { // initilisation de l'identifiant de la catégorie si défini
             itemId = getArguments().getLong(ARG_ITEM_ID);
         }
 
         activity = (CategoriesActivity) requireActivity();
         categoryNames = ContentResolverHelper.getCategories(activity.getContentResolver())
                 .stream().map(Category::getName)
-                .collect(Collectors.toList()); // récupérer la liste des noms uniques des catégories existantes
+                .collect(Collectors.toList()); // récupération la liste des noms uniques des catégories existantes et non disponibles pour l'ajout d'une nouvelle catégorie
     }
 
     @Override
@@ -89,13 +87,14 @@ public class CategoryFragment extends Fragment implements ItemView<Category> {
                              Bundle savedInstanceState) {
         binding = FragmentCategoryBinding.inflate(inflater, container, false);
 
+        initValidators();
         Resources resources = requireActivity().getResources();
         binding.title.setText(resources.getText(itemId == DatabaseContract.NOT_EXISTING_ID ? R.string.add_category : R.string.edit_category));
 
         if (itemId == DatabaseContract.NOT_EXISTING_ID) { // ajout d'une nouvelle catégorie
             binding.categoryDeleteBtn.setVisibility(View.GONE);
             binding.deleteBtnSpace.setVisibility(View.GONE);
-        } else { // modification d'une catégorie
+        } else { // modification d'une catégorie existante
             Optional<Category> foundCategory = findCategory(itemId);
 
             if (foundCategory.isPresent()) {
@@ -107,7 +106,6 @@ public class CategoryFragment extends Fragment implements ItemView<Category> {
         }
 
         bindActionButtons();
-        initValidators();
 
         return binding.getRoot();
     }
@@ -119,7 +117,7 @@ public class CategoryFragment extends Fragment implements ItemView<Category> {
         binding.categorySaveBtn.setOnClickListener(new SaveDatabaseItemListener<>(activity, this, DatabaseContract.Category.CONTENT_URI));
         binding.categoryCancelBtn.setOnClickListener(new CancelAction(activity, false));
 
-        if (category != null) {
+        if (category != null) { // suppression uniquement autorisé si la catégorie existe dans la base de données
             binding.categoryDeleteBtn.setOnClickListener(new DeleteDatabaseItemListener(category.getId(), activity, activity.getDeleteContext()));
         }
     }
@@ -131,7 +129,7 @@ public class CategoryFragment extends Fragment implements ItemView<Category> {
         Resources resources = requireActivity().getResources();
 
         fieldValidators = new ArrayList<>(Arrays.asList(
-                new IsFieldSet(binding.categoryName, resources), // vérification si un onm a été défini
+                new IsFieldSet(binding.categoryName, resources), // vérification si un nom a été défini
                 new IsUniqueCategoryValidator(binding.categoryName, resources, categoryNames) // vérification si le nom de catégorie est unique (catégorie à modifier exclue)
         ));
     }
@@ -140,7 +138,7 @@ public class CategoryFragment extends Fragment implements ItemView<Category> {
      * Retourne la catégorie avec l'identifiant indiqué
      *
      * @param id indentifiant de la catégorie à chercher
-     * @return la catégorie recherchée
+     * @return la catégorie recherchée si elle existe, sinon retourne un élément vide
      */
     private Optional<Category> findCategory(long id) {
         Cursor cursor = requireActivity().getContentResolver()

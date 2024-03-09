@@ -14,11 +14,9 @@ import com.example.mobilemap.databinding.DialogAskCircleRadiusBinding;
 import com.example.mobilemap.map.manager.MapManager;
 import com.example.mobilemap.validators.IsFieldSet;
 
-import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.overlay.OverlayItem;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Ecouteur de validation du dialogue de création de cercle
@@ -63,7 +61,7 @@ public class AddCircleDialogListener implements View.OnClickListener {
             return;
         }
 
-        showCircle(dialog);
+        drawCircle(dialog);
     }
 
     /**
@@ -71,19 +69,18 @@ public class AddCircleDialogListener implements View.OnClickListener {
      *
      * @param dialog dialog d'interaction
      */
-    private void showCircle(AlertDialog dialog) {
+    private void drawCircle(AlertDialog dialog) {
         double circleRadius = Double.parseDouble(editCircleRadius.getText().toString());
         long categoryFilterValue = getSelectedCategoryId();
 
-        if (item != null) {
+        if (item != null) { // dessiner un cercle autour d'un lieu indiqué sur la carte
             this.mapManager.drawCircle(item, circleRadius, categoryFilterValue);
-        } else {
-            Optional<GeoPoint> point = mapManager.getMyLocationPoint();
-
-            point.ifPresent(location -> this.mapManager.drawCircleAroundMe(location, circleRadius, categoryFilterValue));
+        } else { // dessiner un cercle autour de la position actuelle de l'utilisateur
+            mapManager.getMyLocationPoint()
+                    .ifPresent(location -> this.mapManager.drawCircleAroundMe(location, circleRadius, categoryFilterValue));
         }
 
-        this.mapManager.centerToCircleCenter();
+        this.mapManager.centerToCircleCenter(); // centrage de la carte sur le centre du cercle tracé
 
         dialog.dismiss();
     }

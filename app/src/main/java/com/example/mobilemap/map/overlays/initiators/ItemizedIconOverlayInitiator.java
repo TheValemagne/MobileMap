@@ -18,7 +18,7 @@ import java.util.Objects;
  *
  * @author J.Houdé
  */
-public class ItemizedIconOverlayInitiator extends OverlayInitiator{
+public class ItemizedIconOverlayInitiator extends OverlayInitiator {
     private final MapManager mapManager;
     private final MarkerGestureListener markerGestureListener;
     private final MainActivity activity;
@@ -26,17 +26,16 @@ public class ItemizedIconOverlayInitiator extends OverlayInitiator{
     /**
      * Initialisateur de l'overlay des marqueurs
      *
-     * @param mapView vue de la carte
-     * @param mapManager gestionaire de la carte
+     * @param mapView               vue de la carte
+     * @param mapManager            gestionaire de la carte
+     * @param activity              activité mère
      * @param markerGestureListener ecouteur de geste
-     * @param activity activité mère
      */
-    public ItemizedIconOverlayInitiator(MapView mapView, MapManager mapManager, MarkerGestureListener markerGestureListener, MainActivity activity) {
+    public ItemizedIconOverlayInitiator(MapView mapView, MapManager mapManager, MainActivity activity, MarkerGestureListener markerGestureListener) {
         super(mapView);
 
         this.mapManager = mapManager;
         this.activity = activity;
-
         this.markerGestureListener = markerGestureListener;
     }
 

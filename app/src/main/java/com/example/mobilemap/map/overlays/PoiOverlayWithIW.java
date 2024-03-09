@@ -17,8 +17,8 @@ public class PoiOverlayWithIW extends OverlayWithIW {
     public PoiOverlayWithIW(OverlayItem item) {
         super();
 
-        setId(item.getUid());
-        setTitle(item.getTitle());
-        setSnippet(item.getSnippet());
+        setId(item.getUid()); // identifiant du site de la base de données
+        setTitle(item.getTitle()); // nom du site
+        setSnippet(item.getSnippet()); // résumé du site
     }
 }

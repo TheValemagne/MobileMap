@@ -1,7 +1,5 @@
 package com.example.mobilemap.map.manager;
 
-import android.widget.EditText;
-
 import androidx.core.content.res.ResourcesCompat;
 
 import com.example.mobilemap.R;
@@ -10,6 +8,7 @@ import com.example.mobilemap.map.PoiInfoWindow;
 import com.example.mobilemap.map.SharedPreferencesConstant;
 import com.example.mobilemap.pois.PoisActivity;
 import com.example.mobilemap.pois.fragments.PoiFragment;
+import com.example.mobilemap.validators.FieldValidator;
 
 import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
@@ -31,22 +30,22 @@ public class MiniMapManager {
     private final PoisActivity activity;
     private final PoiFragment fragment;
     private final MapView miniMapView;
-    private final List<EditText> poiCoordinatesFields;
+    private final List<FieldValidator> coordinatesFieldValidators;
     private Marker marker;
 
     /**
      * Gestionnaire de mini carte d'illustration d'un marqueur
      *
-     * @param activity activité gérant les sites
-     * @param fragment fragment gérent le détail d'un site
-     * @param miniMapView vue de la carte à manipuler
-     * @param poiCoordinatesFields liste des champs de coordonnées
+     * @param activity                   activité gérant les sites
+     * @param fragment                   fragment gérent le détail d'un site
+     * @param miniMapView                vue de la carte à manipuler
+     * @param coordinatesFieldValidators liste des champs de coordonnées
      */
-    public MiniMapManager(PoisActivity activity, PoiFragment fragment, MapView miniMapView, List<EditText> poiCoordinatesFields) {
+    public MiniMapManager(PoisActivity activity, PoiFragment fragment, MapView miniMapView, List<FieldValidator> coordinatesFieldValidators) {
         this.activity = activity;
         this.fragment = fragment;
         this.miniMapView = miniMapView;
-        this.poiCoordinatesFields = poiCoordinatesFields;
+        this.coordinatesFieldValidators = coordinatesFieldValidators;
     }
 
     /**
@@ -56,7 +55,6 @@ public class MiniMapManager {
         MapManager.initMapDefaultSettings(miniMapView);
 
         miniMapView.setHorizontalMapRepetitionEnabled(false);
-
         miniMapView.setMinZoomLevel(MIN_ZOOM);
         miniMapView.setMaxZoomLevel(MAX_ZOOM);
         miniMapView.getController().setZoom(DEFAULT_ZOOM);
@@ -77,10 +75,11 @@ public class MiniMapManager {
      * Actualisation de la mini carte
      */
     public void updateMap() {
-        if (poiCoordinatesFields.stream().anyMatch(textView -> textView.getText().toString().isEmpty())) {
-            return;
+        if (coordinatesFieldValidators.stream().anyMatch(fieldValidator -> !fieldValidator.isValid())) {
+            return; // l'une des coordonnées n'est pas valide
         }
 
+        // uniquement si les deux champs sont valides
         Poi modifiedPoi = fragment.getValues();
         GeoPoint point = new GeoPoint(modifiedPoi.getLatitude(), modifiedPoi.getLongitude());
 
@@ -98,7 +97,7 @@ public class MiniMapManager {
      * actualisation du marqueur d'illustration
      *
      * @param modifiedPoi site avec contenu actualiser
-     * @param point  nouvelle position du marqueur
+     * @param point       nouvelle position du marqueur
      */
     private void updateMarker(Poi modifiedPoi, GeoPoint point) {
         marker.setTitle(modifiedPoi.getName());

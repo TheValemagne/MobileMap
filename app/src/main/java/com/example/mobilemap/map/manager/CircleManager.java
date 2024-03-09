@@ -89,7 +89,7 @@ public class CircleManager {
      * @param categoryFilter identifiant de la catégorie à afficher
      */
     public void drawCircle(OverlayItem centerItem, double radiusInMeters, long categoryFilter) {
-        if (circle != null) {
+        if (circle != null) { // suppression du cercle actuellement affiché
             removeCircle();
         }
 
@@ -126,7 +126,7 @@ public class CircleManager {
         OverlayItem circleCenter = item.orElse(centerItem);
         circleCenter.setMarker(getCenterPointDrawable()); // modifier le marqueur au centre du cercle
         circleCenter.setMarkerHotspot(OverlayItem.HotspotPlace.CENTER); // centrage du marqueur avec la position sur la carte
-        items.add(circleCenter);
+        items.add(circleCenter); // ajout du marqueur du centre du cercle à la liste des marqueurs à afficher
     }
 
     /**
@@ -137,7 +137,7 @@ public class CircleManager {
      * @param categoryFilter identifiant de la catégorie à afficher
      */
     public void drawCircleAroundMe(GeoPoint userLocation, double radiusInMeters, long categoryFilter) {
-        if (circle != null) {
+        if (circle != null) { // suppression du cercle actuellement affiché
             removeCircle();
         }
 
@@ -163,13 +163,13 @@ public class CircleManager {
      */
     private Polygon createCircle(GeoPoint center, double radiusInMeters) {
         Polygon circle = new Polygon();
+
         circle.setOnClickListener((polygon, mapView1, eventPos) -> false); // le cercle doit transmetre les événements "click" aux autres couches
         // intérieur du cercle
         circle.getFillPaint().setColor(Color.TRANSPARENT);
         // bordure du cercle
         circle.getOutlinePaint().setColor(Color.BLUE);
         circle.getOutlinePaint().setStrokeWidth(2f);
-
         // Générez les points du périmètre du cercle
         circle.setPoints(Polygon.pointsAsCircle(center, radiusInMeters));
 
@@ -195,9 +195,9 @@ public class CircleManager {
         for (int index = 0; index < items.size(); index++) {
             OverlayItem item = items.get(index);
 
-            if (isInsideCircle(item, centerLocation, radiusInMeters)) {
+            if (isInsideCircle(item, centerLocation, radiusInMeters)) { // ajout des marqueurs contenus dans le cercle
                 itemsInsideCircle.add(item);
-            } else if (infoWindowMap.containsKey(item.getUid())) {
+            } else if (infoWindowMap.containsKey(item.getUid())) { // fermeture des infoWindow des marqueurs à retirer
                 Objects.requireNonNull(infoWindowMap.get(item.getUid())).close();
             }
         }
@@ -221,7 +221,7 @@ public class CircleManager {
         markerLocation.setLatitude(markerPosition.getLatitude());
         markerLocation.setLongitude(markerPosition.getLongitude());
 
-        float distanceToCircleCenter = centerLocation.distanceTo(markerLocation);
+        float distanceToCircleCenter = centerLocation.distanceTo(markerLocation); // distance entre le centre du cercle et le point actuel en metre
 
         return distanceToCircleCenter <= radiusInMeters;
     }
@@ -270,11 +270,11 @@ public class CircleManager {
      * Supprimer le cercle affiché sur la carte
      */
     public void removeCircle() {
-        mapView.getOverlayManager().remove(circle); // supression du cercle affiché sur la carte
+        mapView.getOverlayManager().remove(circle); // suppression du cercle affiché sur la carte
         circle = null;
-        mapView.getOverlayManager().remove(lastUserLocation); // supression de la dernière position enregistrée si affichée
+        mapView.getOverlayManager().remove(lastUserLocation); // suppression de la dernière position enregistrée si affichée
 
-        // Supprimer les données du cercle
+        // Supprimer les données enregistrées du cercle
         deleteSavedSettings();
 
         mapManager.updateMap(); // actualisation de la carte
@@ -317,7 +317,7 @@ public class CircleManager {
         Optional<OverlayItem> item = mapManager.findItem(center);
 
         item.ifPresent(overlayItem -> {
-            mapManager.getMarkerGestureListener().setLastCircleCenterItemUid(overlayItem.getUid());
+            mapManager.getMarkerGestureListener().setCurrentCircleCenterItemUid(overlayItem.getUid());
             drawCircle(overlayItem, circleRadius, categoryFilter); // restaurer le cercle autour d'un site
         });
 
@@ -329,7 +329,8 @@ public class CircleManager {
      * @return retourne la catégorie de filtrage s'il existe un cercle sur la carte, sinon retourne -1
      */
     public long getCategoryFilter() {
-        return mapManager.getSharedPreferences().getLong(SharedPreferencesConstant.CIRCLE_CATEGORY_FILTER, SharedPreferencesConstant.NOT_FOUND_ID);
+        return mapManager.getSharedPreferences()
+                .getLong(SharedPreferencesConstant.CIRCLE_CATEGORY_FILTER, SharedPreferencesConstant.NOT_FOUND_ID);
     }
 
     /**
@@ -338,7 +339,8 @@ public class CircleManager {
      * @return retourne le rayon du cercle si définie, sinon retourne 0
      */
     public double getCircleRadius() {
-        String value = mapManager.getSharedPreferences().getString(SharedPreferencesConstant.CIRCLE_RADIUS_STRING, SharedPreferencesConstant.EMPTY_STRING);
+        String value = mapManager.getSharedPreferences()
+                .getString(SharedPreferencesConstant.CIRCLE_RADIUS_STRING, SharedPreferencesConstant.EMPTY_STRING);
 
         if (value.trim().isEmpty()) {
             return 0.0;

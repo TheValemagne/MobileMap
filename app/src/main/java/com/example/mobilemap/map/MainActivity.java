@@ -6,7 +6,6 @@ import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -22,13 +21,12 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 
+import com.example.mobilemap.activities.BaseActivity;
 import com.example.mobilemap.R;
 import com.example.mobilemap.database.ContentResolverHelper;
 import com.example.mobilemap.databinding.ActivityMainBinding;
-import com.example.mobilemap.listeners.NavigationBarItemSelectedListener;
 import com.example.mobilemap.map.listeners.SearchViewListener;
 import com.example.mobilemap.map.manager.MapManager;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -41,19 +39,15 @@ import java.util.List;
  *
  * @author J.Houdé
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
 
     private MapManager mapManager;
-    private BottomNavigationView bottomNavigationMenuView;
     private LinearLayout floatingButtonsLayout;
     private LinearLayout filterFloatingLayout;
-
     private FloatingActionButton showCircleAroundMe;
-
     private FloatingActionButton removeCircleAroundMe;
     private SearchView searchView;
-    private static final int currentPageId = R.id.navigation_map;
 
     public ActivityResultLauncher<Intent> getPoiActivityLauncher() {
         return poiActivityLauncher;
@@ -72,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         ConstraintLayout constraintLayout = binding.getRoot();
         setContentView(constraintLayout);
 
-        // ajustement de la bar de navigation pour éviter tout dépassement ou superposition avec la bar avec les 3 boutons
+        // ajustement de la bar de navigation pour éviter tout dépassement ou superposition avec la bar de navigation de l'application
         ViewCompat.setOnApplyWindowInsetsListener(constraintLayout, (v, windowInsets) -> {
             Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemGestures());
             constraintLayout.setPadding(0, 0, 0, insets.bottom);
@@ -80,13 +74,14 @@ public class MainActivity extends AppCompatActivity {
             return WindowInsetsCompat.CONSUMED;
         });
 
+        // demande de permission pour la localisation
         requestPermissionsIfNecessary(Collections.singletonList(
                 Manifest.permission.ACCESS_FINE_LOCATION
         ));
 
         bindUI(binding);
 
-        if (ContentResolverHelper.getPois(this.getContentResolver()).isEmpty()) {
+        if (ContentResolverHelper.getPois(this.getContentResolver()).isEmpty()) { // s'il y aucun site enregistré
             disableFilterButtons();
         }
 
@@ -113,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
         filterFloatingLayout.setVisibility(View.GONE);
 
         initButtons(binding);
+        initNavigationBar(binding.mainNavigationBar, R.id.navigation_map);
     }
 
     /**
@@ -121,10 +117,6 @@ public class MainActivity extends AppCompatActivity {
      * @param binding lien avec la vue graphique
      */
     private void initButtons(ActivityMainBinding binding) {
-        bottomNavigationMenuView = binding.mainNavigationBar;
-        bottomNavigationMenuView.setSelectedItemId(currentPageId);
-        bottomNavigationMenuView.setOnItemSelectedListener(new NavigationBarItemSelectedListener(this, currentPageId));
-
         showCircleAroundMe = binding.showCircleAroundMe;
         showCircleAroundMe.setOnClickListener(v -> mapManager.showAddCircleAroundMeDialog());
 
@@ -169,9 +161,7 @@ public class MainActivity extends AppCompatActivity {
     public void updateFilterAction(boolean hasCircleAroundMe) {
         if (hasCircleAroundMe) {
             filterFloatingLayout.setVisibility(View.VISIBLE);
-        }
-
-        if (floatingButtonsLayout.getVisibility() == View.GONE && !hasCircleAroundMe) {
+        } else if (floatingButtonsLayout.getVisibility() == View.GONE) {
             filterFloatingLayout.setVisibility(View.GONE);
         }
 
@@ -199,26 +189,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onRestart() {
-        super.onRestart();
-
-        bottomNavigationMenuView.setSelectedItemId(currentPageId);
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
 
         mapManager.onResume();
 
-        if (searchView != null) {
+        if (searchView != null) { // enlever le focus sur la barre de recherche
             searchView.clearFocus();
         }
 
         if (searchView != null
                 && filterFloatingLayout != null
                 && ContentResolverHelper.getPois(this.getContentResolver()).isEmpty()) {
-            disableFilterButtons();
+            disableFilterButtons(); // déactiver les boutons de filtres s'il y a aucun site enregistré
         }
     }
 

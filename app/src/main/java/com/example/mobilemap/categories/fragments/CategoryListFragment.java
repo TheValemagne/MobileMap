@@ -23,7 +23,6 @@ import java.util.List;
 
 /**
  * Fragment permettant la gestion de la liste des catégories
- * A simple {@link Fragment} subclass.
  *
  * @author J.Houdé
  */
@@ -42,7 +41,7 @@ public class CategoryListFragment extends Fragment implements FragmentListView {
         AppCompatActivity activity = (AppCompatActivity) requireActivity();
         binding.addCategoryButton.setOnClickListener(new ShowCategoryListener(activity));
 
-        initRecyclerView(activity);
+        initRecyclerView(activity); // initialisation de la liste de données
 
         return binding.getRoot();
     }
@@ -53,7 +52,7 @@ public class CategoryListFragment extends Fragment implements FragmentListView {
      * @param activity activité à l'origine du fragment
      */
     private void initRecyclerView(AppCompatActivity activity) {
-        updateListView();
+        updateView();
 
         RecyclerView recyclerView = binding.categoryList;
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
@@ -63,7 +62,7 @@ public class CategoryListFragment extends Fragment implements FragmentListView {
     }
 
     @Override
-    public void updateListView() {
+    public void updateView() {
         List<Category> categories = ContentResolverHelper.getCategories(requireActivity().getContentResolver());
 
         binding.emptyLabel.setVisibility(categories.isEmpty() ? View.VISIBLE : View.INVISIBLE);

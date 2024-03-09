@@ -31,9 +31,10 @@ public class ScaleBarInitiator extends OverlayInitiator{
     @Override
     public ScaleBarOverlay init() {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+
         ScaleBarOverlay scaleBarOverlay = new ScaleBarOverlay(mapView);
         scaleBarOverlay.setCentred(true);
-        scaleBarOverlay.setScaleBarOffset(displayMetrics.widthPixels - X_OFFSET, displayMetrics.heightPixels - Y_OFFSET);
+        scaleBarOverlay.setScaleBarOffset(displayMetrics.widthPixels - X_OFFSET, displayMetrics.heightPixels - Y_OFFSET); // placement sur la carte
 
         return scaleBarOverlay;
     }

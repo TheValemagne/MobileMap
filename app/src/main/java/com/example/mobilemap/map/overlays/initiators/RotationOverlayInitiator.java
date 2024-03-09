@@ -22,7 +22,7 @@ public class RotationOverlayInitiator extends OverlayInitiator{
     @Override
     public RotationGestureOverlay init() {
         RotationGestureOverlay rotationGestureOverlay = new RotationGestureOverlay(mapView);
-        rotationGestureOverlay.setEnabled(true);
+        rotationGestureOverlay.setEnabled(true); // activation de la couche
 
         return rotationGestureOverlay;
     }

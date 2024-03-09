@@ -39,15 +39,15 @@ public class SearchViewListener implements SearchView.OnQueryTextListener {
         this.activity = activity;
         this.mapManager = mapManager;
         this.searchView = searchView;
+
         geocoder = new Geocoder(activity);
     }
 
     @Override
     public boolean onQueryTextSubmit(String query) {
         // recherche des coordonnées de l'adresse sélectionnée
-
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) { // uniquement pour les appareils tournant sous tiramisu
-            geocoder.getFromLocationName(query, QUERY_SEARCH_LIMIT, new RequestSearResultListener(mapManager));
+            geocoder.getFromLocationName(query, QUERY_SEARCH_LIMIT, new RequestSearchResultListener(mapManager));
         } else {
             List<Address> addresses;
 
@@ -81,7 +81,7 @@ public class SearchViewListener implements SearchView.OnQueryTextListener {
 
         // recherche des suggestions de localisation
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) { // uniquement pour les appareils tournant sous tiramisu
-            geocoder.getFromLocationName(newText, SUGGESTION_LIMIT, new RequestSuggestionsListener(activity, searchView));
+            geocoder.getFromLocationName(newText, SUGGESTION_LIMIT, new RequestSearchSuggestionsListener(activity, searchView));
         } else {
             try {
                 List<Address> addresses = new Geocoder(activity).getFromLocationName(newText, SUGGESTION_LIMIT);

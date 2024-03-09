@@ -12,14 +12,14 @@ import java.util.List;
  *
  * @author J.Houdé
  */
-public class IsUniqueCategoryValidator extends FieldValidator{
+public class IsUniqueCategoryValidator extends FieldValidator {
     private final List<String> notAvailableValues;
 
     /**
      * Vérification de l'unicité du nom d'une catégorie
      *
-     * @param field champ à vérifier
-     * @param resources gestionnaire de ressourses
+     * @param field              champ à vérifier
+     * @param resources          gestionnaire de ressourses
      * @param notAvailableValues liste de catégories déjà définies
      */
     public IsUniqueCategoryValidator(EditText field, Resources resources, List<String> notAvailableValues) {

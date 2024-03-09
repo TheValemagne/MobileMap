@@ -32,6 +32,7 @@ public class MyLocationOverlay extends MyLocationNewOverlay {
      */
     public MyLocationOverlay(GpsMyLocationProvider gpsMyLocationProvider, MapView mapView, MainActivity activity, MapManager mapManager) {
         super(gpsMyLocationProvider, mapView);
+
         this.activity = activity;
         this.mapManager = mapManager;
     }

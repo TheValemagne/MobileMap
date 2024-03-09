@@ -22,7 +22,7 @@ import java.util.List;
  * @author J.Houdé
  */
 @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
-public class RequestSearResultListener implements Geocoder.GeocodeListener {
+public class RequestSearchResultListener implements Geocoder.GeocodeListener {
     private final MapManager mapManager;
     private final Handler handler;
 
@@ -31,7 +31,7 @@ public class RequestSearResultListener implements Geocoder.GeocodeListener {
      *
      * @param mapManager gestionnaire de la carte
      */
-    public RequestSearResultListener(MapManager mapManager) {
+    public RequestSearchResultListener(MapManager mapManager) {
         this.mapManager = mapManager;
 
         handler = new Handler(Looper.getMainLooper());

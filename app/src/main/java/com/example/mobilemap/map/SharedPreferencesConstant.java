@@ -26,6 +26,8 @@ public final class SharedPreferencesConstant {
     public static final String EMPTY_STRING = "";
     public static final String DEFAULT_POSITION_STRING = "0.0";
     public final static float DEFAULT_ZOOM = 13.5F;
+
+    // coordonnées de la gare de Metz
     public final static String DEFAULT_LATITUDE = "49.109523";
     public final static String DEFAULT_LONGITUDE = "6.1768191";
 }

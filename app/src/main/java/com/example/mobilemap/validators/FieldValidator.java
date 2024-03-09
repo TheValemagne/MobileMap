@@ -14,7 +14,7 @@ public abstract class FieldValidator {
     /**
      * Classe abstraite pour la vérification d'une condition d'un champ de données
      *
-     * @param field champ à vérifier
+     * @param field    champ à vérifier
      * @param errorMsg message d'erreur à afficher en cas d'invalidité
      */
     public FieldValidator(EditText field, String errorMsg) {
@@ -22,7 +22,12 @@ public abstract class FieldValidator {
         this.errorMsg = errorMsg;
     }
 
-    protected abstract boolean isValid();
+    /**
+     * Vérification si le contenu est valide
+     *
+     * @return vrai si le contenu est valide, sinon faux
+     */
+    public abstract boolean isValid();
 
     /**
      * Vérification du champ et affichage en cas de non validité d'un message d'erreur

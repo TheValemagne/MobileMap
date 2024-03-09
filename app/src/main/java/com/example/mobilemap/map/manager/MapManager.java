@@ -50,6 +50,7 @@ import java.util.stream.Collectors;
  * @author J.Houdé
  */
 public final class MapManager {
+    private static final double MIN_ZOOM = 3.0;
     private final MapView mapView;
     private final MainActivity activity;
     private final Context context;
@@ -99,8 +100,6 @@ public final class MapManager {
         markerGestureListener = new MarkerGestureListener(mapView, this, infoWindowMap, activity);
     }
 
-    private static final double MIN_ZOOM = 3.0;
-
     /**
      * Initialisation de la carte
      */
@@ -135,7 +134,7 @@ public final class MapManager {
      */
     private void initMapOverlays() {
         myLocationNewOverlay = new LocationOverlayInitiator(mapView, activity, this).init();
-        itemizedOverlay = new ItemizedIconOverlayInitiator(mapView, this, markerGestureListener, activity).init();
+        itemizedOverlay = new ItemizedIconOverlayInitiator(mapView, this, activity, markerGestureListener).init();
 
         // hint l'ordre des overlays est important pour les supporpositions et le dernier de la liste sera la premièr couche intéractive avec l'utilisateur
         List<Overlay> overlays = new ArrayList<>(Arrays.asList(
@@ -206,8 +205,8 @@ public final class MapManager {
      */
     private void updateInfoWindow(PoiInfoWindow infoWindow) {
         infoWindow.close(); // ferme les infoWindows pour les actualiser ou supprimer
-        Optional<OverlayItem> foundItem = findItem(infoWindow.getPoint());
-        foundItem.ifPresent(overlayItem -> createOverlayWithIW(overlayItem, infoWindow));
+        findItem(infoWindow.getPoint())
+                .ifPresent(overlayItem -> createOverlayWithIW(overlayItem, infoWindow));
     }
 
     /**
@@ -227,7 +226,7 @@ public final class MapManager {
      *
      * @param item       connu à afficher
      * @param infoWindow infoWindow à initialiser
-     * @return contneu à afficher
+     * @return contenu à afficher
      */
     public OverlayWithIW createOverlayWithIW(OverlayItem item, InfoWindow infoWindow) {
         OverlayWithIW overlayWithIW = new PoiOverlayWithIW(item);
@@ -313,6 +312,19 @@ public final class MapManager {
             return;
         }
 
+        restorePreviosSettings();
+
+        boolean isAroundMe = sharedPreferences.getBoolean(SharedPreferencesConstant.CIRCLE_IS_AROUND_ME, false);
+
+        if (isAroundMe) { // affichage du bouton de suppression du cercle
+            activity.updateFilterAction(true);
+        }
+    }
+
+    /**
+     * Restauration des paramètres précédents sur la localisation, le zoom et l'orientation
+     */
+    private void restorePreviosSettings() {
         float zoomLevel = sharedPreferences.getFloat(SharedPreferencesConstant.PREFS_ZOOM_LEVEL_DOUBLE, SharedPreferencesConstant.DEFAULT_ZOOM);
         mapView.getController().setZoom(zoomLevel);
 
@@ -322,12 +334,6 @@ public final class MapManager {
         String latitudeString = sharedPreferences.getString(SharedPreferencesConstant.PREFS_LATITUDE_STRING, SharedPreferencesConstant.DEFAULT_LATITUDE);
         String longitudeString = sharedPreferences.getString(SharedPreferencesConstant.PREFS_LONGITUDE_STRING, SharedPreferencesConstant.DEFAULT_LONGITUDE);
         mapView.setExpectedCenter(new GeoPoint(Double.parseDouble(latitudeString), Double.parseDouble(longitudeString)));
-
-        boolean isAroundMe = sharedPreferences.getBoolean(SharedPreferencesConstant.CIRCLE_IS_AROUND_ME, false);
-
-        if (isAroundMe) { // affichage du bouton de suppression du cercle
-            activity.updateFilterAction(true);
-        }
     }
 
     /**
@@ -383,7 +389,7 @@ public final class MapManager {
 
         circleManager.drawCircle(item, radiusInMeters, categoryFilter);
         // enregistrement du centre du cercle pour permettre la supression avec la prochaine action "long tap"
-        markerGestureListener.setLastCircleCenterItemUid(item.getUid());
+        markerGestureListener.setCurrentCircleCenterItemUid(item.getUid());
         mapView.invalidate(); // demande le rafraichissement de la carte
     }
 
@@ -408,7 +414,7 @@ public final class MapManager {
      * Effacement du cercle actuellement affiché
      */
     public void removeCircle() {
-        if (isCircleAroundMe()) {
+        if (isCircleAroundMe()) { // affichage du bouton avec la loupe de recherche pour tracer un cercle autour de la position actuelle
             activity.updateFilterAction(false);
         }
 
@@ -430,10 +436,7 @@ public final class MapManager {
      * @return localisateur actuelle sous forme de GeoPoint
      */
     public Optional<GeoPoint> getMyLocationPoint() {
-        if (myLocationNewOverlay == null) {
-            return Optional.empty();
-        }
-        return Optional.ofNullable(myLocationNewOverlay.getMyLocation());
+        return myLocationNewOverlay == null ? Optional.empty() : Optional.ofNullable(myLocationNewOverlay.getMyLocation());
     }
 
 }

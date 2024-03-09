@@ -14,7 +14,7 @@ public class IsFieldSet extends FieldValidator {
     /**
      * Vérification de champ obligatoire
      *
-     * @param field champ à vérifier
+     * @param field     champ à vérifier
      * @param resources gestionnaire de ressourses
      */
     public IsFieldSet(EditText field, Resources resources) {

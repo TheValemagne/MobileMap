@@ -71,8 +71,8 @@ public class DeleteDatabaseItemListener implements View.OnClickListener {
         binding.dialogMsg.setText(deleteDataContext.getDialogMsg());
         builder.setView(binding.getRoot());
 
-        builder.setPositiveButton(resources.getText(R.string.dialog_confirm), (dialog, which) -> deleteItem());
-        builder.setNegativeButton(resources.getText(R.string.dialog_cancel), (dialog, which) -> dialog.cancel());
+        builder.setPositiveButton(resources.getText(R.string.dialog_confirm), (dialog, which) -> deleteItem()); // écouteer pour le bouton de confirmation
+        builder.setNegativeButton(resources.getText(R.string.dialog_cancel), (dialog, which) -> dialog.cancel()); // écoutuer pour le bouton annuler
 
         builder.show(); // affichage du dialogue de confirmation
     }

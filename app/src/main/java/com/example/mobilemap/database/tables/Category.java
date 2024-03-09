@@ -20,14 +20,6 @@ import java.util.List;
 public class Category extends DatabaseItem {
     private String name;
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     /**
      * Constructeur d'une catégorie existante
      *
@@ -48,6 +40,30 @@ public class Category extends DatabaseItem {
         this(-1, name);
     }
 
+    @NonNull
+    @Override
+    public String toString() {
+        return MessageFormat.format("Category(_id={0}, name={1})", id, name);
+    }
+
+    /**
+     * Retourne le nom de la catégorie
+     *
+     * @return nom de la catégorie
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Modifie le nom de la catégorie
+     *
+     * @param name nouveau nom de la catégorie
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
     /**
      * Convertie un cursor en catégorie
      *
@@ -60,12 +76,6 @@ public class Category extends DatabaseItem {
                 cursor.getLong(cursor.getColumnIndex(DatabaseContract.Category._ID)),
                 cursor.getString(cursor.getColumnIndex(DatabaseContract.Category.COLUMN_NAME))
         );
-    }
-
-    @NonNull
-    @Override
-    public String toString() {
-        return MessageFormat.format("Category(_id={0}, name={1})", id, name);
     }
 
     @Override

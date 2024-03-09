@@ -50,4 +50,5 @@
     <string name="show_pois_detail">Show POIs detail</string>
     <string name="all_fields_are_mandatory">All fields are mandatory</string>
     <string name="search_hint">Search a location</string>
+    <string name="invalid_number">The number has an invalid format, valid formats are \"1\", \"-1\", \"1.0\", or \"-1.0\".</string>
 </resources>

@@ -54,14 +54,14 @@ public class AddCircleAroundPoiDialogBuilder extends AlertDialog.Builder {
 
         initSpinner(binding.categoryFilter, activity);
 
-        this.setNegativeButton(resources.getString(R.string.dialog_cancel), (dialog, which) -> dialog.cancel());
+        this.setNegativeButton(resources.getString(R.string.dialog_cancel), (dialog, which) -> dialog.cancel()); // écoutuer pour le bouton annuler
     }
 
     @Override
     public AlertDialog show() {
-        AlertDialog dialog = super.show();
+        AlertDialog dialog = super.show(); // affichage du dialogue
 
-        // bouton de validation
+        // bouton de validation avec écoutueur
         Button buttonPositive = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
         buttonPositive.setText(resources.getString(R.string.dialog_show));
         buttonPositive.setVisibility(View.VISIBLE);

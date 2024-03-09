@@ -138,7 +138,7 @@
                 android:textSize="@dimen/contentTextSize" />
 
             <Spinner
-                android:id="@+id/categoryDropDown"
+                android:id="@+id/category_dropdown"
                 android:layout_width="match_parent"
                 android:layout_height="48dp" />
 
