@@ -8,9 +8,6 @@ import android.widget.SearchView;
 import com.example.mobilemap.map.manager.MapManager;
 import com.example.mobilemap.map.SuggestionAdapter;
 
-import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.overlay.OverlayItem;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -25,7 +22,7 @@ public class SearchViewListener implements SearchView.OnQueryTextListener {
     private final SearchView searchView;
     private final Geocoder geocoder;
 
-    private final static int SUGGESTION_LIMIT = 5;
+    private final static int SUGGESTION_LIMIT = 5; // nombre maximum de suggestions de localisation
     private final static int QUERY_SEARCH_LIMIT = 1;
 
     /**
@@ -61,12 +58,7 @@ public class SearchViewListener implements SearchView.OnQueryTextListener {
                 return false;
             }
 
-            Address address = addresses.get(0);
-            mapManager.showAddCircleAroundPoiDialog(new OverlayItem(
-                    "0",
-                    address.getAddressLine(0),
-                    address.getLocality(),
-                    new GeoPoint(address.getLatitude(), address.getLongitude())));
+            mapManager.showAddCircleAroundSearch(addresses.get(0));
         }
 
         searchView.clearFocus();

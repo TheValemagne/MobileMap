@@ -31,6 +31,7 @@ public class CategoriesActivity extends BaseActivity implements DatabaseItemMana
             return;
         }
 
+        // affichage par défaux de la page avec la liste de catégories
         this.getSupportFragmentManager().beginTransaction()
                 .replace(R.id.categoriesFragmentContainer, new CategoryListFragment())
                 .commit();

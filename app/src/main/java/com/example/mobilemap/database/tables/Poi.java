@@ -31,8 +31,8 @@ public class Poi extends DatabaseItem {
      *
      * @param id            identifiant unique du site
      * @param name          nom du site
-     * @param latitude      latitude du site (-90 à 90)
-     * @param longitude     longitude du site (-180 à 180)
+     * @param latitude      latitude du site (-90.0 à 90.0)
+     * @param longitude     longitude du site (-180.0 à 180.0)
      * @param postalAddress adresse postale du site
      * @param categoryId    catégorie associée au site
      * @param resume        résumé / description du site
@@ -51,8 +51,8 @@ public class Poi extends DatabaseItem {
      * Constructeur d'un site à enregister
      *
      * @param name          nom de la catégorie
-     * @param latitude      latitude du site (-90 à 90)
-     * @param longitude     longitude du site (-180 à 180)
+     * @param latitude      latitude du site (-90.0 à 90.0)
+     * @param longitude     longitude du site (-180.0 à 180.0)
      * @param postalAddress adresse postale du site
      * @param categoryId    catégorie associée au site
      * @param resume        résumé / description du site
@@ -96,7 +96,7 @@ public class Poi extends DatabaseItem {
 
     /**
      * Modifie la latitude du site
-     * @param latitude latidute du site, un chiffre dans [-90, 90]
+     * @param latitude latitude du site, un chiffre dans [-90.0, 90.0]
      */
     public void setLatitude(@FloatRange(from = -90.0, to = 90.0) double latitude) {
         this.latitude = latitude;
@@ -112,7 +112,7 @@ public class Poi extends DatabaseItem {
 
     /**
      * Modifie la longitude du site
-     * @param longitude longitude du site, un chiffre dans [-180, 180]
+     * @param longitude longitude du site, un chiffre dans [-180.0, 180.0]
      */
     public void setLongitude(@FloatRange(from = -180.0, to = 180.0) double longitude) {
         this.longitude = longitude;

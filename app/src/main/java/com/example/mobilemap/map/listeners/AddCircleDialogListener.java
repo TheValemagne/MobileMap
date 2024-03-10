@@ -61,6 +61,7 @@ public class AddCircleDialogListener implements View.OnClickListener {
             return;
         }
 
+        // traçage du cercle lorsque tous les champs sont remplies
         drawCircle(dialog);
     }
 

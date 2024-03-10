@@ -38,7 +38,7 @@ public class MapActivityResultCallback implements ActivityResultCallback<Activit
                 && intent != null
                 && intent.getExtras() != null
                 && shouldRemoveCircle(intent.getExtras())) {
-            mapManager.removeCircle(); // supprime le cercle si le nouveau site ne correspond pas au filter actuellement appliqué
+            mapManager.removeCircle(); // supprime le cercle si le nouveau site ne correspond pas au filtre actuellement appliqué
         }
 
         mapManager.updateMap(); // actualisation de la carte

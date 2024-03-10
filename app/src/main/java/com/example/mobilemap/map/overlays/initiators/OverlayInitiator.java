@@ -4,7 +4,7 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Overlay;
 
 /**
- * Initialisateur d'overlay
+ * Initialisateur d'overlay d'osmdroid
  *
  * @author J.Houdé
  */

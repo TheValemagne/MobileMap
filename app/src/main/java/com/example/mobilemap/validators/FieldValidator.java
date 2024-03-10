@@ -42,4 +42,13 @@ public abstract class FieldValidator {
         this.field.setError(this.errorMsg); // affichage du message d'erreur
         return false;
     }
+
+    /**
+     * Retorune le contenu du champ de texte, après avoir supprimé les caractères invisibles en début et fin de chaîne
+     *
+     * @return le contenu du champ
+     */
+    protected String getValue() {
+        return field.getText().toString().trim();
+    }
 }

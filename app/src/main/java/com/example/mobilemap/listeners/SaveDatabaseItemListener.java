@@ -55,11 +55,12 @@ public class SaveDatabaseItemListener<T extends DatabaseItem> implements View.On
     private void saveItem() {
         T databaseItem = fragment.getValues();
 
-        if (databaseItem.getId() == DatabaseContract.NOT_EXISTING_ID) {
+        if (databaseItem.getId() == DatabaseContract.NOT_EXISTING_ID) { // ajout d'un nouveau contenu dans la base de données
             contentResolver.insert(databaseUri, databaseItem.toContentValues());
             return;
         }
 
+        // mise à jour d'un contneu existant dans la base de données
         contentResolver.update(databaseUri, databaseItem.toContentValues(),
                 MessageFormat.format("{0} = {1}", BaseColumns._ID, databaseItem.getId()), null);
     }

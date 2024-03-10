@@ -44,11 +44,18 @@ public class PoisActivity extends BaseActivity implements DatabaseItemManager {
         Fragment fragment = shouldShowPoiFragment(intent) ?
                 getPoiFragmentInstance(intent) : new PoiListFragment();
 
+        // affichage par défaux de la page avec la liste de sites
         this.getSupportFragmentManager().beginTransaction()
                 .replace(R.id.poisFragmentContainer, fragment)
                 .commit();
     }
 
+    /**
+     * Créé une instance du Fragment de détail d'un site
+     *
+     * @param intent données à transmettre au fragment
+     * @return le fragment instancié avec les données
+     */
     private Fragment getPoiFragmentInstance(Intent intent) {
         long itemId = intent.getLongExtra(PoiFragment.ARG_ITEM_ID, DatabaseContract.NOT_EXISTING_ID);
 
@@ -60,6 +67,12 @@ public class PoisActivity extends BaseActivity implements DatabaseItemManager {
         return PoiFragment.newInstance(itemId, true);
     }
 
+    /**
+     * Vérifie si le détail d'un site doit être affiché
+     *
+     * @param intent données à transmettre au fragment
+     * @return retourne vrai si le détail d'un site doit être affiché, sinon faux
+     */
     private boolean shouldShowPoiFragment(Intent intent) {
         return (intent.hasExtra(PoiFragment.ARG_LATITUDE)
                 && intent.hasExtra(PoiFragment.ARG_LONGITUDE)
@@ -69,6 +82,7 @@ public class PoisActivity extends BaseActivity implements DatabaseItemManager {
 
     /**
      * Retourne les informations de suppression d'un site
+     *
      * @return informations pour suppression d'un site
      */
     @Override
@@ -79,12 +93,27 @@ public class PoisActivity extends BaseActivity implements DatabaseItemManager {
                 resources.getString(R.string.confirm_delete_poi_msg));
     }
 
+    /**
+     * Création d'un intent pour l'affichage du détail d'un nouveau site avec la localisation préremplie
+     *
+     * @param activity  activité à l'origine de la demande
+     * @param latitude  latitude du futur site
+     * @param longitude longitude du futur site
+     * @return intent avec les informations données
+     */
     public static Intent createIntent(Activity activity, double latitude, double longitude) {
         return new Intent(activity.getApplicationContext(), PoisActivity.class)
                 .putExtra(PoiFragment.ARG_LATITUDE, latitude)
                 .putExtra(PoiFragment.ARG_LONGITUDE, longitude);
     }
 
+    /**
+     * Création d'un intent pour l'affichage du détail d'un site
+     *
+     * @param activity activité à l'origine de la demande
+     * @param itemId   identifiant du site à afficher
+     * @return intent avec les informations données
+     */
     public static Intent createIntent(Activity activity, long itemId) {
         return new Intent(activity.getApplicationContext(), PoisActivity.class)
                 .putExtra(PoiFragment.ARG_ITEM_ID, itemId);

@@ -101,11 +101,11 @@ public class CategoryFragment extends Fragment implements ItemView<Category> {
                 category = foundCategory.get();
                 binding.categoryName.setText(foundCategory.get().getName());
 
-                categoryNames.remove(category.getName()); // enlève le nom de la catégorie actuelle pour permettre une modification des données
+                categoryNames.remove(category.getName()); // enlève le nom de la catégorie actuelle pour permettre un enregistrement des données sans erreur d'unicité
             }
         }
 
-        bindActionButtons();
+        bindActionButtons(); // initialisation des boutons d'actions
 
         return binding.getRoot();
     }
@@ -129,7 +129,7 @@ public class CategoryFragment extends Fragment implements ItemView<Category> {
         Resources resources = requireActivity().getResources();
 
         fieldValidators = new ArrayList<>(Arrays.asList(
-                new IsFieldSet(binding.categoryName, resources), // vérification si un nom a été défini
+                new IsFieldSet(binding.categoryName, resources), // vérification si un nom a été défini et n'est pas vide
                 new IsUniqueCategoryValidator(binding.categoryName, resources, categoryNames) // vérification si le nom de catégorie est unique (catégorie à modifier exclue)
         ));
     }

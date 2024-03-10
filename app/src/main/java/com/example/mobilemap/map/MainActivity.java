@@ -97,10 +97,12 @@ public class MainActivity extends BaseActivity {
         mapManager = new MapManager(binding.mapView, this);
         mapManager.initMap();
 
+        // barre de recherche
         searchView = binding.searchView;
         searchView.clearFocus();
         searchView.setOnQueryTextListener(new SearchViewListener(this, mapManager, binding.searchView));
 
+        // boutons d'actions en lien avec la localisation de l'utilisateur
         floatingButtonsLayout = binding.floatingButtonsLayout;
         floatingButtonsLayout.setVisibility(View.GONE);
 
@@ -108,6 +110,8 @@ public class MainActivity extends BaseActivity {
         filterFloatingLayout.setVisibility(View.GONE);
 
         initButtons(binding);
+
+        // barre de navigation
         initNavigationBar(binding.mainNavigationBar, R.id.navigation_map);
     }
 
@@ -194,7 +198,7 @@ public class MainActivity extends BaseActivity {
 
         mapManager.onResume();
 
-        if (searchView != null) { // enlever le focus sur la barre de recherche
+        if (searchView != null) { // enlever le focus de la barre de recherche
             searchView.clearFocus();
         }
 

@@ -2,6 +2,7 @@ package com.example.mobilemap.map.manager;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.location.Address;
 
 import androidx.preference.PreferenceManager;
 
@@ -136,7 +137,7 @@ public final class MapManager {
         myLocationNewOverlay = new LocationOverlayInitiator(mapView, activity, this).init();
         itemizedOverlay = new ItemizedIconOverlayInitiator(mapView, this, activity, markerGestureListener).init();
 
-        // hint l'ordre des overlays est important pour les supporpositions et le dernier de la liste sera la premièr couche intéractive avec l'utilisateur
+        // hint l'ordre des overlays est important pour les supporpositions et le dernier de la liste sera la première couche à réagir aux actions de l'utilisateur
         List<Overlay> overlays = new ArrayList<>(Arrays.asList(
                 new AddMarkerOverlay(activity),
                 myLocationNewOverlay,
@@ -155,6 +156,19 @@ public final class MapManager {
     public void showAddCircleAroundPoiDialog(OverlayItem item) {
         AddCircleAroundPoiDialogBuilder builder = new AddCircleAroundPoiDialogBuilder(activity, this, item);
         builder.show();
+    }
+
+    /**
+     * Affichage du dialogue de filtrage autour d'une localisation recherchée
+     *
+     * @param address adresse recherchée
+     */
+    public void showAddCircleAroundSearch(Address address) {
+        showAddCircleAroundPoiDialog(new OverlayItem(
+                "0", // le marqueur n'existe pas dans la base de données et l'identifiant 0 n'est jamais donnée par défaut avec l'autoincrement
+                address.getAddressLine(0), // adresse complète
+                address.getLocality(), // nom de la ville et du pays
+                new GeoPoint(address.getLatitude(), address.getLongitude())));
     }
 
     /**
@@ -222,11 +236,11 @@ public final class MapManager {
     }
 
     /**
-     * Création du contenu à afficher dans l'infoWindow
+     * Création et ouverture du contenu à afficher dans l'infoWindow
      *
      * @param item       connu à afficher
      * @param infoWindow infoWindow à initialiser
-     * @return contenu à afficher
+     * @return contenu d'information à ajouter à la carte
      */
     public OverlayWithIW createOverlayWithIW(OverlayItem item, InfoWindow infoWindow) {
         OverlayWithIW overlayWithIW = new PoiOverlayWithIW(item);
@@ -333,7 +347,7 @@ public final class MapManager {
 
         String latitudeString = sharedPreferences.getString(SharedPreferencesConstant.PREFS_LATITUDE_STRING, SharedPreferencesConstant.DEFAULT_LATITUDE);
         String longitudeString = sharedPreferences.getString(SharedPreferencesConstant.PREFS_LONGITUDE_STRING, SharedPreferencesConstant.DEFAULT_LONGITUDE);
-        mapView.setExpectedCenter(new GeoPoint(Double.parseDouble(latitudeString), Double.parseDouble(longitudeString)));
+        mapView.setExpectedCenter(new GeoPoint(Double.parseDouble(latitudeString.trim()), Double.parseDouble(longitudeString.trim())));
     }
 
     /**

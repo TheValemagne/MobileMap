@@ -6,13 +6,13 @@ import android.widget.EditText;
 import com.example.mobilemap.R;
 
 /**
- * Vérification de champ obligatoire
+ * Vérification de champ obligatoire, le champ ne doit pas être vide
  *
  * @author J.Houdé
  */
 public class IsFieldSet extends FieldValidator {
     /**
-     * Vérification de champ obligatoire
+     * Vérification de champ obligatoire, le champ ne doit pas être vide
      *
      * @param field     champ à vérifier
      * @param resources gestionnaire de ressourses
@@ -23,6 +23,6 @@ public class IsFieldSet extends FieldValidator {
 
     @Override
     public boolean isValid() {
-        return !this.field.getText().toString().trim().isEmpty();
+        return !getValue().isEmpty();
     }
 }

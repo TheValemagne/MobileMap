@@ -67,7 +67,7 @@ public class MarkerGestureListener implements ItemizedIconOverlay.OnItemGestureL
             return true;
         }
 
-        mapView.getOverlays().add(mapManager.createOverlayWithIW(item, infoWindow)); // ouverte de l'infoWindows et affichage sur la carte
+        mapView.getOverlays().add(mapManager.createOverlayWithIW(item, infoWindow)); // ouverture de l'infoWindows et affichage sur la carte
 
         return true;
     }
@@ -75,8 +75,8 @@ public class MarkerGestureListener implements ItemizedIconOverlay.OnItemGestureL
     @Override
     public boolean onItemLongPress(int index, OverlayItem item) {
         if (currentCircleCenterItemUid.equals(item.getUid())) { // s'il y a déjà un cercle pour le site sélectionné
-            mapManager.removeCircle(); // supression du cercle
-            currentCircleCenterItemUid = ""; // supression de l'identfiant enregistré
+            mapManager.removeCircle(); // suppression du cercle
+            currentCircleCenterItemUid = ""; // suppression de l'identfiant enregistré
             return true;
         }
 

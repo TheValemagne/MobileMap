@@ -34,9 +34,9 @@ public class NavigationBarItemSelectedListener implements NavigationBarView.OnIt
      */
     public NavigationBarItemSelectedListener(Activity activity, int currentActivityId) {
         this.handlers = new ArrayList<>(Arrays.asList(
-                new NavigationHandler(R.id.navigation_map, new Intent(activity, MainActivity.class), activity, currentActivityId),
-                new NavigationHandler(R.id.navigation_categories, new Intent(activity, CategoriesActivity.class), activity, currentActivityId),
-                new NavigationHandler(R.id.navigation_pois, new Intent(activity, PoisActivity.class), activity, currentActivityId)
+                new NavigationHandler(R.id.navigation_map, new Intent(activity, MainActivity.class), activity, currentActivityId), // lié à l'activité avec la carte
+                new NavigationHandler(R.id.navigation_categories, new Intent(activity, CategoriesActivity.class), activity, currentActivityId), // lié à l'activité avec la liste des catégories
+                new NavigationHandler(R.id.navigation_pois, new Intent(activity, PoisActivity.class), activity, currentActivityId) // lié à l'activité avec la liste des sites
         ));
 
         for (int index = 0; index < handlers.size() - 1; index++) { // lier les maillons de la chaîne de responsabilitée

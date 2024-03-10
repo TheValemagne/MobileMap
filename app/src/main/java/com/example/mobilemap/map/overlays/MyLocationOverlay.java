@@ -47,10 +47,11 @@ public class MyLocationOverlay extends MyLocationNewOverlay {
             return;
         }
 
+        // actualisation du cercle de filtrage autoru de l'utilisateur en fonction de ses déplacements
         SharedPreferences sharedPreferences = mapManager.getSharedPreferences(); // récupération des données sauvegardées
 
         String circleRadiusString = sharedPreferences.getString(SharedPreferencesConstant.CIRCLE_RADIUS_STRING, SharedPreferencesConstant.EMPTY_STRING);
-        double circleRadius = Double.parseDouble(circleRadiusString);
+        double circleRadius = Double.parseDouble(circleRadiusString.trim());
 
         long categoryFilter = sharedPreferences.getLong(SharedPreferencesConstant.CIRCLE_CATEGORY_FILTER, SharedPreferencesConstant.NOT_FOUND_ID);
 

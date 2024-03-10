@@ -25,8 +25,6 @@ public class IsValidDoubleValidator extends FieldValidator {
 
     @Override
     public boolean isValid() {
-        String value = field.getText().toString().trim();
-
-        return pattern.matcher(value).matches();
+        return pattern.matcher(getValue()).matches();
     }
 }

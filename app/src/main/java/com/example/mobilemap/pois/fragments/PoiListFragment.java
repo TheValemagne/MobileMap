@@ -55,7 +55,7 @@ public class PoiListFragment extends Fragment implements FragmentListView {
         updateView();
 
         RecyclerView recyclerView = binding.poiList;
-        recyclerView.setLayoutManager(new LinearLayoutManager(activity));
+        recyclerView.setLayoutManager(new LinearLayoutManager(activity)); // vue sous forme de liste et non de grille
         PoiDetailsListRecyclerViewAdapter adapter = new PoiDetailsListRecyclerViewAdapter(ContentResolverHelper.getPoisDetail(activity.getContentResolver()),
                 activity.getContentResolver(), activity, this);
         recyclerView.setAdapter(adapter);

@@ -55,7 +55,6 @@ public class SavePoiListener extends SaveDatabaseItemListener<Poi> {
         Intent intent = new Intent();
         intent.putExtra(CREATED_POI_LATITUDE, poi.getLatitude());
         intent.putExtra(CREATED_POI_LONGITUDE, poi.getLongitude());
-        System.out.println(poi.getCategoryId());
         intent.putExtra(CREATED_POI_CATEGORY, poi.getCategoryId());
 
         return intent;

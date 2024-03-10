@@ -25,7 +25,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onConfigure(SQLiteDatabase db) {
         super.onConfigure(db);
-        db.setForeignKeyConstraintsEnabled(true); // activation de la contrainte avec les clés étrangères
+        db.setForeignKeyConstraintsEnabled(true); // activation de la contrainte d'intégrité avec les clés étrangères
     }
 
     @Override
@@ -74,8 +74,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     private void migrateDatabase(SQLiteDatabase db) {
         List<String> tables = new ArrayList<>(Arrays.asList(
-                DatabaseContract.Category.TABLE_NAME,
                 DatabaseContract.Poi.TABLE_NAME,
+                DatabaseContract.Category.TABLE_NAME,
                 DatabaseContract.PoiDetail.TABLE_NAME
         ));
 

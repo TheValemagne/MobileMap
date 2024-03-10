@@ -39,7 +39,7 @@ public class MiniMapManager {
      * @param activity                   activité gérant les sites
      * @param fragment                   fragment gérent le détail d'un site
      * @param miniMapView                vue de la carte à manipuler
-     * @param coordinatesFieldValidators liste des champs de coordonnées
+     * @param coordinatesFieldValidators liste des validateurs des champs de coordonnées
      */
     public MiniMapManager(PoisActivity activity, PoiFragment fragment, MapView miniMapView, List<FieldValidator> coordinatesFieldValidators) {
         this.activity = activity;

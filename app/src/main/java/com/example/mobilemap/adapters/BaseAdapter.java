@@ -53,6 +53,7 @@ public abstract class BaseAdapter<T extends RecyclerView.ViewHolder, U extends H
      */
     public void removeItem(int position) {
         values.remove(position); // suppression de l'élément de la liste
+
         this.notifyItemRemoved(position); // notification de la suppression à la vue grapphique de la liste
         this.fragmentListView.updateView(); // mise à jour des textes et boutons d'actions en lien avec la liste
     }

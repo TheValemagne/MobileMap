@@ -32,7 +32,7 @@ public class DoubleRangeValidator extends FieldValidator {
 
     @Override
     public boolean isValid() {
-        double value = Double.parseDouble(field.getText().toString().trim());
+        double value = Double.parseDouble(getValue());
 
         return value >= minBound && value <= maxBound;
     }

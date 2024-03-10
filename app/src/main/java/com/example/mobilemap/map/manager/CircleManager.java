@@ -97,7 +97,8 @@ public class CircleManager {
 
         // Ajoutez le cercle à la carte
         circle = createCircle(center, radiusInMeters);
-        mapView.getOverlayManager().add(circle);
+        mapView.getOverlays()
+                .add(mapView.getOverlays().indexOf(mapManager.getItemizedOverlay()), circle); // insertion du cercle derrière les marqueurs
 
         // Récuperation des sites avec de la catégorie voulue
         List<OverlayItem> filteredItems = mapManager.getOverlayItems(categoryFilter);
@@ -143,7 +144,8 @@ public class CircleManager {
 
         // Ajoutez le cercle à la carte
         circle = createCircle(userLocation, radiusInMeters);
-        mapView.getOverlayManager().add(circle);
+        mapView.getOverlays()
+                .add(mapView.getOverlays().indexOf(mapManager.getItemizedOverlay()), circle); // insertion du cercle derrière les marqueurs
 
         List<OverlayItem> filteredItems = mapManager.getOverlayItems(categoryFilter);
 
@@ -360,6 +362,6 @@ public class CircleManager {
         String circleLatitude = sharedPreferences.getString(SharedPreferencesConstant.CIRCLE_LATITUDE_STRING, SharedPreferencesConstant.DEFAULT_POSITION_STRING);
         String circleLongitude = sharedPreferences.getString(SharedPreferencesConstant.CIRCLE_LONGITUDE_STRING, SharedPreferencesConstant.DEFAULT_POSITION_STRING);
 
-        return new GeoPoint(Double.parseDouble(circleLatitude), Double.parseDouble(circleLongitude));
+        return new GeoPoint(Double.parseDouble(circleLatitude.trim()), Double.parseDouble(circleLongitude.trim()));
     }
 }

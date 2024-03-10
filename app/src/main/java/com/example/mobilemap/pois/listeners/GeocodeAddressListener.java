@@ -30,7 +30,7 @@ public class GeocodeAddressListener implements Geocoder.GeocodeListener {
 
     @Override
     public void onGeocode(@NonNull List<Address> addresses) {
-        if (addresses.isEmpty()) { // pas de résultat ou pas d'iternet
+        if (addresses.isEmpty()) { // pas de résultat ou pas d'internet
             addressField.setText("");
         }
 

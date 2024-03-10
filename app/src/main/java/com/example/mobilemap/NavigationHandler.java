@@ -24,7 +24,7 @@ public class NavigationHandler {
     /**
      * Gestionnaire de navigation
      *
-     * @param navigationButtonId identifiant du bouton de navigation  à gérer
+     * @param navigationButtonId identifiant du bouton de navigation à gérer
      * @param destinationIntent intent pour le changement d'activité
      * @param activity activité mère
      * @param currentPageId identifiant de la page actuelle
@@ -42,7 +42,7 @@ public class NavigationHandler {
      * @return vrai pour faire apparaitre le bouton comme sélectionné, sinon faux
      */
     public boolean handle(int menuId) {
-        if (menuId != navigationButtonId) { // passer à au prochain élément du Cor
+        if (menuId != navigationButtonId) { // passer au prochain élément de la châine s'il existe
             if (nextNavigationHandler == null) {
                 return false;
             }

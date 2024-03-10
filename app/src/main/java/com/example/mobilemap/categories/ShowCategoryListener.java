@@ -42,6 +42,7 @@ public class ShowCategoryListener implements View.OnClickListener {
     public void onClick(View v) {
         Fragment fragment = itemId > DatabaseContract.NOT_EXISTING_ID ? CategoryFragment.newInstance(itemId) : new CategoryFragment();
 
+        // affichage du détail de la catégorie sélectionnée ou d'une page vide pour la création de contenu
         activity.getSupportFragmentManager().beginTransaction()
                 .replace(R.id.categoriesFragmentContainer, fragment)
                 .addToBackStack(null)

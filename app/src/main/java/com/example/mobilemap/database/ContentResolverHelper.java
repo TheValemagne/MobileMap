@@ -19,6 +19,17 @@ import java.util.List;
 public class ContentResolverHelper {
     private static final String SORT_LOCALIZED_ASC = " COLLATE LOCALIZED ASC";
     private static final String SORT_PATTERN = "{0} {1}";
+
+    /**
+     * Retourne l'argument poyr le trie alphanumérique par rapport à une colonne en ignorant les accents
+     *
+     * @param columnName nom de la colonne pour le trie
+     * @return argument de triage SQLite
+     */
+    private static String getSortBy(String columnName) {
+        return MessageFormat.format(SORT_PATTERN, columnName, SORT_LOCALIZED_ASC);
+    }
+
     /**
      * Retourne la liste des catégories
      *
@@ -28,7 +39,7 @@ public class ContentResolverHelper {
     public static List<Category> getCategories(ContentResolver contentResolver) {
         Cursor cursor = contentResolver
                 .query(DatabaseContract.Category.CONTENT_URI, DatabaseContract.Category.COLUMNS, null, null,
-                        MessageFormat.format(SORT_PATTERN, DatabaseContract.Category.COLUMN_NAME, SORT_LOCALIZED_ASC)); // triée par nom
+                        getSortBy(DatabaseContract.Category.COLUMN_NAME)); // triée par nom
 
         if(cursor == null) {
             return new ArrayList<>();
@@ -46,7 +57,7 @@ public class ContentResolverHelper {
     public static List<PoiDetail> getPoisDetail(ContentResolver contentResolver) {
         Cursor cursor = contentResolver
                 .query(DatabaseContract.PoiDetail.CONTENT_URI, DatabaseContract.PoiDetail.COLUMNS, null, null,
-                        MessageFormat.format(SORT_PATTERN, DatabaseContract.PoiDetail.COLUMN_SITE_NAME, SORT_LOCALIZED_ASC));  // triée par nom
+                        getSortBy(DatabaseContract.PoiDetail.COLUMN_SITE_NAME));  // triée par nom
 
         if(cursor == null) {
             return new ArrayList<>();
@@ -64,7 +75,7 @@ public class ContentResolverHelper {
     public static List<Poi> getPois(ContentResolver contentResolver) {
         Cursor cursor = contentResolver
                 .query(DatabaseContract.Poi.CONTENT_URI, DatabaseContract.Poi.COLUMNS, null, null,
-                        MessageFormat.format(SORT_PATTERN, DatabaseContract.Poi.COLUMN_NAME, SORT_LOCALIZED_ASC));  // triée par nom
+                        getSortBy(DatabaseContract.Poi.COLUMN_NAME));  // triée par nom
 
         if(cursor == null) {
             return new ArrayList<>();

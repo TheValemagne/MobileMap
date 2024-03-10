@@ -11,9 +11,6 @@ import androidx.annotation.RequiresApi;
 
 import com.example.mobilemap.map.manager.MapManager;
 
-import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.overlay.OverlayItem;
-
 import java.util.List;
 
 /**
@@ -41,14 +38,7 @@ public class RequestSearchResultListener implements Geocoder.GeocodeListener {
     public void onGeocode(@NonNull List<Address> addresses) {
         Runnable runnable = () -> {
             // L'action d'affichage du cercle est executé dans le thread principal ayant le contrôle de l'interface
-            handler.postDelayed(() -> {
-                Address address = addresses.get(0);
-                mapManager.showAddCircleAroundPoiDialog(new OverlayItem(
-                        "0",
-                        address.getAddressLine(0),
-                        address.getLocality(),
-                        new GeoPoint(address.getLatitude(), address.getLongitude())));
-            }, 10);
+            handler.postDelayed(() -> mapManager.showAddCircleAroundSearch(addresses.get(0)), 10);
         };
 
         new Thread(runnable).start();

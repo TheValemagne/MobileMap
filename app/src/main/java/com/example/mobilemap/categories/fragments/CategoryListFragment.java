@@ -55,7 +55,7 @@ public class CategoryListFragment extends Fragment implements FragmentListView {
         updateView();
 
         RecyclerView recyclerView = binding.categoryList;
-        recyclerView.setLayoutManager(new LinearLayoutManager(activity));
+        recyclerView.setLayoutManager(new LinearLayoutManager(activity)); // vue sous forme de liste et non de grille
         CategoryListRecyclerViewAdapter adapter = new CategoryListRecyclerViewAdapter(ContentResolverHelper.getCategories(activity.getContentResolver()),
                 activity.getContentResolver(), activity, this);
         recyclerView.setAdapter(adapter);

@@ -41,6 +41,7 @@ public class ShowPoiListener implements View.OnClickListener {
     public void onClick(View v) {
         Fragment fragment = itemId > DatabaseContract.NOT_EXISTING_ID ? PoiFragment.newInstance(itemId, false) : new PoiFragment();
 
+        // affichage du détail du site sélectionné ou d'une page vide pour la création de contenu
         activity.getSupportFragmentManager().beginTransaction()
                 .replace(R.id.poisFragmentContainer, fragment)
                 .addToBackStack(null)

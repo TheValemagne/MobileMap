@@ -160,19 +160,19 @@ public class PoiFragment extends Fragment implements ItemView<Poi> {
         Resources resources = requireActivity().getResources();
 
         textFieldValidators = new ArrayList<>(Arrays.asList(
-                new IsFieldSet(binding.poiName, resources), //vérification si le nom est défini
+                new IsFieldSet(binding.poiName, resources), //vérification si le nom est défini et non vide
                 new IsFieldSet(binding.poiPostalAddress, resources), //vérification si l'adresse est défini
                 new IsFieldSet(binding.poiResume, resources) //vérification si le résumé est défini
         ));
 
         latitudeValidators = new ArrayList<>(Arrays.asList(
-                new IsFieldSet(binding.poiLatitude, resources), //vérification si la latitude est définie
+                new IsFieldSet(binding.poiLatitude, resources), //vérification si la latitude est définie et non vide
                 new IsValidDoubleValidator(binding.poiLatitude, resources), // vérification si la latitude est un nombre valide
                 new DoubleRangeValidator(binding.poiLatitude, resources, -90, 90) // la latitude doit être dans [-90, 90]
         ));
 
         longitudeValidators = new ArrayList<>(Arrays.asList(
-                new IsFieldSet(binding.poiLongitude, resources), //vérification si la longitude est définie
+                new IsFieldSet(binding.poiLongitude, resources), //vérification si la longitude est définie et non vide
                 new IsValidDoubleValidator(binding.poiLongitude, resources), // vérification si la longitude est un nombre valide
                 new DoubleRangeValidator(binding.poiLongitude, resources, -180, 180) // la longitude doit être dans [-180, 180]
         ));
